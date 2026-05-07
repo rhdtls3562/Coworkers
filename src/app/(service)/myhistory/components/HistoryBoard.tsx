@@ -17,6 +17,7 @@ export default function HistoryBoard({
   hasTasks,
   isError,
   isLoading,
+  isProgressivelyLoading,
   onApplyRange,
   onMoveMonth,
   onResetRange,
@@ -69,6 +70,18 @@ export default function HistoryBoard({
           {datedHistorySections.map((section) => (
             <HistoryDateSection key={section.id} section={section} />
           ))}
+
+          {isProgressivelyLoading ? (
+            <p className="mt-6 text-center text-sm font-normal text-text-default">
+              이전 히스토리를 더 불러오는 중이에요.
+            </p>
+          ) : null}
+        </div>
+      ) : isProgressivelyLoading ? (
+        <div className="flex min-h-80 flex-1 items-center justify-center">
+          <p className="text-sm font-normal text-text-default">
+            이전 히스토리를 더 불러오는 중이에요.
+          </p>
         </div>
       ) : (
         <div className="flex min-h-80 flex-1 items-center justify-center">

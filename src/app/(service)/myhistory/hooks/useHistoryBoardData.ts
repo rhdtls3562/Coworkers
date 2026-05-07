@@ -6,30 +6,20 @@
 
 import { useMemo } from 'react';
 
-import { useQueries } from '@tanstack/react-query';
-
-import { taskQueryOptions, teamQueryOptions } from '@/api/queryOptions';
 import useHistoryBoardBaseData from '@/app/(service)/myhistory/hooks/useHistoryBoardBaseData';
-import type {
-  HistoryTeamDetail,
-  UseHistoryBoardDataParams,
-} from '@/app/(service)/myhistory/types';
-import { getHistoryTaskListDescriptors } from '@/app/(service)/myhistory/utils/historyBoardDataUtils';
-import {
-  getHistoryTaskListSources,
-  getUniqueHistoryTaskListDescriptors,
-  hasHistoryQueryError,
-  hasHistoryQueryLoading,
-} from '@/app/(service)/myhistory/utils/historyBoardQueryUtils';
+import useHistoryTaskListSources from '@/app/(service)/myhistory/hooks/useHistoryTaskListSources';
+import useHistoryTeamDetails from '@/app/(service)/myhistory/hooks/useHistoryTeamDetails';
+import useProgressiveHistoryDateKeys from '@/app/(service)/myhistory/hooks/useProgressiveHistoryDateKeys';
+import type { UseHistoryBoardDataParams } from '@/app/(service)/myhistory/types';
 import {
   getHistorySections,
   getHistorySummaryData,
-  toHistoryTeamDetail,
 } from '@/app/(service)/myhistory/utils/myHistoryData';
 
 export default function useHistoryBoardData({
   activeFilterId,
   completedTasks,
+  isAllRange,
   shouldLimitTeamQueries,
 }: UseHistoryBoardDataParams) {
   const {
@@ -41,56 +31,23 @@ export default function useHistoryBoardData({
     isMeLoading,
     uniqueTeams,
   } = useHistoryBoardBaseData(completedTasks);
-
-  const teamDetailQueries = useQueries({
-    queries: uniqueTeams.map((team) => teamQueryOptions.detail(team.id)),
+  const { isProgressivelyLoading, visibleDateKeys } =
+    useProgressiveHistoryDateKeys(completedDateKeys, isAllRange);
+  const {
+    isError: isTeamDetailsError,
+    isLoading: isTeamDetailsLoading,
+    teamDetails,
+  } = useHistoryTeamDetails(uniqueTeams);
+  const {
+    isError: isTaskListSourcesError,
+    isLoading: isTaskListSourcesLoading,
+    taskListSources,
+  } = useHistoryTaskListSources({
+    activeFilterId,
+    shouldLimitTeamQueries,
+    teamDetails,
+    visibleDateKeys,
   });
-
-  const teamDetails = useMemo(
-    () =>
-      teamDetailQueries
-        .map((query) => toHistoryTeamDetail(query.data))
-        .filter((teamDetail): teamDetail is HistoryTeamDetail =>
-          Boolean(teamDetail),
-        ),
-    [teamDetailQueries],
-  );
-
-  const taskListDescriptors = useMemo(
-    () => getHistoryTaskListDescriptors(teamDetails, completedDateKeys),
-    [completedDateKeys, teamDetails],
-  );
-
-  const uniqueTaskListDescriptors = useMemo(
-    () => getUniqueHistoryTaskListDescriptors(taskListDescriptors),
-    [taskListDescriptors],
-  );
-
-  const taskListDetailQueries = useQueries({
-    queries: uniqueTaskListDescriptors.map((descriptor) =>
-      taskQueryOptions.taskListDetail(
-        descriptor.teamId,
-        descriptor.taskListId,
-        { date: descriptor.dateKey },
-        {
-          enabled:
-            Boolean(descriptor.teamId) &&
-            Boolean(descriptor.taskListId) &&
-            Boolean(descriptor.dateKey) &&
-            (!shouldLimitTeamQueries || descriptor.teamId === activeFilterId),
-        },
-      ),
-    ),
-  });
-
-  const taskListSources = useMemo(
-    () =>
-      getHistoryTaskListSources(
-        uniqueTaskListDescriptors,
-        taskListDetailQueries,
-      ),
-    [uniqueTaskListDescriptors, taskListDetailQueries],
-  );
 
   const historySections = useMemo(
     () => getHistorySections(completedTasks, taskListSources, activeFilterId),
@@ -108,13 +65,14 @@ export default function useHistoryBoardData({
     isError:
       isMeError ||
       isMembershipsError ||
-      hasHistoryQueryError(teamDetailQueries) ||
-      hasHistoryQueryError(taskListDetailQueries),
+      isTeamDetailsError ||
+      isTaskListSourcesError,
     isLoading:
       isMeLoading ||
       isMembershipsLoading ||
-      hasHistoryQueryLoading(teamDetailQueries) ||
-      hasHistoryQueryLoading(taskListDetailQueries),
+      isTeamDetailsLoading ||
+      isTaskListSourcesLoading,
+    isProgressivelyLoading,
     summaryItems: summaryData.items,
   } as const;
 }

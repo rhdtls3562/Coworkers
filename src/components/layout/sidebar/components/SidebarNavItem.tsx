@@ -67,6 +67,7 @@ export default function SidebarNavItem({
   const linkElement = (
     <Link
       href={href}
+      prefetch={false}
       className={cn(
         'flex items-center overflow-hidden font-medium transition-colors',
         isMenuVariant && linkSizeClass,

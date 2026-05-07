@@ -23,6 +23,7 @@ export default function MyHistoryPageContent() {
     hasTasks,
     isError,
     isLoading,
+    isProgressivelyLoading,
     selectedRange,
     summaryItems,
     title,
@@ -53,6 +54,7 @@ export default function MyHistoryPageContent() {
             hasTasks={hasTasks}
             isError={isError}
             isLoading={isLoading}
+            isProgressivelyLoading={isProgressivelyLoading}
             onApplyRange={handleApplyRange}
             onMoveMonth={handleMoveMonth}
             onResetRange={handleResetRange}

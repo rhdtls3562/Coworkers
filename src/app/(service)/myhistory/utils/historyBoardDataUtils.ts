@@ -20,6 +20,12 @@ export function getCompletedDateKeys(
   );
 }
 
+export function sortHistoryDateKeysByRecency(dateKeys: readonly string[]) {
+  return [...dateKeys].sort((firstDateKey, secondDateKey) => {
+    return new Date(secondDateKey).getTime() - new Date(firstDateKey).getTime();
+  });
+}
+
 export function getHistoryTaskListDescriptors(
   teamDetails: readonly HistoryTeamDetail[],
   completedDateKeys: readonly string[],

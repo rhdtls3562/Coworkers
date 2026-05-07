@@ -60,10 +60,12 @@ export default function useHistoryBoard(activeFilterId: string | null) {
     historySections,
     isError: isBoardDataError,
     isLoading: isBoardDataLoading,
+    isProgressivelyLoading,
     summaryItems,
   } = useHistoryBoardData({
     activeFilterId,
     completedTasks: completedTasksInRange,
+    isAllRange: selectedRange.mode === 'all',
     shouldLimitTeamQueries:
       activeFilterId !== null && selectedRange.mode === 'all',
   });
@@ -109,6 +111,7 @@ export default function useHistoryBoard(activeFilterId: string | null) {
     hasTasks: hasHistoryTasks(datedHistorySections),
     isError: isError || isBoardDataError,
     isLoading: isLoading || isBoardDataLoading,
+    isProgressivelyLoading,
     selectedRange,
     summaryItems,
     title: formatHistoryRangeTitle(selectedRange),

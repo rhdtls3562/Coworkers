@@ -162,6 +162,7 @@ export type HistoryTaskListDescriptor = {
 export type UseHistoryBoardDataParams = {
   activeFilterId: string | null;
   completedTasks: readonly MyHistoryCompletedTaskRecord[];
+  isAllRange: boolean;
   shouldLimitTeamQueries: boolean;
 };
 
@@ -197,6 +198,7 @@ export type HistoryBoardProps = {
   hasTasks: boolean;
   isError: boolean;
   isLoading: boolean;
+  isProgressivelyLoading: boolean;
   onApplyRange: (range: MyHistoryResolvedDateRange) => void;
   onMoveMonth: (monthOffset: number) => void;
   onResetRange: () => void;
