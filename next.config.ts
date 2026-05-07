@@ -79,6 +79,10 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: '**', // 모든 외부 이미지 허용
+      },
     ],
   },
 };
