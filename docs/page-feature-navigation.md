@@ -315,14 +315,14 @@ const articleCommentsQuery = useArticleCommentsQuery({
 
 ### 언제 어떤 걸 쓰는가
 
-| 하고 싶은 일 | 사용할 hook |
-| --- | --- |
-| 게시글 목록 조회 | `useArticleListQuery` |
-| 게시글 상세 조회 | `useArticleDetailQuery` |
-| 게시글 작성 | `useCreateArticleMutation` |
-| 게시글 수정 | `useUpdateArticleMutation` |
-| 게시글 삭제 | `useDeleteArticleMutation` |
-| 게시글 좋아요 | `useLikeArticleMutation` |
+| 하고 싶은 일       | 사용할 hook                |
+| ------------------ | -------------------------- |
+| 게시글 목록 조회   | `useArticleListQuery`      |
+| 게시글 상세 조회   | `useArticleDetailQuery`    |
+| 게시글 작성        | `useCreateArticleMutation` |
+| 게시글 수정        | `useUpdateArticleMutation` |
+| 게시글 삭제        | `useDeleteArticleMutation` |
+| 게시글 좋아요      | `useLikeArticleMutation`   |
 | 게시글 좋아요 취소 | `useUnlikeArticleMutation` |
 
 ---
@@ -417,3 +417,5 @@ hook 안의 export 이름을 그대로 사용합니다.
 > “파일 이름이 기억 안 날 때 바로 찾는 지도”
 
 라고 생각하면 됩니다.
+
+테스트입니다!

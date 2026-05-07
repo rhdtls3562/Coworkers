@@ -137,7 +137,7 @@ const articleListQuery = useArticleListQuery({
 [articleApi.ts](../src/api/articleApi.ts) 안의:
 
 ```ts
-getArticleList(teamId, params)
+getArticleList(teamId, params);
 ```
 
 ### 2단계. query key
@@ -145,7 +145,7 @@ getArticleList(teamId, params)
 [article.ts](../src/api/queryKeys/article.ts) 안의:
 
 ```ts
-queryKeys.article.list(teamId, params)
+queryKeys.article.list(teamId, params);
 ```
 
 ### 3단계. query options
@@ -153,7 +153,7 @@ queryKeys.article.list(teamId, params)
 [articleQueryOptions.ts](../src/api/queryOptions/articleQueryOptions.ts) 안의:
 
 ```ts
-articleQueryOptions.list(teamId, params, options)
+articleQueryOptions.list(teamId, params, options);
 ```
 
 ### 4단계. hook
@@ -161,7 +161,7 @@ articleQueryOptions.list(teamId, params, options)
 [useArticle.ts](../src/hooks/useArticle.ts) 안의:
 
 ```ts
-useArticleListQuery({ teamId, params, options })
+useArticleListQuery({ teamId, params, options });
 ```
 
 ### 5단계. 화면에서 사용
@@ -186,11 +186,11 @@ Swagger 기준 이름은 `Article`입니다.
 그래서 데이터 계층은 아래처럼 읽으면 됩니다.
 
 | 화면에서 보이는 이름 | 실제 React Query 이름 |
-| --- | --- |
-| 게시판 / 채용 / 홍보 | `article` |
-| 게시글 댓글 | `articleComment` |
-| 할 일 댓글 | `comment` |
-| 팀 | `team` |
+| -------------------- | --------------------- |
+| 게시판 / 채용 / 홍보 | `article`             |
+| 게시글 댓글          | `articleComment`      |
+| 할 일 댓글           | `comment`             |
+| 팀                   | `team`                |
 
 즉:
 
@@ -748,3 +748,5 @@ mutation이 있다면 이 단계에서 같이 확인합니다.
 
 이 기준만 지키면 React Query가 훨씬 덜 무섭고,  
 팀원끼리 코드를 이어붙일 때도 훨씬 편해집니다.
+
+버셀 배포 하고싶다

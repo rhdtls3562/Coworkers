@@ -13,15 +13,16 @@ export type UploadImageResponse = {
   url: string;
 };
 
-export async function uploadImage(file: File) {
+export async function uploadImage(teamId: string, file: File, token?: string) {
   const body = new FormData();
   body.append(API_FORM_DATA_FIELDS.IMAGE, file);
 
   return apiClient<UploadImageResponse>(
-    teamEndpoint(`${API_PATH_SEGMENTS.IMAGES}/upload`),
+    teamEndpoint(`${API_PATH_SEGMENTS.IMAGES}/upload`, teamId),
     {
       body,
       method: HTTP_METHODS.POST,
+      token,
     },
   );
 }
