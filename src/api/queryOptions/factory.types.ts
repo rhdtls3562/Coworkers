@@ -9,6 +9,8 @@ import type {
   UseMutationOptions,
 } from '@tanstack/react-query';
 
+export type { QueryKey };
+
 export type QueryOptionsOverrides<
   TQueryFnData,
   TData = TQueryFnData,
