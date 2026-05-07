@@ -51,6 +51,7 @@ export type TaskDetailPanelBodyProps = {
 export type TaskDetailPanelContentProps = {
   assigneeName: string;
   comments: readonly RightPanelComment[];
+  completionActionLabel?: string;
   description: string;
   frequency: string;
   initialMode?: 'view' | 'edit';
@@ -59,6 +60,7 @@ export type TaskDetailPanelContentProps = {
 };
 
 export type TaskDetailPanelFooterProps = {
+  completionActionLabel?: string;
   isEditing: boolean;
   onSubmitEdit: () => void;
 };

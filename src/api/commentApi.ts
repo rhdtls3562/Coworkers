@@ -6,10 +6,7 @@ import { apiClient, teamEndpoint } from '@/api/apiClient';
 import { buildQueryString } from '@/api/buildQueryString';
 import { API_PATH_SEGMENTS, HTTP_METHODS } from '@/api/constants';
 import type { CursorPaginationQueryParams, QueryKeyId } from '@/api/queryKeys';
-
-type CommentBody = {
-  content: string;
-};
+import type { CommentBody } from '@/api/types';
 
 function createTaskCommentsPath(taskId: QueryKeyId) {
   return `${API_PATH_SEGMENTS.TASKS}/${taskId}${API_PATH_SEGMENTS.COMMENTS}`;

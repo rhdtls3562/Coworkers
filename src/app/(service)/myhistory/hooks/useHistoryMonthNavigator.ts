@@ -1,3 +1,7 @@
+/**
+ * 내 히스토리 월 네비게이터의 기간 선택과 월 이동 동작을 관리하는 훅입니다.
+ */
+
 import { useMemo, useState } from 'react';
 
 import type {
@@ -16,6 +20,7 @@ export default function useHistoryMonthNavigator({
   isCalendarOpen,
   onApplyRange,
   onMoveMonth,
+  onResetRange,
   selectedRange,
   toggleCalendar,
 }: UseHistoryMonthNavigatorParams) {
@@ -69,6 +74,16 @@ export default function useHistoryMonthNavigator({
 
   const handleToggleCalendar = () => {
     if (!isCalendarOpen) {
+      if (selectedRange.mode === 'range') {
+        setDraftRange({
+          endDate: null,
+          startDate: null,
+        });
+        onResetRange();
+        toggleCalendar();
+        return;
+      }
+
       setDraftRange({
         endDate: selectedRange.endDate,
         startDate: selectedRange.startDate,

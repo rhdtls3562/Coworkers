@@ -5,23 +5,12 @@
 import { apiClient, teamEndpoint } from '@/api/apiClient';
 import { API_PATH_SEGMENTS, HTTP_METHODS } from '@/api/constants';
 import type { QueryKeyId } from '@/api/queryKeys';
-import type { LoginFormValues, SignUpFormValues } from '@/types/auth';
-
-type SignUpBody = SignUpFormValues & {
-  image?: string;
-};
-
-type SignInBody = LoginFormValues;
-
-type RefreshTokenBody = {
-  refreshToken: string;
-};
-
-type SignInWithOauthBody = {
-  redirectUri?: string;
-  state?: string;
-  token: string;
-};
+import type {
+  RefreshTokenBody,
+  SignInBody,
+  SignInWithOauthBody,
+  SignUpBody,
+} from '@/api/types';
 
 export async function signUp(teamId: string, body: SignUpBody) {
   return apiClient<unknown>(

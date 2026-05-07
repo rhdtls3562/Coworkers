@@ -1,10 +1,8 @@
 'use client';
 
-import { useState } from 'react';
-
+import useForgotPasswordForm from '@/app/(service)/login/hooks/useForgotPasswordForm';
 import { AuthInput } from '@/components/common/form';
 import Modal from '@/components/common/modal';
-import { useToast } from '@/components/common/toast';
 
 type ForgotPasswordModalProps = {
   onClose: () => void;
@@ -13,34 +11,10 @@ type ForgotPasswordModalProps = {
 export default function ForgotPasswordModal({
   onClose,
 }: ForgotPasswordModalProps) {
-  const { showToast } = useToast();
-  const [email, setEmail] = useState('');
-  const [emailError, setEmailError] = useState('');
-
-  const handleChangeEmail = (value: string) => {
-    setEmail(value);
-
-    if (!value) {
-      setEmailError('');
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-      setEmailError('이메일 형식이 아닙니다');
-    } else {
-      setEmailError('');
-    }
-  };
-
-  const handleBlurEmail = () => {
-    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setEmailError('이메일 형식이 아닙니다');
-    }
-  };
-
-  const handleSendResetLink = () => {
-    if (!email || emailError) return;
-
-    onClose();
-    showToast('비밀번호 재설정 링크를 보냈습니다.', 'success');
-  };
+  const { emailError, emailField, handleSubmit, isDisabled, serverError } =
+    useForgotPasswordForm({
+      onSuccess: onClose,
+    });
 
   return (
     <Modal
@@ -49,21 +23,24 @@ export default function ForgotPasswordModal({
       description={`가입한 이메일을 입력하시면\n 비밀번호 재설정 링크를 보내드립니다.`}
       lineButtonText="닫기"
       primaryButtonText="링크 보내기"
-      isPrimaryButtonDisabled={!email || Boolean(emailError)}
+      isPrimaryButtonDisabled={isDisabled}
       onClose={onClose}
       onLineButtonClick={onClose}
-      onPrimaryButtonClick={handleSendResetLink}
+      onPrimaryButtonClick={handleSubmit}
     >
       <div className="mt-4 w-full text-left">
         <AuthInput
           label="이메일"
-          type="text"
-          value={email}
-          onChange={(e) => handleChangeEmail(e.target.value)}
-          onBlur={handleBlurEmail}
+          type="email"
           errorMessage={emailError}
           placeholder="이메일을 입력해주세요"
+          {...emailField}
         />
+        {serverError && (
+          <p className="mt-3 text-center text-sm font-medium text-status-danger">
+            {serverError}
+          </p>
+        )}
       </div>
     </Modal>
   );

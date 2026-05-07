@@ -4,15 +4,15 @@
 
 'use client';
 
-import { MY_HISTORY_SUMMARY_ITEMS } from '@/app/(service)/myhistory/constants';
 import type { MyHistorySummaryProps } from '@/app/(service)/myhistory/types';
 import { cn } from '@/utils/cn';
 
 export default function MyHistorySummary({
   activeItemId,
+  items,
   onSelectItem,
 }: MyHistorySummaryProps) {
-  if (MY_HISTORY_SUMMARY_ITEMS.length === 0) {
+  if (items.length === 0) {
     return null;
   }
 
@@ -22,7 +22,7 @@ export default function MyHistorySummary({
 
       <div className="mt-4 max-h-[calc(100vh-6rem)] overflow-y-auto pr-5">
         <ul className="flex flex-col gap-2">
-          {MY_HISTORY_SUMMARY_ITEMS.map((item) => {
+          {items.map((item) => {
             const isActive = activeItemId === item.id;
 
             return (

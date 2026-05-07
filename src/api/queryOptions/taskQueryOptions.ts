@@ -21,11 +21,12 @@ import {
   createQueryOptions,
   type QueryOptionsOverrides,
 } from '@/api/queryOptions/factory';
+import type {
+  TaskDetailData,
+  TaskListDetailData,
+  TasksData,
+} from '@/api/queryOptions/types';
 import { getTaskDetail, getTaskListDetail, getTasks } from '@/api/taskApi';
-
-type TaskDetailData = Awaited<ReturnType<typeof getTaskDetail>>;
-type TasksData = Awaited<ReturnType<typeof getTasks>>;
-type TaskListDetailData = Awaited<ReturnType<typeof getTaskListDetail>>;
 
 /** 할 일 / 할 일 목록 조회 hook이 공통으로 사용하는 options입니다. */
 export const taskQueryOptions = {

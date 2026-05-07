@@ -1,3 +1,7 @@
+/**
+ * 기간 범위 선택용 인라인 달력 팝오버를 렌더링하는 컴포넌트입니다.
+ */
+
 import type { HistoryCalendarPopoverProps } from '@/app/(service)/myhistory/types';
 import { DatePicker } from '@/components/common/form';
 

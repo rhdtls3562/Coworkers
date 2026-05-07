@@ -8,10 +8,7 @@ import {
   API_PATH_SEGMENTS,
   HTTP_METHODS,
 } from '@/api/constants';
-
-export type UploadImageResponse = {
-  url: string;
-};
+import type { UploadImageResponse } from '@/api/types';
 
 export async function uploadImage(teamId: string, file: File, token?: string) {
   const body = new FormData();

@@ -19,6 +19,7 @@ import { useToast } from '@/components/common/toast';
 export default function TaskDetailPanelContent({
   assigneeName,
   comments,
+  completionActionLabel,
   description: initialDescription,
   frequency,
   initialMode,
@@ -73,8 +74,8 @@ export default function TaskDetailPanelContent({
   };
 
   return (
-    <div className="relative flex h-full flex-col">
-      <div className="min-h-0 flex-1 overflow-y-auto px-6 pb-36 pt-8 md:px-8 md:pb-40 md:pt-10">
+    <div className="flex h-full flex-col">
+      <div className="min-h-0 flex-1 overflow-y-auto px-6 pb-8 pt-8 md:px-8 md:pb-10 md:pt-10">
         <TaskDetailPanelHeader
           draftTitle={draftTitle}
           isEditing={isTaskEditing}
@@ -107,10 +108,8 @@ export default function TaskDetailPanelContent({
           onStartCommentEdit={handleStartCommentEdit}
           onSubmitCommentEdit={handleSubmitCommentEdit}
         />
-      </div>
-
-      <div className="absolute inset-x-0 bottom-20 px-6 md:px-8">
         <TaskDetailPanelFooter
+          completionActionLabel={completionActionLabel}
           isEditing={isTaskEditing}
           onSubmitEdit={handleSubmitTaskEdit}
         />

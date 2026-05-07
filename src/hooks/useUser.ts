@@ -22,6 +22,8 @@ import {
   getMe,
   getMyGroups,
   getMyMemberships,
+  resetPassword,
+  sendResetPasswordEmail,
 } from '@/api/userApi';
 
 type CompletedTasksData = Awaited<ReturnType<typeof getCompletedTasks>>;
@@ -29,6 +31,10 @@ type DeleteMeData = Awaited<ReturnType<typeof deleteMe>>;
 type MeData = Awaited<ReturnType<typeof getMe>>;
 type MyGroupsData = Awaited<ReturnType<typeof getMyGroups>>;
 type MyMembershipsData = Awaited<ReturnType<typeof getMyMemberships>>;
+type ResetPasswordData = Awaited<ReturnType<typeof resetPassword>>;
+type SendResetPasswordEmailData = Awaited<
+  ReturnType<typeof sendResetPasswordEmail>
+>;
 
 type UseCompletedTasksParams<TData = CompletedTasksData> = {
   options?: QueryOptionsOverrides<CompletedTasksData, TData>;
@@ -50,6 +56,22 @@ type UseMeParams<TData = MeData> = {
 };
 
 type DeleteMeVariables = void;
+type SendResetPasswordEmailVariables = {
+  body: {
+    email: string;
+    redirectUrl: string;
+  };
+  teamId: string;
+};
+
+type ResetPasswordVariables = {
+  body: {
+    password: string;
+    passwordConfirmation: string;
+    token: string;
+  };
+  teamId: string;
+};
 
 export function useMeQuery<TData = MeData>({
   options,
@@ -63,6 +85,33 @@ export function useDeleteMeMutation(
   return useMutation(
     createMutationOptions({
       mutationFn: () => deleteMe(),
+      options,
+    }),
+  );
+}
+
+export function useSendResetPasswordEmailMutation(
+  options?: MutationOptionsOverrides<
+    SendResetPasswordEmailData,
+    SendResetPasswordEmailVariables
+  >,
+) {
+  return useMutation(
+    createMutationOptions({
+      mutationFn: ({ body, teamId }: SendResetPasswordEmailVariables) =>
+        sendResetPasswordEmail(teamId, body),
+      options,
+    }),
+  );
+}
+
+export function useResetPasswordMutation(
+  options?: MutationOptionsOverrides<ResetPasswordData, ResetPasswordVariables>,
+) {
+  return useMutation(
+    createMutationOptions({
+      mutationFn: ({ body, teamId }: ResetPasswordVariables) =>
+        resetPassword(teamId, body),
       options,
     }),
   );

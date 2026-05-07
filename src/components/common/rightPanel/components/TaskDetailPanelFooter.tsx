@@ -4,6 +4,7 @@ import { IcCheckInverse } from '@/assets';
 import type { TaskDetailPanelFooterProps } from '@/components/common/rightPanel/types';
 
 export default function TaskDetailPanelFooter({
+  completionActionLabel = '완료하기',
   isEditing,
   onSubmitEdit,
 }: TaskDetailPanelFooterProps) {
@@ -35,7 +36,7 @@ export default function TaskDetailPanelFooter({
             className="size-4"
             aria-hidden="true"
           />
-          완료하기
+          {completionActionLabel}
         </button>
       )}
     </div>

@@ -5,6 +5,7 @@ import type { ReactNode } from 'react';
 import ServiceRightPanelHost from '@/components/layout/components/ServiceRightPanelHost';
 import { ServiceLayoutProvider } from '@/components/layout/context/ServiceLayoutContext';
 import Header from '@/components/layout/header';
+import useAuthSessionGuard from '@/components/layout/hooks/useAuthSessionGuard';
 import Sidebar from '@/components/layout/sidebar';
 
 type ServiceLayoutClientProps = {
@@ -14,6 +15,8 @@ type ServiceLayoutClientProps = {
 export default function ServiceLayoutClient({
   children,
 }: ServiceLayoutClientProps) {
+  useAuthSessionGuard();
+
   return (
     <ServiceLayoutProvider>
       <div className="flex min-h-dvh flex-col bg-background-secondary">

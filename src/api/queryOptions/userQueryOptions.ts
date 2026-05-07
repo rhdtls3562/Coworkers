@@ -21,17 +21,18 @@ import {
   createQueryOptions,
   type QueryOptionsOverrides,
 } from '@/api/queryOptions/factory';
+import type {
+  CompletedTasksData,
+  MeData,
+  MyGroupsData,
+  MyMembershipsData,
+} from '@/api/queryOptions/types';
 import {
   getCompletedTasks,
   getMe,
   getMyGroups,
   getMyMemberships,
 } from '@/api/userApi';
-
-type CompletedTasksData = Awaited<ReturnType<typeof getCompletedTasks>>;
-type MyGroupsData = Awaited<ReturnType<typeof getMyGroups>>;
-type MeData = Awaited<ReturnType<typeof getMe>>;
-type MyMembershipsData = Awaited<ReturnType<typeof getMyMemberships>>;
 
 /** 사용자 / 마이페이지 / 마이히스토리에서 공통으로 사용하는 options입니다. */
 export const userQueryOptions = {

@@ -7,12 +7,10 @@ import { buildQueryString } from '@/api/buildQueryString';
 import { API_PATH_SEGMENTS, HTTP_METHODS } from '@/api/constants';
 import type {
   QueryKeyId,
-  QueryParams,
   TaskQueryParams,
   TeamScopedDateQueryParams,
 } from '@/api/queryKeys';
-
-type RecurringBody = QueryParams;
+import type { RecurringBody } from '@/api/types';
 
 function createGroupTaskListsPath(groupId: QueryKeyId) {
   return `${API_PATH_SEGMENTS.GROUPS}/${groupId}${API_PATH_SEGMENTS.TASK_LISTS}`;

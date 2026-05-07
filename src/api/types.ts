@@ -1,0 +1,64 @@
+/**
+ * API 레이어 전반에서 공통으로 사용하는 요청, 응답, 클라이언트 타입 모음입니다.
+ */
+
+import type { QueryParams } from '@/api/queryKeys';
+import type { LoginFormValues, SignUpFormValues } from '@/types/auth';
+
+import type { QueryClient, QueryKey } from '@tanstack/react-query';
+
+export type FetchOptions = RequestInit & {
+  token?: string;
+};
+
+export type ApiError = Error & {
+  status?: number;
+};
+
+export type SignUpBody = SignUpFormValues & {
+  image?: string;
+};
+
+export type SignInBody = LoginFormValues;
+
+export type RefreshTokenBody = {
+  refreshToken: string;
+};
+
+export type SignInWithOauthBody = {
+  redirectUri?: string;
+  state?: string;
+  token: string;
+};
+
+export type SendResetPasswordEmailBody = {
+  email: string;
+  redirectUrl: string;
+};
+
+export type ResetPasswordBody = {
+  password: string;
+  passwordConfirmation: string;
+  token: string;
+};
+
+export type ArticleBody = {
+  content: string;
+  image?: string | null;
+  title: string;
+};
+
+export type CommentBody = {
+  content: string;
+};
+
+export type RecurringBody = QueryParams;
+
+export type UploadImageResponse = {
+  url: string;
+};
+
+export type RefetchQueryKeysParams = {
+  queryClient: QueryClient;
+  queryKeysToRefetch: readonly QueryKey[];
+};

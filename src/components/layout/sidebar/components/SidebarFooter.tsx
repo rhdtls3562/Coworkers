@@ -4,6 +4,8 @@
  * 사이드바 하단 유저 정보와 로그인 링크 영역입니다.
  */
 
+import { useSyncExternalStore } from 'react';
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -16,11 +18,33 @@ import type { SidebarFooterProps } from '@/components/layout/sidebar/types';
 import { ROUTES } from '@/constants/ROUTES';
 import { cn } from '@/utils/cn';
 
+function subscribeMounted(callback: () => void) {
+  callback();
+
+  return () => {};
+}
+
+function getClientSnapshot() {
+  return true;
+}
+
+function getServerSnapshot() {
+  return false;
+}
+
 export default function SidebarFooter({ isExpanded }: SidebarFooterProps) {
   const { handleSidebarInteraction } = useSidebar();
   const pathname = usePathname();
   const layoutAuthState = useLayoutAuthState(pathname);
-  const href = layoutAuthState.isAuthenticated ? ROUTES.MY_PAGE : ROUTES.LOGIN;
+
+  const isMounted = useSyncExternalStore(
+    subscribeMounted,
+    getClientSnapshot,
+    getServerSnapshot,
+  );
+
+  const canShowAuthUi = isMounted && layoutAuthState.isAuthenticated;
+  const href = canShowAuthUi ? ROUTES.MY_PAGE : ROUTES.LOGIN;
 
   return (
     <div
@@ -29,7 +53,7 @@ export default function SidebarFooter({ isExpanded }: SidebarFooterProps) {
         isExpanded ? 'mx-4' : 'mx-3',
       )}
     >
-      {layoutAuthState.isAuthenticated ? (
+      {canShowAuthUi ? (
         <ProfileMenuDropdown
           className="w-full"
           onNavigate={handleSidebarInteraction}
@@ -43,7 +67,7 @@ export default function SidebarFooter({ isExpanded }: SidebarFooterProps) {
               )}
               aria-label="프로필 메뉴 열기"
             >
-              <span className="flex shrink-0 size-10 items-center justify-center overflow-hidden rounded-lg bg-background-tertiary">
+              <span className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-background-tertiary">
                 {layoutAuthState.currentUser.image ? (
                   <Image
                     src={layoutAuthState.currentUser.image}
@@ -56,8 +80,9 @@ export default function SidebarFooter({ isExpanded }: SidebarFooterProps) {
                   <IcUserLarge width={24} height={24} aria-hidden="true" />
                 )}
               </span>
+
               {isExpanded ? (
-                <span className="animate-fadeIn [animation-delay:150ms] [animation-fill-mode:both] flex min-w-0 flex-col">
+                <span className="animate-fadeIn flex min-w-0 flex-col [animation-delay:150ms] [animation-fill-mode:both]">
                   <span className="truncate text-base font-semibold text-text-primary">
                     {layoutAuthState.currentUser.name}
                   </span>
@@ -87,10 +112,10 @@ export default function SidebarFooter({ isExpanded }: SidebarFooterProps) {
         >
           {isExpanded ? (
             <>
-              <span className="flex shrink-0 size-10 items-center justify-center rounded-lg bg-background-tertiary">
+              <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-background-tertiary">
                 <IcUserLarge width={24} height={24} aria-hidden="true" />
               </span>
-              <span className="animate-fadeIn [animation-delay:150ms] [animation-fill-mode:both] whitespace-nowrap text-base">
+              <span className="animate-fadeIn whitespace-nowrap text-base [animation-delay:150ms] [animation-fill-mode:both]">
                 로그인
               </span>
             </>

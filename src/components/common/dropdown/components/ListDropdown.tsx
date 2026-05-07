@@ -101,7 +101,7 @@ export default function ListDropdown({
                   type="button"
                   role="menuitem"
                   className={cn(
-                    'w-full whitespace-nowrap px-6 py-3 text-sm text-text-primary hover:bg-background-secondary',
+                    'w-full whitespace-nowrap px-6 py-3 text-sm text-text-primary hover:bg-background-secondary active:bg-background-secondary',
                     itemTextAlign === 'start' ? 'text-start' : 'text-center',
                     itemClassName,
                   )}

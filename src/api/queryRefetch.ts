@@ -7,13 +7,9 @@
 
 import type { QueryKeyId } from '@/api/queryKeys';
 import { queryKeys } from '@/api/queryKeys';
+import type { RefetchQueryKeysParams } from '@/api/types';
 
-import type { QueryClient, QueryKey } from '@tanstack/react-query';
-
-type RefetchQueryKeysParams = {
-  queryClient: QueryClient;
-  queryKeysToRefetch: readonly QueryKey[];
-};
+import type { QueryClient } from '@tanstack/react-query';
 
 export async function refetchQueryKeys({
   queryClient,

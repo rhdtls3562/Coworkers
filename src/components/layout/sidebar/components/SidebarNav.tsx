@@ -4,6 +4,8 @@
  * 사이드바의 팀 목록, 팀 추가, 채용 / 홍보 링크 영역입니다.
  */
 
+import { useSyncExternalStore } from 'react';
+
 import { usePathname } from 'next/navigation';
 
 import useLayoutAuthState from '@/components/layout/hooks/useLayoutAuthState';
@@ -17,6 +19,20 @@ import type { SidebarNavProps } from '@/components/layout/sidebar/types';
 import { ROUTES } from '@/constants/ROUTES';
 import { cn } from '@/utils/cn';
 
+function subscribeMounted(callback: () => void) {
+  callback();
+
+  return () => {};
+}
+
+function getClientSnapshot() {
+  return true;
+}
+
+function getServerSnapshot() {
+  return false;
+}
+
 export default function SidebarNav({
   isExpanded,
   isMobileDrawer = false,
@@ -24,6 +40,15 @@ export default function SidebarNav({
   const { handleSidebarInteraction } = useSidebar();
   const pathname = usePathname();
   const layoutAuthState = useLayoutAuthState(pathname);
+
+  const isMounted = useSyncExternalStore(
+    subscribeMounted,
+    getClientSnapshot,
+    getServerSnapshot,
+  );
+
+  const canShowAuthUi = isMounted && layoutAuthState.isAuthenticated;
+
   const isBoardActive =
     pathname === SIDEBAR_LINKS.boards.href ||
     pathname.startsWith(`${SIDEBAR_LINKS.boards.href}/`);
@@ -40,7 +65,7 @@ export default function SidebarNav({
             : 'mt-11 items-center px-3',
       )}
     >
-      {layoutAuthState.isAuthenticated && (
+      {canShowAuthUi && (
         <>
           <ul
             className={cn(

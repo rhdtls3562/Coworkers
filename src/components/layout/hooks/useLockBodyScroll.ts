@@ -3,17 +3,22 @@
 import { useEffect } from 'react';
 
 type UseLockBodyScrollParams = {
-  isMobileSidebarRendered: boolean;
+  isScrollLocked: boolean;
 };
 
 export default function useLockBodyScroll({
-  isMobileSidebarRendered,
+  isScrollLocked,
 }: UseLockBodyScrollParams) {
   useEffect(() => {
-    document.body.style.overflow = isMobileSidebarRendered ? 'hidden' : '';
+    const previousBodyOverflow = document.body.style.overflow;
+    const previousHtmlOverflow = document.documentElement.style.overflow;
+
+    document.body.style.overflow = isScrollLocked ? 'hidden' : '';
+    document.documentElement.style.overflow = isScrollLocked ? 'hidden' : '';
 
     return () => {
-      document.body.style.overflow = '';
+      document.body.style.overflow = previousBodyOverflow;
+      document.documentElement.style.overflow = previousHtmlOverflow;
     };
-  }, [isMobileSidebarRendered]);
+  }, [isScrollLocked]);
 }

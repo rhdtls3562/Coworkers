@@ -23,9 +23,10 @@ import {
   createQueryOptions,
   type QueryOptionsOverrides,
 } from '@/api/queryOptions/factory';
-
-type ArticleDetailData = Awaited<ReturnType<typeof getArticleDetail>>;
-type ArticleListData = Awaited<ReturnType<typeof getArticleList>>;
+import type {
+  ArticleDetailData,
+  ArticleListData,
+} from '@/api/queryOptions/types';
 
 /** 게시글 조회용 query options입니다. 목록 / 상세 hook이 이 설정을 사용합니다. */
 export const articleQueryOptions = {

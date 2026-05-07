@@ -1,3 +1,7 @@
+/**
+ * 내 히스토리 달력 팝오버의 열림 상태와 외부 클릭 닫힘을 관리하는 훅입니다.
+ */
+
 import { useEffect, useRef, useState } from 'react';
 
 export default function useHistoryCalendarPopover() {

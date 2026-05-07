@@ -17,9 +17,10 @@ import {
   createQueryOptions,
   type QueryOptionsOverrides,
 } from '@/api/queryOptions/factory';
-
-type TeamDetailData = Awaited<ReturnType<typeof getTeamDetail>>;
-type TeamTasksByDateData = Awaited<ReturnType<typeof getTeamTasksByDate>>;
+import type {
+  TeamDetailData,
+  TeamTasksByDateData,
+} from '@/api/queryOptions/types';
 
 /** 팀 상세 / 날짜별 할 일 조회용 options입니다. */
 export const teamQueryOptions = {

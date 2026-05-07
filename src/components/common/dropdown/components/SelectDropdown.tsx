@@ -69,7 +69,7 @@ export default function SelectDropdown<T extends string>({
                 role="option"
                 aria-selected={item.value === value}
                 className={cn(
-                  'w-full px-2 py-3 text-left text-sm text-text-primary hover:bg-background-secondary md:px-3.5',
+                  'w-full px-2 py-3 text-left text-sm text-text-primary hover:bg-background-secondary active:bg-background-secondary md:px-3.5',
                   item.value === value && 'font-medium text-brand-primary',
                 )}
                 onClick={() => {

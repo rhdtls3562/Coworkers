@@ -1,7 +1,23 @@
-import type {
-  MyHistoryDateRange,
-  MyHistoryResolvedDateRange,
-} from '@/app/(service)/myhistory/types';
+/**
+ * 마이 히스토리 날짜 범위 생성과 표시 문자열 포맷을 담당하는 유틸입니다.
+ */
+
+import type { MyHistoryDateRange } from '@/app/(service)/myhistory/types';
+export {
+  addDays,
+  addMonths,
+  getMonthEndDate,
+  getMonthStartDate,
+  isDateWithinHistoryRange,
+  isSameHistoryMonth,
+  normalizeHistoryDateRange,
+  parseHistoryDateKey,
+} from '@/app/(service)/myhistory/utils/historyDateRange';
+import {
+  getMonthEndDate,
+  getMonthStartDate,
+  isSameHistoryMonth,
+} from '@/app/(service)/myhistory/utils/historyDateRange';
 
 const WEEK_DAY_LABELS = ['일', '월', '화', '수', '목', '금', '토'] as const;
 const MONTH_PAD_LENGTH = 2;
@@ -15,34 +31,6 @@ function padDay(day: number) {
   return String(day).padStart(DAY_PAD_LENGTH, '0');
 }
 
-export function parseHistoryDateKey(dateKey: string) {
-  const [year, month, day] = dateKey.split('-').map(Number);
-
-  return new Date(year, month - 1, day);
-}
-
-export function addDays(date: Date, dayCount: number) {
-  const nextDate = new Date(date);
-  nextDate.setDate(date.getDate() + dayCount);
-
-  return nextDate;
-}
-
-export function addMonths(date: Date, monthCount: number) {
-  const nextDate = new Date(date);
-  nextDate.setMonth(date.getMonth() + monthCount);
-
-  return nextDate;
-}
-
-export function getMonthStartDate(date: Date) {
-  return new Date(date.getFullYear(), date.getMonth(), 1);
-}
-
-export function getMonthEndDate(date: Date) {
-  return new Date(date.getFullYear(), date.getMonth() + 1, 0);
-}
-
 export function createHistoryMonthRange(
   date: Date,
   mode: MyHistoryDateRange['mode'] = 'month',
@@ -54,17 +42,11 @@ export function createHistoryMonthRange(
   };
 }
 
-export function normalizeHistoryDateRange(
-  startDate: Date,
-  endDate: Date,
-): MyHistoryResolvedDateRange {
-  if (startDate.getTime() <= endDate.getTime()) {
-    return { endDate, startDate };
-  }
-
+export function createHistoryAllRange(date: Date): MyHistoryDateRange {
   return {
-    endDate: startDate,
-    startDate: endDate,
+    endDate: date,
+    mode: 'all',
+    startDate: date,
   };
 }
 
@@ -84,12 +66,24 @@ function isFullHistoryMonthRange(range: MyHistoryDateRange) {
   );
 }
 
+function isSameHistoryDay(firstDate: Date, secondDate: Date) {
+  return (
+    firstDate.getFullYear() === secondDate.getFullYear() &&
+    firstDate.getMonth() === secondDate.getMonth() &&
+    firstDate.getDate() === secondDate.getDate()
+  );
+}
+
 export function getHistoryRangeTitleParts(range: MyHistoryDateRange) {
+  if (range.mode === 'all') {
+    return ['전체'] as const;
+  }
+
   if (range.mode === 'month' || isFullHistoryMonthRange(range)) {
     return [formatHistoryMonth(range.startDate)] as const;
   }
 
-  if (range.startDate.getTime() === range.endDate.getTime()) {
+  if (isSameHistoryDay(range.startDate, range.endDate)) {
     return [formatHistoryShortDate(range.startDate)] as const;
   }
 
@@ -101,22 +95,6 @@ export function getHistoryRangeTitleParts(range: MyHistoryDateRange) {
 
 export function formatHistoryRangeTitle(range: MyHistoryDateRange) {
   return getHistoryRangeTitleParts(range).join(' - ');
-}
-
-export function isSameHistoryMonth(firstDate: Date, secondDate: Date) {
-  return (
-    firstDate.getFullYear() === secondDate.getFullYear() &&
-    firstDate.getMonth() === secondDate.getMonth()
-  );
-}
-
-export function isDateWithinHistoryRange(
-  date: Date,
-  range: MyHistoryResolvedDateRange,
-) {
-  const time = date.getTime();
-
-  return time >= range.startDate.getTime() && time <= range.endDate.getTime();
 }
 
 export function formatHistoryDate(date: Date) {

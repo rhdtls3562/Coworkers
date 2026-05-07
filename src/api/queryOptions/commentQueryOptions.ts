@@ -19,9 +19,10 @@ import {
   createQueryOptions,
   type QueryOptionsOverrides,
 } from '@/api/queryOptions/factory';
-
-type TaskCommentsData = Awaited<ReturnType<typeof getTaskComments>>;
-type ArticleCommentsData = Awaited<ReturnType<typeof getArticleComments>>;
+import type {
+  ArticleCommentsData,
+  TaskCommentsData,
+} from '@/api/queryOptions/types';
 
 /** 할 일 댓글 조회용 query options입니다. */
 export const commentQueryOptions = {

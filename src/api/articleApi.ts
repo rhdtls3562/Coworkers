@@ -6,12 +6,7 @@ import { apiClient, teamEndpoint } from '@/api/apiClient';
 import { buildQueryString } from '@/api/buildQueryString';
 import { API_PATH_SEGMENTS, HTTP_METHODS } from '@/api/constants';
 import type { ArticleListQueryParams, QueryKeyId } from '@/api/queryKeys';
-
-type ArticleBody = {
-  content: string;
-  image?: string | null;
-  title: string;
-};
+import type { ArticleBody } from '@/api/types';
 
 function createArticlePath(articleId: QueryKeyId) {
   return `${API_PATH_SEGMENTS.ARTICLES}/${articleId}`;

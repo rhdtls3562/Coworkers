@@ -6,12 +6,7 @@
 
 import { useEffect, useRef } from 'react';
 
-type UseDragScrollReturn = {
-  containerRef: React.RefObject<HTMLUListElement | null>;
-  handleClickCapture: (event: React.MouseEvent<HTMLElement>) => void;
-  handlePointerDown: (event: React.PointerEvent<HTMLElement>) => void;
-  handlePointerMove: (event: React.PointerEvent<HTMLElement>) => void;
-};
+import type { UseDragScrollReturn } from '@/app/(service)/myhistory/types';
 
 const DRAG_THRESHOLD = 8;
 

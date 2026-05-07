@@ -7,49 +7,64 @@
 import HistoryDateSection from '@/app/(service)/myhistory/components/HistoryDateSection';
 import HistoryFilterTabs from '@/app/(service)/myhistory/components/HistoryFilterTabs';
 import HistoryMonthNavigator from '@/app/(service)/myhistory/components/HistoryMonthNavigator';
-import { MY_HISTORY_FILTERS } from '@/app/(service)/myhistory/constants';
-import useHistoryBoard from '@/app/(service)/myhistory/hooks/useHistoryBoard';
 import type { HistoryBoardProps } from '@/app/(service)/myhistory/types';
 import { cn } from '@/utils/cn';
 
 export default function HistoryBoard({
   activeFilterId,
+  datedHistorySections,
+  filters,
+  hasTasks,
+  isError,
+  isLoading,
+  onApplyRange,
+  onMoveMonth,
+  onResetRange,
   onSelectFilter,
+  selectedRange,
+  title,
 }: HistoryBoardProps) {
-  const {
-    datedHistorySections,
-    handleApplyRange,
-    handleMoveMonth,
-    hasTasks,
-    selectedRange,
-    title,
-  } = useHistoryBoard(activeFilterId);
-
   return (
     <section
       className={cn(
         'w-full rounded-[20px] bg-background-inverse px-4.5 py-8 min-[411px]:px-6 md:px-13 md:py-13 2xl:w-189.5 2xl:shrink-0 2xl:px-9 2xl:py-12',
-        !hasTasks && 'flex min-h-162.5 flex-col md:min-h-230 2xl:min-h-192',
+        !hasTasks &&
+          !isLoading &&
+          'flex min-h-162.5 flex-col md:min-h-230 2xl:min-h-192',
       )}
     >
       <HistoryMonthNavigator
         title={title}
         selectedRange={selectedRange}
-        onApplyRange={handleApplyRange}
-        onMoveMonth={handleMoveMonth}
+        onApplyRange={onApplyRange}
+        onMoveMonth={onMoveMonth}
+        onResetRange={onResetRange}
       />
 
-      {MY_HISTORY_FILTERS.length > 0 ? (
+      {filters.length > 0 ? (
         <div className="mt-8 2xl:hidden">
           <HistoryFilterTabs
             activeFilterId={activeFilterId}
-            filters={MY_HISTORY_FILTERS}
+            filters={filters}
             onSelectFilter={onSelectFilter}
           />
         </div>
       ) : null}
 
-      {hasTasks ? (
+      {isLoading ? (
+        <div className="flex min-h-80 items-center justify-center">
+          <p className="text-sm font-normal text-text-default">
+            내 히스토리를 불러오는 중이에요.
+          </p>
+        </div>
+      ) : isError ? (
+        <div className="flex min-h-80 items-center justify-center">
+          <div className="text-center text-sm font-normal text-text-default">
+            <p>내 히스토리를 불러오지 못했어요.</p>
+            <p>잠시 후 다시 시도해주세요.</p>
+          </div>
+        </div>
+      ) : hasTasks ? (
         <div className="mt-9 md:mt-12 2xl:mt-10">
           {datedHistorySections.map((section) => (
             <HistoryDateSection key={section.id} section={section} />

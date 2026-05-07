@@ -59,5 +59,27 @@ export const loginFormSchema = z.object({
     ),
 });
 
+export const forgotPasswordFormSchema = z.object({
+  email: z
+    .string()
+    .trim()
+    .min(1, ERROR_MESSAGES.EMAIL_REQUIRED)
+    .pipe(z.email(ERROR_MESSAGES.EMAIL_INVALID)),
+});
+
+export const resetPasswordFormSchema = z
+  .object({
+    password: passwordSchema,
+    passwordConfirmation: z
+      .string()
+      .min(1, ERROR_MESSAGES.PASSWORD_CONFIRM_REQUIRED),
+  })
+  .refine((values) => values.password === values.passwordConfirmation, {
+    message: ERROR_MESSAGES.PASSWORD_MISMATCH,
+    path: ['passwordConfirmation'],
+  });
+
 export type SignUpFormValues = z.infer<typeof signUpFormSchema>;
 export type LoginFormValues = z.infer<typeof loginFormSchema>;
+export type ForgotPasswordFormValues = z.infer<typeof forgotPasswordFormSchema>;
+export type ResetPasswordFormValues = z.infer<typeof resetPasswordFormSchema>;

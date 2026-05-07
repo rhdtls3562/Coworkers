@@ -134,7 +134,7 @@ export default function useServiceLayoutState(): ServiceLayoutContextValue {
   });
 
   useLockBodyScroll({
-    isMobileSidebarRendered,
+    isScrollLocked: isMobileSidebarRendered || isRightPanelVisible,
   });
 
   return {

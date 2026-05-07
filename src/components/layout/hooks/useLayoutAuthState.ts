@@ -22,7 +22,7 @@ import {
 } from '@/utils/authSession';
 
 export default function useLayoutAuthState(pathname: string | null) {
-  const [isSessionReady, setIsSessionReady] = useState(false);
+  const [isSessionReady, setIsSessionReady] = useState(() => hasAuthSession());
   const isAuthenticated = isSessionReady && !isGuestLayoutPath(pathname);
 
   const { data: meResponse } = useMeQuery<unknown>({
@@ -49,6 +49,7 @@ export default function useLayoutAuthState(pathname: string | null) {
 
     return toSidebarTeams(meResponse);
   }, [isAuthenticated, meResponse, membershipsData]);
+
   const meData = useMemo(() => {
     if (!isAuthenticated) {
       return undefined;
@@ -59,7 +60,6 @@ export default function useLayoutAuthState(pathname: string | null) {
 
   useEffect(() => {
     const syncLayoutAuthState = () => setIsSessionReady(hasAuthSession());
-
     syncLayoutAuthState();
     return subscribeAuthSessionChange(syncLayoutAuthState);
   }, []);

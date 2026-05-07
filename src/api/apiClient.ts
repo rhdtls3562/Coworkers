@@ -1,11 +1,12 @@
-import { getStoredAccessToken } from '@/utils/authSession';
+/**
+ * 팀 스코프 API URL 생성과 공통 fetch 에러 처리를 담당하는 클라이언트입니다.
+ */
+
+import type { ApiError, FetchOptions } from '@/api/types';
+import { clearAuthSession, getStoredAccessToken } from '@/utils/authSession';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 const TEAM_ID = process.env.NEXT_PUBLIC_TEAM_ID;
-
-type FetchOptions = RequestInit & {
-  token?: string;
-};
 
 function normalizeEndpoint(endpoint: string) {
   return endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
@@ -45,11 +46,12 @@ async function getErrorMessage(res: Response) {
   return data?.message ?? `API Error: ${res.status}`;
 }
 
-/**
- * 공통 fetch 래퍼
- * @param endpoint - API 엔드포인트
- * @param options - fetch 옵션 및 토큰
- */
+function createApiError(message: string, status?: number): ApiError {
+  return Object.assign(new Error(message), {
+    status,
+  });
+}
+
 export async function apiClient<T>(
   endpoint: string,
   options: FetchOptions = {},
@@ -73,8 +75,16 @@ export async function apiClient<T>(
     headers,
   });
 
+  if (res.status === 401) {
+    clearAuthSession('unauthorized');
+    throw createApiError(
+      '로그인이 만료되었습니다. 다시 로그인해주세요.',
+      res.status,
+    );
+  }
+
   if (!res.ok) {
-    throw new Error(await getErrorMessage(res));
+    throw createApiError(await getErrorMessage(res), res.status);
   }
 
   if (res.status === 204) {
