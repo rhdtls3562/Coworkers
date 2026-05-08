@@ -37,12 +37,15 @@ export type MyHistoryDraftDateRange = {
 };
 
 export type MyHistorySummaryDetail = {
+  doneCount: number;
   countText: string;
   id: string;
+  totalCount: number;
   title: string;
 };
 
 export type MyHistorySummaryItem = {
+  count: number;
   countText: string;
   details: MyHistorySummaryDetail[];
   id: string;

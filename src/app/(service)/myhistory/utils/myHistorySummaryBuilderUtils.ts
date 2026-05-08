@@ -78,16 +78,22 @@ export function buildTeamSummaryCards(
       const matchedTaskListSummary = matchedTeamSummary?.details.get(
         taskList.id,
       );
+      const doneCount = matchedTaskListSummary?.doneCount ?? 0;
+      const totalCount = matchedTaskListSummary?.totalCount ?? 0;
 
       return {
-        countText: `${matchedTaskListSummary?.doneCount ?? 0}/${matchedTaskListSummary?.totalCount ?? 0}`,
+        doneCount,
+        countText: `${doneCount}/${totalCount}`,
         id: taskList.id,
+        totalCount,
         title: taskList.name,
       };
     });
+    const doneCount = matchedTeamSummary?.doneCount ?? 0;
 
     return {
-      countText: `${matchedTeamSummary?.doneCount ?? 0}개`,
+      count: doneCount,
+      countText: `${doneCount}개`,
       details,
       id: teamDetail.id,
       title: teamDetail.name,
@@ -101,7 +107,7 @@ export function buildHistoryTeamFilters(
   return summaryItems.map(
     (item) =>
       ({
-        count: Number(item.countText.replace('개', '')) || 0,
+        count: item.count,
         id: item.id,
         label: item.title,
       }) satisfies MyHistoryFilter,

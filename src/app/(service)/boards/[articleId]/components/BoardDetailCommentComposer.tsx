@@ -56,14 +56,14 @@ export default function BoardDetailCommentComposer({
           }
           className="w-full border-y border-background-tertiary p-3 text-sm font-normal 
           text-text-primary outline-none placeholder:text-text-default placeholder:text-sm md:text-base"
-          onClick={onRequireAuth}
-          onFocus={onRequireAuth}
+          onClick={!isAuthenticated ? onRequireAuth : undefined}
+          onFocus={!isAuthenticated ? onRequireAuth : undefined}
         />
         <button
           type="button"
           aria-label="댓글 등록"
           className="absolute right-3 bottom-3 flex h-6 w-6 items-center justify-center"
-          onClick={onRequireAuth}
+          onClick={!isAuthenticated ? onRequireAuth : undefined}
         >
           <IcArrowUpCircle
             width={24}
