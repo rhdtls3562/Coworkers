@@ -9,7 +9,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm, useWatch } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 
 import {
   createTeamFormSchema,
@@ -35,7 +35,6 @@ export function useCreateTeamForm() {
   const uploadImageMutation = useUploadImageMutation();
   const createTeamMutation = useCreateTeamMutation();
   const {
-    control,
     formState: { errors, isValid },
     handleSubmit,
     register,
@@ -48,14 +47,6 @@ export function useCreateTeamForm() {
     mode: 'onChange',
     resolver: zodResolver(createTeamFormSchema),
   });
-  const [teamImage, teamName] = useWatch({
-    control,
-    name: ['teamImage', 'teamName'],
-  });
-  const isSubmittable = createTeamFormSchema.safeParse({
-    teamImage,
-    teamName,
-  }).success;
 
   const handleChangeFile = (newFile: File | null) => {
     setServerError('');
@@ -105,10 +96,7 @@ export function useCreateTeamForm() {
     handleChangeFile,
     handleSubmit: handleSubmitForm,
     isDisabled:
-      !isValid ||
-      !isSubmittable ||
-      createTeamMutation.isPending ||
-      uploadImageMutation.isPending,
+      !isValid || createTeamMutation.isPending || uploadImageMutation.isPending,
     teamNameField,
   };
 }

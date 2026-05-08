@@ -9,7 +9,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm, useWatch } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 
 import { extractInvitationToken } from '@/app/(service)/jointeam/utils/extractInvitationToken';
 import {
@@ -36,7 +36,6 @@ export function useJoinTeamForm() {
   const acceptTeamInvitationMutation = useAcceptTeamInvitationMutation();
   const meQuery = useMeQuery<{ email?: string }>();
   const {
-    control,
     formState: { errors, isValid },
     handleSubmit,
     register,
@@ -47,13 +46,6 @@ export function useJoinTeamForm() {
     mode: 'onChange',
     resolver: zodResolver(joinTeamFormSchema),
   });
-  const [teamLink] = useWatch({
-    control,
-    name: ['teamLink'],
-  });
-  const isSubmittable = joinTeamFormSchema.safeParse({
-    teamLink,
-  }).success;
 
   const teamLinkField = register('teamLink', {
     onChange: () => setServerError(''),
@@ -91,8 +83,7 @@ export function useJoinTeamForm() {
   return {
     errorMessage: errors.teamLink?.message ?? serverError,
     handleSubmit: handleSubmitForm,
-    isDisabled:
-      !isValid || !isSubmittable || acceptTeamInvitationMutation.isPending,
+    isDisabled: !isValid || acceptTeamInvitationMutation.isPending,
     teamLinkField,
   };
 }
