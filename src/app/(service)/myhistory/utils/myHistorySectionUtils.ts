@@ -45,6 +45,8 @@ export function toHistoryTask(
     frequency: formatHistoryTaskFrequency(task.frequency),
     id: String(task.id ?? `${task.name}-${task.doneAt}`),
     startedAt: toDateLabel(task.date),
+    taskListId: meta?.taskListId ?? '',
+    teamId: meta?.teamId ?? '',
     title: task.name ?? '이름 없는 할 일',
   } satisfies MyHistoryTask;
 }

@@ -10,13 +10,17 @@ import type { UseHistoryTaskCardParams } from '@/app/(service)/myhistory/types';
 import TaskDetailPanelContent from '@/components/common/rightPanel/components/TaskDetailPanelContent';
 import { useToast } from '@/components/common/toast';
 import useRightPanel from '@/components/layout/hooks/useRightPanel';
+import { useDeleteTaskMutation } from '@/hooks/useTask';
 import { useMeQuery } from '@/hooks/useUser';
+
+const API_TEAM_ID = process.env.NEXT_PUBLIC_TEAM_ID ?? '';
 
 export default function useHistoryTaskCard({ task }: UseHistoryTaskCardParams) {
   const { openRightPanel } = useRightPanel();
   const { showToast } = useToast();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const { data: meData } = useMeQuery();
+  const deleteTaskMutation = useDeleteTaskMutation();
   const assigneeName =
     typeof meData === 'object' &&
     meData !== null &&
@@ -30,13 +34,17 @@ export default function useHistoryTaskCard({ task }: UseHistoryTaskCardParams) {
       content: (
         <TaskDetailPanelContent
           key={task.id}
+          apiTeamId={API_TEAM_ID}
           assigneeName={assigneeName}
-          comments={[]}
+          completionActionDoneValue={false}
           completionActionLabel="완료 취소하기"
           description={task.description}
           frequency={task.frequency}
           initialMode="edit"
           startedAt={task.startedAt}
+          taskId={task.id}
+          taskListId={task.taskListId}
+          teamId={task.teamId}
           title={task.title}
         />
       ),
@@ -51,9 +59,21 @@ export default function useHistoryTaskCard({ task }: UseHistoryTaskCardParams) {
     setIsDeleteModalOpen(false);
   };
 
-  const handleConfirmDelete = () => {
-    setIsDeleteModalOpen(false);
-    showToast('삭제 되었습니다.', 'error');
+  const handleConfirmDelete = async () => {
+    try {
+      await deleteTaskMutation.mutateAsync({
+        taskId: task.id,
+        taskListId: task.taskListId,
+        teamId: task.teamId,
+      });
+      setIsDeleteModalOpen(false);
+      showToast('삭제되었습니다.', 'error');
+    } catch (error) {
+      showToast(
+        error instanceof Error ? error.message : '할 일 삭제에 실패했습니다.',
+        'error',
+      );
+    }
   };
 
   return {

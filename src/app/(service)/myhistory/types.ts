@@ -57,6 +57,8 @@ export type MyHistoryTask = {
   frequency: string;
   id: string;
   startedAt: string;
+  taskListId: string;
+  teamId: string;
   title: string;
 };
 

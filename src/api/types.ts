@@ -52,6 +52,12 @@ export type CommentBody = {
   content: string;
 };
 
+export type TaskUpdateBody = {
+  description?: string;
+  done?: boolean;
+  name?: string;
+};
+
 export type RecurringBody = QueryParams;
 
 export type UploadImageResponse = {

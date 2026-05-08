@@ -7,8 +7,11 @@ export default function TaskDetailCommentsSection({
   comments,
   draftCommentContent,
   editingCommentId,
+  isCommentSubmitting,
+  isSubmittingNewComment,
   onCancelCommentEdit,
   onChangeDraftCommentContent,
+  onCreateComment,
   onDeleteComment,
   onStartCommentEdit,
   onSubmitCommentEdit,
@@ -20,7 +23,10 @@ export default function TaskDetailCommentsSection({
       </h3>
 
       <div className="mt-4">
-        <TaskDetailCommentInput />
+        <TaskDetailCommentInput
+          isSubmitting={isSubmittingNewComment}
+          onSubmit={onCreateComment}
+        />
       </div>
 
       <ul className="mt-5 divide-y divide-background-tertiary">
@@ -30,6 +36,7 @@ export default function TaskDetailCommentsSection({
             comment={comment}
             draftContent={draftCommentContent}
             isEditing={editingCommentId === comment.id}
+            isSubmitting={isCommentSubmitting}
             onCancelEdit={onCancelCommentEdit}
             onChangeDraftContent={onChangeDraftCommentContent}
             onDelete={() => {

@@ -9,10 +9,13 @@ export default function TaskDetailPanelBody({
   draftCommentContent,
   draftDescription,
   editingCommentId,
+  isCommentSubmitting,
+  isSubmittingNewComment,
   isTaskEditing,
   onCancelCommentEdit,
   onChangeDraftCommentContent,
   onChangeDraftDescription,
+  onCreateComment,
   onDeleteComment,
   onStartCommentEdit,
   onSubmitCommentEdit,
@@ -39,8 +42,11 @@ export default function TaskDetailPanelBody({
         comments={comments}
         draftCommentContent={draftCommentContent}
         editingCommentId={editingCommentId}
+        isCommentSubmitting={isCommentSubmitting}
+        isSubmittingNewComment={isSubmittingNewComment}
         onCancelCommentEdit={onCancelCommentEdit}
         onChangeDraftCommentContent={onChangeDraftCommentContent}
+        onCreateComment={onCreateComment}
         onDeleteComment={onDeleteComment}
         onStartCommentEdit={onStartCommentEdit}
         onSubmitCommentEdit={onSubmitCommentEdit}

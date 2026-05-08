@@ -1,6 +1,7 @@
 import type { TaskDetailCommentActionsProps } from '@/components/common/rightPanel/types';
 
 export default function TaskDetailCommentActions({
+  isPrimaryDisabled = false,
   onCancel,
   onPrimaryAction,
   primaryLabel,
@@ -18,7 +19,8 @@ export default function TaskDetailCommentActions({
       <button
         data-allow-unsaved="true"
         type="button"
-        className="h-8 rounded-lg border border-brand-primary px-3 text-brand-primary"
+        disabled={isPrimaryDisabled}
+        className="h-8 rounded-lg border border-brand-primary px-3 text-brand-primary disabled:border-interaction-inactive disabled:text-interaction-inactive"
         onClick={onPrimaryAction}
       >
         {primaryLabel}

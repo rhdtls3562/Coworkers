@@ -13,6 +13,7 @@ export default function TaskDetailCommentItem({
   comment,
   draftContent,
   isEditing,
+  isSubmitting,
   onCancelEdit,
   onChangeDraftContent,
   onDelete,
@@ -43,6 +44,9 @@ export default function TaskDetailCommentItem({
               />
 
               <TaskDetailCommentActions
+                isPrimaryDisabled={
+                  isSubmitting || draftContent.trim() === comment.content.trim()
+                }
                 primaryLabel="수정하기"
                 onCancel={onCancelEdit}
                 onPrimaryAction={onSubmitEdit}
@@ -72,29 +76,31 @@ export default function TaskDetailCommentItem({
               </p>
             </div>
 
-            <ListDropdown
-              className="shrink-0"
-              items={[
-                { label: '수정하기', onClick: onStartEdit },
-                { label: '삭제하기', onClick: onDelete },
-              ]}
-              trigger={
-                <>
-                  <span className="sr-only">{`${comment.author} 댓글 더보기`}</span>
-                  <span
-                    className="flex size-6 items-center justify-center"
-                    aria-hidden="true"
-                  >
-                    <IcMoreVerticalSmall
-                      width={20}
-                      height={20}
-                      className="size-5"
+            {comment.isMine && (
+              <ListDropdown
+                className="shrink-0"
+                items={[
+                  { label: '수정하기', onClick: onStartEdit },
+                  { label: '삭제하기', onClick: onDelete },
+                ]}
+                trigger={
+                  <>
+                    <span className="sr-only">{`${comment.author} 댓글 더보기`}</span>
+                    <span
+                      className="flex size-6 items-center justify-center"
                       aria-hidden="true"
-                    />
-                  </span>
-                </>
-              }
-            />
+                    >
+                      <IcMoreVerticalSmall
+                        width={20}
+                        height={20}
+                        className="size-5"
+                        aria-hidden="true"
+                      />
+                    </span>
+                  </>
+                }
+              />
+            )}
           </div>
 
           <div className="mt-2 text-sm font-medium text-interaction-inactive">

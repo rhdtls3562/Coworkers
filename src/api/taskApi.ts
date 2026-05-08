@@ -10,7 +10,7 @@ import type {
   TaskQueryParams,
   TeamScopedDateQueryParams,
 } from '@/api/queryKeys';
-import type { RecurringBody } from '@/api/types';
+import type { RecurringBody, TaskUpdateBody } from '@/api/types';
 
 function createGroupTaskListsPath(groupId: QueryKeyId) {
   return `${API_PATH_SEGMENTS.GROUPS}/${groupId}${API_PATH_SEGMENTS.TASK_LISTS}`;
@@ -69,6 +69,38 @@ export async function getTaskDetail(
 ) {
   return apiClient<unknown>(
     teamEndpoint(createTaskDetailPath(groupId, taskListId, taskId)),
+  );
+}
+
+export async function updateTask(
+  groupId: QueryKeyId,
+  taskListId: QueryKeyId,
+  taskId: QueryKeyId,
+  body: TaskUpdateBody,
+  token?: string,
+) {
+  return apiClient<unknown>(
+    teamEndpoint(createTaskDetailPath(groupId, taskListId, taskId)),
+    {
+      body: JSON.stringify(body),
+      method: HTTP_METHODS.PATCH,
+      token,
+    },
+  );
+}
+
+export async function deleteTask(
+  groupId: QueryKeyId,
+  taskListId: QueryKeyId,
+  taskId: QueryKeyId,
+  token?: string,
+) {
+  return apiClient<unknown>(
+    teamEndpoint(createTaskDetailPath(groupId, taskListId, taskId)),
+    {
+      method: HTTP_METHODS.DELETE,
+      token,
+    },
   );
 }
 

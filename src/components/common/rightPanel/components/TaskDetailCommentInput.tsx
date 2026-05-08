@@ -8,11 +8,21 @@ import { type ChangeEvent, type KeyboardEvent, useRef, useState } from 'react';
 
 import { IcArrowUpCircle, IcArrowUpCircleActive, IcUserLarge } from '@/assets';
 
-export default function TaskDetailCommentInput() {
+type TaskDetailCommentInputProps = {
+  isSubmitting: boolean;
+  onSubmit: (content: string) => Promise<boolean>;
+};
+
+export default function TaskDetailCommentInput({
+  isSubmitting,
+  onSubmit,
+}: TaskDetailCommentInputProps) {
   const [value, setValue] = useState('');
+  const [isSubmittingLocally, setIsSubmittingLocally] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const isActive = value.trim().length > 0;
+  const isActive =
+    value.trim().length > 0 && !isSubmitting && !isSubmittingLocally;
 
   const resizeTextarea = () => {
     if (!textareaRef.current) {
@@ -28,13 +38,7 @@ export default function TaskDetailCommentInput() {
     resizeTextarea();
   };
 
-  const handleSubmit = () => {
-    if (!isActive) {
-      return;
-    }
-
-    setValue('');
-
+  const resetTextarea = () => {
     if (!textareaRef.current) {
       return;
     }
@@ -42,13 +46,34 @@ export default function TaskDetailCommentInput() {
     textareaRef.current.style.height = 'auto';
   };
 
-  const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleSubmit = async () => {
+    if (!isActive || isSubmitting || isSubmittingLocally) {
+      return;
+    }
+
+    setIsSubmittingLocally(true);
+    const isSubmitted = await onSubmit(value.trim());
+    setIsSubmittingLocally(false);
+
+    if (!isSubmitted) {
+      return;
+    }
+
+    setValue('');
+    resetTextarea();
+  };
+
+  const handleKeyDown = async (event: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.nativeEvent.isComposing || event.repeat) {
+      return;
+    }
+
     if (event.key !== 'Enter' || event.shiftKey) {
       return;
     }
 
     event.preventDefault();
-    handleSubmit();
+    await handleSubmit();
   };
 
   return (
@@ -60,6 +85,7 @@ export default function TaskDetailCommentInput() {
       <textarea
         ref={textareaRef}
         value={value}
+        disabled={isSubmitting}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
         rows={1}

@@ -75,12 +75,32 @@ export async function refetchTaskCommentQueries(
   queryClient: QueryClient,
   teamId: string,
   taskId: QueryKeyId,
+  groupId = teamId,
 ) {
   await refetchQueryKeys({
     queryClient,
     queryKeysToRefetch: [
       queryKeys.comment.task(teamId, taskId),
+      queryKeys.task.detail(groupId, taskId),
+      queryKeys.task.lists(groupId),
+      queryKeys.taskList.all(groupId),
+    ],
+  });
+}
+
+export async function refetchHistoryTaskQueries(
+  queryClient: QueryClient,
+  teamId: string,
+  taskId: QueryKeyId,
+) {
+  await refetchQueryKeys({
+    queryClient,
+    queryKeysToRefetch: [
+      queryKeys.user.completedTasks(),
+      queryKeys.user.completedTaskSummary(),
+      queryKeys.task.detail(teamId, taskId),
       queryKeys.task.lists(teamId),
+      queryKeys.taskList.all(teamId),
     ],
   });
 }

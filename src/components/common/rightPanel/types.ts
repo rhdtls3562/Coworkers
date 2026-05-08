@@ -1,9 +1,12 @@
 import type { ReactNode } from 'react';
 
 export type RightPanelComment = {
+  authorId?: string;
+  authorImage?: string;
   author: string;
   content: string;
   id: string;
+  isMine?: boolean;
   meta: string;
 };
 
@@ -39,30 +42,39 @@ export type TaskDetailPanelBodyProps = {
   draftCommentContent: string;
   draftDescription: string;
   editingCommentId: string | null;
+  isCommentSubmitting: boolean;
+  isSubmittingNewComment: boolean;
   isTaskEditing: boolean;
   onCancelCommentEdit: () => void;
   onChangeDraftCommentContent: (value: string) => void;
   onChangeDraftDescription: (value: string) => void;
-  onDeleteComment: (commentId: string) => void;
+  onCreateComment: (content: string) => Promise<boolean>;
+  onDeleteComment: (commentId: string) => Promise<void> | void;
   onStartCommentEdit: (comment: RightPanelComment) => void;
-  onSubmitCommentEdit: () => void;
+  onSubmitCommentEdit: () => Promise<void> | void;
 };
 
 export type TaskDetailPanelContentProps = {
+  apiTeamId: string;
   assigneeName: string;
-  comments: readonly RightPanelComment[];
+  completionActionDoneValue?: boolean;
   completionActionLabel?: string;
   description: string;
   frequency: string;
   initialMode?: 'view' | 'edit';
   startedAt: string;
+  taskId: string;
+  taskListId: string;
+  teamId: string;
   title: string;
 };
 
 export type TaskDetailPanelFooterProps = {
   completionActionLabel?: string;
   isEditing: boolean;
-  onSubmitEdit: () => void;
+  isSubmitting: boolean;
+  onToggleCompletion: () => Promise<boolean> | void;
+  onSubmitEdit: () => Promise<boolean> | void;
 };
 
 export type TaskDetailPanelHeaderProps = {
@@ -85,26 +97,59 @@ export type TaskDetailCommentsSectionProps = {
   comments: readonly RightPanelComment[];
   draftCommentContent: string;
   editingCommentId: string | null;
+  isCommentSubmitting: boolean;
+  isSubmittingNewComment: boolean;
   onCancelCommentEdit: () => void;
   onChangeDraftCommentContent: (value: string) => void;
-  onDeleteComment: (commentId: string) => void;
+  onCreateComment: (content: string) => Promise<boolean>;
+  onDeleteComment: (commentId: string) => Promise<void> | void;
   onStartCommentEdit: (comment: RightPanelComment) => void;
-  onSubmitCommentEdit: () => void;
+  onSubmitCommentEdit: () => Promise<void> | void;
 };
 
 export type TaskDetailCommentItemProps = {
   comment: RightPanelComment;
   draftContent: string;
   isEditing: boolean;
+  isSubmitting: boolean;
   onCancelEdit: () => void;
   onChangeDraftContent: (value: string) => void;
-  onDelete: () => void;
+  onDelete: () => Promise<void> | void;
   onStartEdit: () => void;
-  onSubmitEdit: () => void;
+  onSubmitEdit: () => Promise<void> | void;
 };
 
 export type TaskDetailCommentActionsProps = {
+  isPrimaryDisabled?: boolean;
   onCancel: () => void;
-  onPrimaryAction: () => void;
+  onPrimaryAction: () => Promise<void> | void;
   primaryLabel: string;
+};
+
+export type UseTaskDetailCommentsParams = {
+  apiTeamId: string;
+  groupId: string;
+  taskId: string;
+};
+
+export type UseTaskDetailDraftStateParams = {
+  initialDescription: string;
+  initialMode?: 'view' | 'edit';
+  initialTitle: string;
+};
+
+export type UseTaskDetailPanelParams = UseTaskDetailDraftStateParams &
+  UseTaskDetailCommentsParams & {
+    completionActionDoneValue: boolean;
+    taskListId: string;
+  };
+
+export type UseTaskDetailTaskActionsParams = {
+  completionActionDoneValue: boolean;
+  currentDoneState: boolean;
+  draftDescription: string;
+  draftTitle: string;
+  taskId: string;
+  taskListId: string;
+  teamId: string;
 };
