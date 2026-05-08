@@ -1,47 +1,34 @@
 'use client';
 
+import { useState } from 'react';
+
 import BoardBestCard from '@/app/(service)/boards/components/BoardBestCard';
 import BoardBestPagination from '@/app/(service)/boards/components/BoardBestPagination';
 import {
-  BOARD_BEST_LIST_PARAMS,
   BOARD_DEVICE_TYPE,
   BOARD_DEVICE_TYPE_LIMIT,
-  getBoardBestPosts,
 } from '@/app/(service)/boards/constants';
 import useBoardBestMemo from '@/app/(service)/boards/hooks/useBoardBestMemo';
-import { usePagination } from '@/app/(service)/boards/hooks/usePagination';
-import type { Post } from '@/app/(service)/boards/types';
-import { hasPosts } from '@/app/(service)/boards/utils/boardUtils';
-import { useArticleListQuery } from '@/hooks/useArticle';
+import type { BoardBestListProps } from '@/app/(service)/boards/types';
+import {
+  getCurrentPosts,
+  getTotalPages,
+} from '@/app/(service)/boards/utils/boardUtils';
 import useDeviceType from '@/hooks/useDeviceType';
 
-const TEAM_ID = process.env.NEXT_PUBLIC_TEAM_ID ?? '';
-
-export default function BoardBestList() {
+export default function BoardBestList({
+  boardBestPosts,
+  hasBoardPosts,
+}: BoardBestListProps) {
+  const [currentPage, setCurrentPage] = useState(1);
   const deviceType = useDeviceType();
   const pageSize =
     BOARD_DEVICE_TYPE_LIMIT[deviceType ?? BOARD_DEVICE_TYPE.MOBILE];
-  const { data } = useArticleListQuery({
-    params: BOARD_BEST_LIST_PARAMS,
-    teamId: TEAM_ID,
-  });
-  const boardPosts = ((data as { list?: Post[] } | undefined)?.list ??
-    []) as Post[];
-  const boardBestPosts = getBoardBestPosts(boardPosts);
-  const hasBoardPosts = hasPosts(boardPosts);
 
   const { emptyMessage } = useBoardBestMemo({ boardBestPosts, hasBoardPosts });
-  const {
-    currentItems: currentPosts,
-    currentPage,
-    handleNextPage,
-    handlePageSelect,
-    handlePrevPage,
-    totalPages,
-  } = usePagination({
-    items: boardBestPosts,
-    pageSize,
-  });
+
+  const totalPages = getTotalPages(boardBestPosts, pageSize);
+  const currentPosts = getCurrentPosts(boardBestPosts, pageSize, currentPage);
 
   return (
     <section
@@ -71,9 +58,7 @@ export default function BoardBestList() {
               <BoardBestPagination
                 totalPages={totalPages}
                 currentPage={currentPage}
-                onPrevPage={handlePrevPage}
-                onNextPage={handleNextPage}
-                onSelectPage={handlePageSelect}
+                setCurrentPage={setCurrentPage}
               />
             ) : null}
           </>

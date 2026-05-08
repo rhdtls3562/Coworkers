@@ -15,8 +15,6 @@ import {
 
 type UploadImageVariables = {
   file: File;
-  teamId: string;
-  token?: string;
 };
 
 type UploadImageData = Awaited<ReturnType<typeof uploadImage>>;
@@ -26,8 +24,7 @@ export function useUploadImageMutation(
 ) {
   return useMutation(
     createMutationOptions({
-      mutationFn: ({ file, teamId, token }: UploadImageVariables) =>
-        uploadImage(teamId, file, token),
+      mutationFn: ({ file }: UploadImageVariables) => uploadImage(file),
       mutationKey: queryKeys.image.upload(),
       options,
     }),

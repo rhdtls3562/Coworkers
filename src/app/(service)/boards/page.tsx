@@ -1,5 +1,6 @@
 /**
  * 채용 / 홍보 페이지를 구성하는 파일입니다.
+ * API 미연동 상태에서도 정렬 로직은 동일하게 유지합니다.
  */
 
 import { cookies } from 'next/headers';
@@ -10,7 +11,16 @@ import BoardHeader from '@/app/(service)/boards/components/BoardHeader';
 import BoardList from '@/app/(service)/boards/components/BoardList';
 import BoardWriteFloatingButton from '@/app/(service)/boards/components/BoardWriteFloatingButton';
 import PostCreateForm from '@/app/(service)/boards/components/PostCreateForm';
-import { isSearchMode } from '@/app/(service)/boards/utils/boardUtils';
+import {
+  getBoardBestPosts,
+  sortBoardMainListPostsByRecent,
+} from '@/app/(service)/boards/constants';
+import type { Post } from '@/app/(service)/boards/types';
+import {
+  filterPostsByKeyword,
+  hasPosts,
+  isSearchMode,
+} from '@/app/(service)/boards/utils/boardUtils';
 import { ROUTES } from '@/constants/ROUTES';
 import { buildLoginPath } from '@/utils/authRedirect';
 
@@ -38,6 +48,11 @@ export default async function BoardsPage({
     }
   }
 
+  const fetchedPosts: Post[] = [];
+  const bestPosts = getBoardBestPosts(fetchedPosts);
+  const listPosts = sortBoardMainListPostsByRecent(fetchedPosts);
+  const filteredListPosts = filterPostsByKeyword(listPosts, keyword ?? '');
+
   return (
     <>
       {isWriteMode ? (
@@ -47,9 +62,18 @@ export default async function BoardsPage({
           <div className="bg-white min-h-full w-full">
             <BoardHeader />
 
-            {!isSearchModeValue && <BoardBestList />}
+            {!isSearchModeValue && (
+              <BoardBestList
+                boardBestPosts={bestPosts}
+                hasBoardPosts={hasPosts(listPosts)}
+              />
+            )}
 
-            <BoardList isSearchMode={isSearchModeValue} keyword={keyword} />
+            <BoardList
+              boardPosts={filteredListPosts}
+              isSearchMode={isSearchModeValue}
+              keyword={keyword}
+            />
 
             <BoardWriteFloatingButton />
           </div>

@@ -7,7 +7,10 @@ import BoardDetailContent from '@/app/(service)/boards/[articleId]/components/Bo
 import BoardDetailEditForm from '@/app/(service)/boards/[articleId]/components/BoardDetailEditForm';
 import BoardDetailHeader from '@/app/(service)/boards/[articleId]/components/BoardDetailHeader';
 import { getBoardDetailPageData } from '@/app/(service)/boards/[articleId]/hooks/getBoardDetailPageData';
-import type { BoardDetailParams } from '@/app/(service)/boards/[articleId]/types';
+import type {
+  BoardDetailParams,
+  CommentListResponse,
+} from '@/app/(service)/boards/[articleId]/types';
 
 function renderFallback(message: string) {
   return (
@@ -35,6 +38,11 @@ export default async function BoardDetailPage({
       articleId,
     });
 
+  const commentList: CommentListResponse = {
+    nextCursor: null,
+    list: [],
+  };
+
   if (errorMessage) {
     return renderFallback(errorMessage);
   }
@@ -57,7 +65,10 @@ export default async function BoardDetailPage({
               />
               <BoardDetailContent boardDetail={boardDetail} />
 
-              <BoardDetailComments userProfile={userProfile} />
+              <BoardDetailComments
+                commentList={commentList}
+                userProfile={userProfile}
+              />
             </div>
           )}
         </div>

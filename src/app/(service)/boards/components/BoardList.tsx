@@ -3,38 +3,18 @@
 import BoardListCard from '@/app/(service)/boards/components/BoardListCard';
 import {
   BOARD_LIST_LOAD_MORE_ELEMENT_ID,
-  BOARD_LIST_LOAD_MORE_ROOT_MARGIN,
-  BOARD_MAIN_LIST_PARAMS,
   BOARD_SORT_OPTIONS,
 } from '@/app/(service)/boards/constants';
 import useBoardMemo from '@/app/(service)/boards/hooks/useBoardMemo';
-import { useInfinitePages } from '@/app/(service)/boards/hooks/useInfinitePages';
-import { useInfiniteScrollObserver } from '@/app/(service)/boards/hooks/useInfiniteScrollObserver';
-import type { BoardListProps, Post } from '@/app/(service)/boards/types';
+import type { BoardListProps } from '@/app/(service)/boards/types';
 import { hasPosts } from '@/app/(service)/boards/utils/boardUtils';
 import SelectDropdown from '@/components/common/dropdown/components/SelectDropdown';
-import { useArticleInfiniteListQuery } from '@/hooks/useArticle';
 
-const TEAM_ID = process.env.NEXT_PUBLIC_TEAM_ID ?? '';
-
-export default function BoardList({ isSearchMode, keyword }: BoardListProps) {
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useArticleInfiniteListQuery({
-      params: {
-        ...BOARD_MAIN_LIST_PARAMS,
-        keyword,
-      },
-      teamId: TEAM_ID,
-    });
-  const boardPosts = useInfinitePages<Post>({
-    pages: data?.pages,
-  });
-  const sentinelRef = useInfiniteScrollObserver({
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    rootMargin: BOARD_LIST_LOAD_MORE_ROOT_MARGIN,
-  });
+export default function BoardList({
+  boardPosts,
+  isSearchMode,
+  keyword,
+}: BoardListProps) {
   const { sortedPosts, sort, setSort } = useBoardMemo({ boardPosts });
   const hasPostsValue = hasPosts(sortedPosts);
 
@@ -76,7 +56,6 @@ export default function BoardList({ isSearchMode, keyword }: BoardListProps) {
 
       {hasPostsValue ? (
         <div
-          ref={sentinelRef}
           id={BOARD_LIST_LOAD_MORE_ELEMENT_ID}
           aria-hidden
           className="pointer-events-none mt-4 h-2 w-full shrink-0 md:mt-5"

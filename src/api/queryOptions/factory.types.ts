@@ -3,12 +3,8 @@
  */
 
 import type {
-  GetNextPageParamFunction,
-  InfiniteData,
   MutationKey,
-  QueryFunctionContext,
   QueryKey,
-  UndefinedInitialDataInfiniteOptions,
   UndefinedInitialDataOptions,
   UseMutationOptions,
 } from '@tanstack/react-query';
@@ -33,22 +29,6 @@ export type MutationOptionsOverrides<
   'mutationFn' | 'mutationKey'
 >;
 
-export type InfiniteQueryOptionsOverrides<
-  TQueryFnData,
-  TPageParam,
-  TData = InfiniteData<TQueryFnData, TPageParam>,
-  TQueryKey extends QueryKey = QueryKey,
-> = Omit<
-  UndefinedInitialDataInfiniteOptions<
-    TQueryFnData,
-    Error,
-    TData,
-    TQueryKey,
-    TPageParam
-  >,
-  'getNextPageParam' | 'initialPageParam' | 'queryFn' | 'queryKey'
->;
-
 export type CreateQueryOptionsParams<
   TQueryFnData,
   TData = TQueryFnData,
@@ -68,25 +48,4 @@ export type CreateMutationOptionsParams<
   mutationFn: (variables: TVariables) => Promise<TData>;
   mutationKey?: MutationKey;
   options?: MutationOptionsOverrides<TData, TVariables, TOnMutateResult>;
-};
-
-export type CreateInfiniteQueryOptionsParams<
-  TQueryFnData,
-  TPageParam,
-  TData = InfiniteData<TQueryFnData, TPageParam>,
-  TQueryKey extends QueryKey = QueryKey,
-> = {
-  getNextPageParam: GetNextPageParamFunction<TPageParam, TQueryFnData>;
-  initialPageParam: TPageParam;
-  options?: InfiniteQueryOptionsOverrides<
-    TQueryFnData,
-    TPageParam,
-    TData,
-    TQueryKey
-  >;
-  queryFn: (
-    context: QueryFunctionContext<TQueryKey, TPageParam>,
-  ) => Promise<TQueryFnData>;
-  queryKey: TQueryKey;
-  staleTime?: number;
 };

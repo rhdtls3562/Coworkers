@@ -1,102 +1,126 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+/**
+ * 계정 설정 폼의 입력, 이미지 업로드, 제출 흐름을 관리하는 훅입니다.
+ */
+
+import { useCallback } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch } from 'react-hook-form';
 
+import useAccountDirtyState from '@/app/(service)/mypage/hook/useAccountDirtyState';
+import useAccountUnsavedChangesGuard from '@/app/(service)/mypage/hook/useAccountUnsavedChangesGuard';
 import { accountSchema } from '@/app/(service)/mypage/schemas/accountSchema';
-import {
+import type {
   AccountFormValues,
   UseAccountFormProps,
+  UserInfo,
 } from '@/app/(service)/mypage/types';
 import { useToast } from '@/components/common/toast';
+import { useUploadImageMutation } from '@/hooks/useImage';
 
 export function useAccountForm({
   initialEmail,
+  initialImage,
   initialName,
   isDirty,
   onDirtyChange,
+  onSubmitData,
 }: UseAccountFormProps) {
-  const { showToast, removeToast } = useToast();
-  const toastIdRef = useRef<string | null>(null);
-
-  const {
-    register,
-    handleSubmit,
-    reset,
-    control,
-    formState: { errors },
-  } = useForm<AccountFormValues>({
-    resolver: zodResolver(accountSchema),
-    mode: 'onChange',
-    defaultValues: {
-      name: initialName,
+  const { showToast } = useToast();
+  const uploadImageMutation = useUploadImageMutation();
+  const { control, handleSubmit, register, reset } = useForm<AccountFormValues>(
+    {
+      defaultValues: {
+        name: initialName,
+      },
+      mode: 'onChange',
+      resolver: zodResolver(accountSchema),
     },
+  );
+  const resetName = useCallback(
+    (name: string) => {
+      reset({ name });
+    },
+    [reset],
+  );
+  const {
+    baseImageRef,
+    baseNameRef,
+    checkIsDirty,
+    handleDiscardChanges,
+    imageRef,
+    imageResetKey,
+  } = useAccountDirtyState({
+    initialImage,
+    initialName,
+    isDirty,
+    onDirtyChange,
+    resetName,
   });
-
-  useEffect(() => {
-    if (isDirty) {
-      return;
-    }
-
-    reset({ name: initialName });
-  }, [initialName, isDirty, reset]);
-
   const name = useWatch({
     control,
     name: 'name',
   });
 
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    register('name').onChange(e);
+  useAccountUnsavedChangesGuard({
+    hasUnsavedChanges: isDirty,
+    onDiscardChanges: handleDiscardChanges,
+  });
 
-    const changed = e.target.value !== initialName;
-
-    if (changed && !isDirty) {
-      toastIdRef.current = showToast(
-        '저장하지 않은 변경사항이 있어요!',
-        'error',
-        {
-          hideCloseButton: true,
-          label: '변경사항 취소하기',
-          textClassName: 'text-status-danger',
-          onClick: () => {
-            reset({ name: initialName });
-            onDirtyChange(false);
-          },
-        },
-      );
-
-      onDirtyChange(true);
-    }
-
-    if (!changed && isDirty) {
-      if (toastIdRef.current) {
-        removeToast(toastIdRef.current);
+  const handleImageChange = async (file: File | null) => {
+    if (file) {
+      try {
+        const { url } = await uploadImageMutation.mutateAsync({ file });
+        imageRef.current = url;
+      } catch {
+        showToast('이미지 업로드에 실패했습니다.', 'error');
+        return;
       }
-
-      onDirtyChange(false);
+    } else {
+      imageRef.current = null;
     }
+
+    checkIsDirty(name);
   };
 
-  const onSubmit = (data: AccountFormValues) => {
-    console.log(data);
+  const { onChange: onNameChange, ...nameRegister } = register('name');
 
-    if (toastIdRef.current) {
-      removeToast(toastIdRef.current);
+  const handleNameChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    await onNameChange(event);
+    checkIsDirty(event.target.value);
+  };
+
+  const onSubmit = async (data: AccountFormValues) => {
+    const payload: Partial<Pick<UserInfo, 'nickname' | 'image'>> = {};
+
+    if (data.name !== baseNameRef.current) {
+      payload.nickname = data.name;
     }
 
-    onDirtyChange(false);
+    if (imageRef.current !== baseImageRef.current) {
+      payload.image = imageRef.current ?? undefined;
+    }
+
+    try {
+      await onSubmitData(payload);
+      baseNameRef.current = data.name;
+      baseImageRef.current = imageRef.current;
+      onDirtyChange(false);
+    } catch {}
   };
 
   return {
     email: initialEmail,
-    name,
-    errors,
-    register,
-    handleSubmit,
+    handleImageChange,
     handleNameChange,
+    handleSubmit,
+    imageResetKey,
+    name,
+    nameRegister,
     onSubmit,
   };
 }

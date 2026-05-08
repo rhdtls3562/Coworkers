@@ -2,15 +2,12 @@
 
 import { useMemo } from 'react';
 
-import type { Post } from '@/app/(service)/boards/types';
+import type { BoardBestListProps } from '@/app/(service)/boards/types';
 
 export default function useBoardBestMemo({
   boardBestPosts,
   hasBoardPosts,
-}: {
-  boardBestPosts: Post[];
-  hasBoardPosts: boolean;
-}) {
+}: BoardBestListProps) {
   const showBestGrid = useMemo(() => {
     if (!hasBoardPosts) {
       return false;

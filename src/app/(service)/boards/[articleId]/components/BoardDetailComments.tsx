@@ -1,48 +1,29 @@
 'use client';
 
-import { useParams, usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 import BoardDetailCommentComposer from '@/app/(service)/boards/[articleId]/components/BoardDetailCommentComposer';
 import BoardDetailCommentItem from '@/app/(service)/boards/[articleId]/components/BoardDetailCommentItem';
 import { useSortedComments } from '@/app/(service)/boards/[articleId]/hooks/useSortedComments';
 import type {
   Comment,
+  CommentListResponse,
   UserProfileResponse,
 } from '@/app/(service)/boards/[articleId]/types';
-import { useInfinitePages } from '@/app/(service)/boards/hooks/useInfinitePages';
-import { useInfiniteScrollObserver } from '@/app/(service)/boards/hooks/useInfiniteScrollObserver';
-import { useArticleCommentsInfiniteQuery } from '@/hooks/useArticleComment';
 import { buildLoginPath } from '@/utils/authRedirect';
 
-const TEAM_ID = process.env.NEXT_PUBLIC_TEAM_ID ?? '';
-
 export default function BoardDetailComments({
+  commentList,
   userProfile,
 }: {
+  commentList: CommentListResponse;
   userProfile: UserProfileResponse | null;
 }) {
   const router = useRouter();
   const pathname = usePathname();
-  const params = useParams<{ articleId: string }>();
-  const articleId = Number(params.articleId);
-  const isValidArticleId = Number.isFinite(articleId);
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useArticleCommentsInfiniteQuery({
-      articleId,
-      options: {
-        enabled: isValidArticleId,
-      },
-      teamId: TEAM_ID,
-    });
-  const comments = useInfinitePages<Comment>({ pages: data?.pages });
   const sortedComments = useSortedComments({
-    comments,
+    comments: commentList.list,
     userId: userProfile?.id,
-  });
-  const sentinelRef = useInfiniteScrollObserver({
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
   });
   const isAuthenticated = Boolean(userProfile);
 
@@ -67,7 +48,7 @@ export default function BoardDetailComments({
             댓글
           </p>
           <p className="text-base font-bold text-brand-primary md:text-lg">
-            {comments.length}
+            {commentList.list.length}
           </p>
         </div>
         <BoardDetailCommentComposer
@@ -77,10 +58,10 @@ export default function BoardDetailComments({
         />
       </div>
       <div>
-        {comments.length > 0 ? (
+        {commentList.list.length > 0 ? (
           <div className="mt-7 md:mt-9">
             <ul>
-              {sortedComments.map((comment) => (
+              {sortedComments.map((comment: Comment) => (
                 <BoardDetailCommentItem
                   key={comment.id}
                   comment={comment}
@@ -88,13 +69,6 @@ export default function BoardDetailComments({
                 />
               ))}
             </ul>
-            {hasNextPage ? (
-              <div
-                ref={sentinelRef}
-                aria-hidden
-                className="pointer-events-none mt-4 h-2 w-full shrink-0"
-              />
-            ) : null}
           </div>
         ) : (
           <div className="pt-5 border-t border-background-tertiary mt-7 md:mt-9">

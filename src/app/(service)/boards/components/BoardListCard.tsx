@@ -2,10 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import type { Post } from '@/app/(service)/boards/types';
-import {
-  formatDateToYmd,
-  getLikeCount,
-} from '@/app/(service)/boards/utils/boardUtils';
+import { getLikeCount } from '@/app/(service)/boards/utils/boardUtils';
 import { IcHeartSmall } from '@/assets';
 import { ROUTES } from '@/constants/ROUTES';
 
@@ -47,7 +44,7 @@ export default function BoardListCard({ post }: { post: Post }) {
             |
           </span>
           <span className="text-interaction-inactive text-sm font-medium leading-4 shrink-0 md:text-base">
-            {formatDateToYmd(post.createdAt)}
+            {post.createdAt}
           </span>
         </div>
         <div className="flex shrink-0 items-center gap-1">

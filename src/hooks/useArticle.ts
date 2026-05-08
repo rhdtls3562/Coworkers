@@ -4,13 +4,7 @@
  * Swagger `Article` 도메인 서버 상태를 관리하는 커스텀 훅입니다.
  */
 
-import {
-  type InfiniteData,
-  useInfiniteQuery,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import {
   createArticle,
@@ -25,7 +19,6 @@ import type { ArticleListQueryParams, QueryKeyId } from '@/api/queryKeys';
 import { articleQueryOptions } from '@/api/queryOptions';
 import {
   createMutationOptions,
-  type InfiniteQueryOptionsOverrides,
   type MutationOptionsOverrides,
   type QueryOptionsOverrides,
 } from '@/api/queryOptions/factory';
@@ -50,14 +43,6 @@ const DEFAULT_ARTICLE_LIST_QUERY_PARAMS = {
 
 type UseArticleListParams<TData = ArticleListData> = {
   options?: QueryOptionsOverrides<ArticleListData, TData>;
-  params?: ArticleListQueryParams;
-  teamId: string;
-};
-
-type UseArticleInfiniteListParams<
-  TData = InfiniteData<ArticleListData, number>,
-> = {
-  options?: InfiniteQueryOptionsOverrides<ArticleListData, number, TData>;
   params?: ArticleListQueryParams;
   teamId: string;
 };
@@ -102,16 +87,6 @@ export function useArticleListQuery<TData = ArticleListData>({
 
   return useQuery(
     articleQueryOptions.list<TData>(teamId, effectiveParams, options),
-  );
-}
-
-export function useArticleInfiniteListQuery<
-  TData = InfiniteData<ArticleListData, number>,
->({ options, params, teamId }: UseArticleInfiniteListParams<TData>) {
-  const effectiveParams = { ...DEFAULT_ARTICLE_LIST_QUERY_PARAMS, ...params };
-
-  return useInfiniteQuery(
-    articleQueryOptions.infiniteList<TData>(teamId, effectiveParams, options),
   );
 }
 
