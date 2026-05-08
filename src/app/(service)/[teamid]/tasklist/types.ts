@@ -17,33 +17,27 @@ export type TaskListTaskComment = {
 };
 
 export type TaskListBoardTask = {
+  assigneeName: string;
   id: string;
-  title: string;
   checked: boolean;
   commentCount: number;
+  comments: TaskListTaskComment[];
+  description: string;
   dueDateLabel: string;
   repeatLabel: string;
   sortOrder: number;
-  assigneeName: string;
-  description: string;
   startedAtLabel: string;
-  comments: TaskListTaskComment[];
+  taskListId: string;
+  teamId: string;
+  title: string;
+};
+
+export type TaskListTaskDetailApplyPatch = {
+  description: string;
+  title: string;
 };
 
 export type TaskListTaskDetailOpenMode = 'view' | 'edit';
-
-export type TaskListTaskDetailApplyPatch = {
-  title: string;
-  description: string;
-  comments: TaskListTaskComment[];
-};
-
-/** 할 일 만들기 모달 — 반복 설정 값 */
-export type TaskListCreateTaskRepeatValue =
-  | 'once'
-  | 'daily'
-  | 'monthly'
-  | 'weekly';
 
 export type TaskListOpenTaskDetail = {
   mode: TaskListTaskDetailOpenMode;
@@ -51,8 +45,9 @@ export type TaskListOpenTaskDetail = {
 };
 
 export type TaskListBoardProps = {
-  columnTitle: string;
   className?: string;
+  columnTitle: string;
+  teamId: string;
 };
 
 export type TaskListCreateTaskModalProps = {
@@ -93,22 +88,25 @@ export type TaskListCreateTaskModalDateTimeSectionProps = {
 };
 
 export type TaskListSidebarProps = {
+  activeId: string;
   className?: string;
   columns: TaskListColumnItem[];
-  activeId: string;
-  onSelectColumn: (id: string) => void;
-  onRequestRenameColumn: (item: TaskListColumnItem) => void;
-  onRequestDeleteColumn: (item: TaskListColumnItem) => void;
   onAddListClick: () => void;
+  onRequestDeleteColumn: (item: TaskListColumnItem) => void;
+  onRequestRenameColumn: (item: TaskListColumnItem) => void;
+  onSelectColumn: (id: string) => void;
 };
 
 export type TaskListTaskDetailPanelProps = {
-  currentUserName: string;
   initialMode: TaskListTaskDetailOpenMode;
-  onApplyPatch: (taskId: string, patch: TaskListTaskDetailApplyPatch) => void;
-  onCompleteTask: (taskId: string) => void;
-  onRequestDeleteTask: (task: TaskListBoardTask) => void;
+  onDeleteTask: (taskId: string) => void;
+  onSyncTaskChecked: (taskId: string, checked: boolean) => void;
+  onSyncTaskDetail: (
+    taskId: string,
+    patch: TaskListTaskDetailApplyPatch,
+  ) => void;
   task: TaskListBoardTask;
+  teamId: string;
 };
 
 export type TaskListTaskDetailCommentItemProps = {
@@ -122,3 +120,10 @@ export type TaskListTaskDetailCommentItemProps = {
   onStartEdit: () => void;
   onSubmitEdit: () => void;
 };
+
+/** 할 일 만들기 모달 — 반복 설정 값 */
+export type TaskListCreateTaskRepeatValue =
+  | 'once'
+  | 'daily'
+  | 'monthly'
+  | 'weekly';

@@ -49,15 +49,14 @@ export default function useTaskListTaskDetailPanel({
 
   const commitTaskEdit = useCallback((): TaskListTaskDetailApplyPatch => {
     const patch: TaskListTaskDetailApplyPatch = {
-      title: draftTitle,
       description: draftDescription,
-      comments: comments.map((comment) => ({ ...comment })),
+      title: draftTitle,
     };
     setTitle(draftTitle);
     setDescription(draftDescription);
     setIsTaskEditing(false);
     return patch;
-  }, [comments, draftDescription, draftTitle]);
+  }, [draftDescription, draftTitle]);
 
   const handleStartCommentEdit = useCallback(
     (comment: TaskListTaskComment) => {

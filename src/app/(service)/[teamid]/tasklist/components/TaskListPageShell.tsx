@@ -128,6 +128,7 @@ export default function TaskListPageShell({ teamId }: TaskListPageShellProps) {
         <TaskListBoard
           className="lg:col-start-2 lg:row-start-2"
           columnTitle={columnTitle}
+          teamId={teamId}
         />
       </TaskListContentArea>
 

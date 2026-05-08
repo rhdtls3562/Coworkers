@@ -62,6 +62,9 @@ export type TaskDetailPanelContentProps = {
   description: string;
   frequency: string;
   initialMode?: 'view' | 'edit';
+  onTaskCheckedChanged?: (checked: boolean) => void;
+  onTaskDeleted?: () => void;
+  onTaskUpdated?: (title: string, description: string) => void;
   startedAt: string;
   taskId: string;
   taskListId: string;
@@ -141,6 +144,9 @@ export type UseTaskDetailDraftStateParams = {
 export type UseTaskDetailPanelParams = UseTaskDetailDraftStateParams &
   UseTaskDetailCommentsParams & {
     completionActionDoneValue: boolean;
+    onTaskCheckedChanged?: (checked: boolean) => void;
+    onTaskDeleted?: () => void;
+    onTaskUpdated?: (title: string, description: string) => void;
     taskListId: string;
   };
 
@@ -149,6 +155,9 @@ export type UseTaskDetailTaskActionsParams = {
   currentDoneState: boolean;
   draftDescription: string;
   draftTitle: string;
+  onTaskCheckedChanged?: (checked: boolean) => void;
+  onTaskDeleted?: () => void;
+  onTaskUpdated?: (title: string, description: string) => void;
   taskId: string;
   taskListId: string;
   teamId: string;

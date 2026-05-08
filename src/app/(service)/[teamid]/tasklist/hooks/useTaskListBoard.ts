@@ -45,7 +45,7 @@ export function useTaskListBoard() {
     showToast('삭제되었습니다.', 'error');
   }, [taskPendingDelete, showToast]);
 
-  const handleApplyTaskDetailPatch = useCallback(
+  const handleSyncTaskDetail = useCallback(
     (taskId: string, patch: TaskListTaskDetailApplyPatch) => {
       setTasks((prev) =>
         prev.map((t) =>
@@ -54,8 +54,6 @@ export function useTaskListBoard() {
                 ...t,
                 title: patch.title,
                 description: patch.description,
-                comments: patch.comments,
-                commentCount: patch.comments.length,
               }
             : t,
         ),
@@ -64,26 +62,26 @@ export function useTaskListBoard() {
     [],
   );
 
-  const handleCompleteTaskFromDetail = useCallback((taskId: string) => {
-    setTasks((prev) =>
-      prev.map((t) => (t.id === taskId ? { ...t, checked: true } : t)),
-    );
-  }, []);
-
-  const handleRequestDeleteFromDetail = useCallback(
-    (task: TaskListBoardTask) => {
-      setTaskPendingDelete(task);
+  const handleSyncTaskChecked = useCallback(
+    (taskId: string, checked: boolean) => {
+      setTasks((prev) =>
+        prev.map((t) => (t.id === taskId ? { ...t, checked } : t)),
+      );
     },
     [],
   );
 
+  const handleRemoveTask = useCallback((taskId: string) => {
+    setTasks((prev) => prev.filter((task) => task.id !== taskId));
+  }, []);
+
   return {
-    handleApplyTaskDetailPatch,
     handleCloseDeleteModal,
-    handleCompleteTaskFromDetail,
     handleConfirmDelete,
+    handleRemoveTask,
     handleRequestDelete,
-    handleRequestDeleteFromDetail,
+    handleSyncTaskChecked,
+    handleSyncTaskDetail,
     handleToggleChecked,
     isTaskListEmpty,
     selectedDate,

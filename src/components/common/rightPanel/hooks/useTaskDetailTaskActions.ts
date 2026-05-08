@@ -15,6 +15,9 @@ export default function useTaskDetailTaskActions({
   currentDoneState,
   draftDescription,
   draftTitle,
+  onTaskCheckedChanged,
+  onTaskDeleted,
+  onTaskUpdated,
   taskId,
   taskListId,
   teamId,
@@ -41,6 +44,7 @@ export default function useTaskDetailTaskActions({
         taskListId,
         teamId,
       });
+      onTaskUpdated?.(draftTitle, draftDescription);
       showToast('할 일이 수정되었습니다.', 'success');
       return true;
     } catch (error) {
@@ -62,6 +66,7 @@ export default function useTaskDetailTaskActions({
         taskListId,
         teamId,
       });
+      onTaskCheckedChanged?.(completionActionDoneValue);
       closeRightPanel();
       showToast(
         completionActionDoneValue
@@ -91,6 +96,7 @@ export default function useTaskDetailTaskActions({
         taskListId,
         teamId,
       });
+      onTaskDeleted?.();
       closeRightPanel();
       showToast('삭제되었습니다.', 'error');
       return true;
