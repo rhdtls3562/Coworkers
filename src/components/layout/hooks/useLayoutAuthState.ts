@@ -22,7 +22,7 @@ import {
 } from '@/utils/authSession';
 
 export default function useLayoutAuthState(pathname: string | null) {
-  const [isSessionReady, setIsSessionReady] = useState(() => hasAuthSession());
+  const [isSessionReady, setIsSessionReady] = useState(false);
   const isAuthenticated = isSessionReady && !isGuestLayoutPath(pathname);
 
   const { data: meResponse } = useMeQuery<unknown>({
