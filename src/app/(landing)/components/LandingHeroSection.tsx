@@ -51,7 +51,6 @@ export default function LandingHeroSection() {
             <Image
               src={imgLandingDashboard}
               alt="팀 대시보드와 할 일 목록 예시"
-              fetchPriority="high"
               loading="eager"
               className="w-full min-w-180 rounded-l-2xl object-contain md:min-w-200"
               sizes="(min-width: 1024px) calc(100vw - 320px), 90vw"

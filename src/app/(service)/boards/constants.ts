@@ -1,5 +1,4 @@
 import type { ArticleListQueryParams } from '@/api/queryKeys';
-import type { Post } from '@/app/(service)/boards/types';
 
 export const BOARD_ORDER_BY = {
   RECENT: 'recent',
@@ -38,26 +37,3 @@ export const BOARD_SORT_OPTIONS = [
   { label: '최신순', value: 'latest' },
   { label: '좋아요순', value: 'likes' },
 ] as const;
-
-/**
- * 베스트 영역용 게시글을 계산합니다.
- * 좋아요가 1개 이상인 글만 대상으로 좋아요순 상위를 반환합니다.
- */
-export function getBoardBestPosts(posts: Post[]) {
-  const withLikes = posts.filter((post) => post.likeCount > 0);
-
-  if (withLikes.length === 0) {
-    return [];
-  }
-
-  return [...withLikes]
-    .sort((a, b) => b.likeCount - a.likeCount)
-    .slice(0, BOARD_BEST_LIST_PARAMS.pageSize);
-}
-
-/** 전체 목록: 최신순(날짜 내림차순) */
-export function sortBoardMainListPostsByRecent(posts: Post[]) {
-  return [...posts].sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-  );
-}

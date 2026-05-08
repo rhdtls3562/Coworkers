@@ -4,7 +4,13 @@
 
 'use client';
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  type InfiniteData,
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 
 import {
   createArticleComment,
@@ -16,6 +22,7 @@ import type { CursorPaginationQueryParams, QueryKeyId } from '@/api/queryKeys';
 import { articleCommentQueryOptions } from '@/api/queryOptions';
 import {
   createMutationOptions,
+  type InfiniteQueryOptionsOverrides,
   type MutationOptionsOverrides,
   type QueryOptionsOverrides,
 } from '@/api/queryOptions/factory';
@@ -39,6 +46,15 @@ const DEFAULT_ARTICLE_COMMENT_QUERY_PARAMS = {
 type UseArticleCommentsParams<TData = ArticleCommentsData> = {
   articleId: QueryKeyId;
   options?: QueryOptionsOverrides<ArticleCommentsData, TData>;
+  params?: CursorPaginationQueryParams;
+  teamId: string;
+};
+
+type UseArticleCommentsInfiniteParams<
+  TData = InfiniteData<ArticleCommentsData, number>,
+> = {
+  articleId: QueryKeyId;
+  options?: InfiniteQueryOptionsOverrides<ArticleCommentsData, number, TData>;
   params?: CursorPaginationQueryParams;
   teamId: string;
 };
@@ -78,6 +94,29 @@ export function useArticleCommentsQuery<TData = ArticleCommentsData>({
 
   return useQuery(
     articleCommentQueryOptions.list<TData>(
+      teamId,
+      articleId,
+      effectiveParams,
+      options,
+    ),
+  );
+}
+
+export function useArticleCommentsInfiniteQuery<
+  TData = InfiniteData<ArticleCommentsData, number>,
+>({
+  articleId,
+  options,
+  params,
+  teamId,
+}: UseArticleCommentsInfiniteParams<TData>) {
+  const effectiveParams = {
+    ...DEFAULT_ARTICLE_COMMENT_QUERY_PARAMS,
+    ...params,
+  };
+
+  return useInfiniteQuery(
+    articleCommentQueryOptions.infiniteList<TData>(
       teamId,
       articleId,
       effectiveParams,
