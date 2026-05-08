@@ -5,15 +5,25 @@ import { useState } from 'react';
 import Link from 'next/link';
 
 import ForgotPasswordModal from '@/app/(service)/login/components/ForgotPasswordModal';
-import { LOGIN_LINKS, LOGIN_TEXT } from '@/app/(service)/login/constants';
+import { LOGIN_TEXT } from '@/app/(service)/login/constants';
 import useLoginForm from '@/app/(service)/login/hooks/useLoginForm';
-import { IcKakaotalk } from '@/assets';
 import { PrimaryButton } from '@/components/common/button';
-import { AuthInput } from '@/components/common/form';
-import FullLogo from '@/components/common/logo/FullLogo';
-import { ROUTES } from '@/constants/ROUTES';
+import {
+  AuthInput,
+  AuthSocialSection,
+  AuthTitleBlock,
+} from '@/components/common/form';
+import { buildSignupPath } from '@/utils/authRedirect';
 
-export default function LoginForm() {
+type LoginFormProps = {
+  prefilledEmail?: string;
+  redirectTo?: string;
+};
+
+export default function LoginForm({
+  prefilledEmail,
+  redirectTo,
+}: LoginFormProps) {
   const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] =
     useState(false);
 
@@ -25,26 +35,15 @@ export default function LoginForm() {
     passwordError,
     passwordField,
     serverError,
-  } = useLoginForm();
+  } = useLoginForm({
+    prefilledEmail,
+    redirectTo,
+  });
 
   return (
     <section className="mx-auto w-full max-w-lg rounded-[20px] bg-background-inverse px-5.25 py-9.25 md:px-8 md:py-12.5">
-      {/* 로고 */}
-      <h1 className="mb-8 flex justify-center md:mb-10">
-        <Link href={ROUTES.HOME} aria-label="Coworkers 홈으로 이동">
-          <FullLogo
-            size="auth"
-            className="origin-center scale-90 md:scale-100"
-          />
-        </Link>
-      </h1>
+      <AuthTitleBlock title={LOGIN_TEXT.title} />
 
-      {/* 타이틀 */}
-      <h2 className="mb-6 text-center text-base font-semibold text-text-primary md:mb-8 md:text-lg">
-        {LOGIN_TEXT.title}
-      </h2>
-
-      {/* 폼 */}
       <form onSubmit={handleSubmit} className="flex flex-col gap-5 md:px-6">
         <AuthInput
           label={LOGIN_TEXT.emailLabel}
@@ -87,37 +86,14 @@ export default function LoginForm() {
       <p className="mt-6 text-center text-sm text-text-secondary">
         아직 계정이 없으신가요?
         <Link
-          href={LOGIN_LINKS.signup}
+          href={buildSignupPath(redirectTo)}
           className="ml-1 font-medium text-brand-primary underline"
         >
           가입하기
         </Link>
       </p>
 
-      {/* OR */}
-      <div className="mx-auto mt-10 flex w-full max-w-md items-center gap-4 md:px-6">
-        <div className="h-px flex-1 bg-background-tertiary" />
-        <span className="text-sm text-text-secondary">OR</span>
-        <div className="h-px flex-1 bg-background-tertiary" />
-      </div>
-
-      {/* 간편 로그인 */}
-      <button
-        type="button"
-        onClick={() => {
-          window.location.assign(ROUTES.OAUTH_AUTHORIZE('kakao'));
-        }}
-        className="mx-auto mt-4 flex h-11 w-full max-w-md items-center justify-between md:px-6"
-      >
-        <span className="text-sm text-text-secondary">간편 로그인하기</span>
-        <IcKakaotalk
-          width={42}
-          height={42}
-          className="h-11 w-11 cursor-pointer"
-          role="img"
-          aria-label="카카오 아이콘"
-        />
-      </button>
+      <AuthSocialSection mode="login" redirectTo={redirectTo} />
 
       {isForgotPasswordModalOpen && (
         <ForgotPasswordModal

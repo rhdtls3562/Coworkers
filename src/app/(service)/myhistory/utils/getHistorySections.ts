@@ -2,6 +2,7 @@
  * 히스토리 섹션을 날짜 범위에 맞게 필터링하고 화면 표시용으로 변환하는 유틸입니다.
  */
 
+import { MY_HISTORY_DATE_RANGE_MODES } from '@/app/(service)/myhistory/constants';
 import type {
   MyHistoryDateRange,
   MyHistoryDateSection,
@@ -21,33 +22,56 @@ export function hasHistoryTasks(
   );
 }
 
-export function getHistorySectionsInRange(
+type HistorySectionWithParsedDate = MyHistoryDisplayDateSection & {
+  parsedDate: Date;
+};
+
+function toDisplaySection(
+  section: MyHistoryDateSection,
+): HistorySectionWithParsedDate {
+  const parsedDate = parseHistoryDateKey(section.date);
+
+  return {
+    dateLabel: formatHistoryDate(parsedDate),
+    groups: section.groups,
+    id: section.id,
+    parsedDate,
+  };
+}
+
+function isSectionIncludedInRange(
+  section: HistorySectionWithParsedDate,
+  range: MyHistoryDateRange,
+) {
+  return range.mode === MY_HISTORY_DATE_RANGE_MODES.ALL
+    ? true
+    : isDateWithinHistoryRange(section.parsedDate, range);
+}
+
+function sortSectionsByLatestDate(
+  firstSection: HistorySectionWithParsedDate,
+  secondSection: HistorySectionWithParsedDate,
+) {
+  return secondSection.parsedDate.getTime() - firstSection.parsedDate.getTime();
+}
+
+function toSectionViewModel(
+  section: HistorySectionWithParsedDate,
+): MyHistoryDisplayDateSection {
+  return {
+    dateLabel: section.dateLabel,
+    groups: section.groups,
+    id: section.id,
+  };
+}
+
+export function buildVisibleHistorySections(
   sections: readonly MyHistoryDateSection[],
   range: MyHistoryDateRange,
 ) {
   return sections
-    .map((section) => {
-      const parsedDate = parseHistoryDateKey(section.date);
-
-      return {
-        ...section,
-        dateLabel: formatHistoryDate(parsedDate),
-        parsedDate,
-      };
-    })
-    .filter((section) =>
-      range.mode === 'all'
-        ? true
-        : isDateWithinHistoryRange(section.parsedDate, range),
-    )
-    .sort((firstSection, secondSection) => {
-      return (
-        secondSection.parsedDate.getTime() - firstSection.parsedDate.getTime()
-      );
-    })
-    .map((section) => ({
-      dateLabel: section.dateLabel,
-      groups: section.groups,
-      id: section.id,
-    }));
+    .map(toDisplaySection)
+    .filter((section) => isSectionIncludedInRange(section, range))
+    .sort(sortSectionsByLatestDate)
+    .map(toSectionViewModel);
 }

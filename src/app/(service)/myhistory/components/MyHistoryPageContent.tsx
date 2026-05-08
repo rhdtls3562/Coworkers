@@ -57,7 +57,6 @@ export default function MyHistoryPageContent() {
             isProgressivelyLoading={isProgressivelyLoading}
             onApplyRange={handleApplyRange}
             onMoveMonth={handleMoveMonth}
-            onResetRange={handleResetRange}
             onSelectFilter={handleSelectHistoryFilter}
             selectedRange={selectedRange}
             title={title}

@@ -18,7 +18,6 @@ import {
 export default function HistoryMonthNavigator({
   onApplyRange,
   onMoveMonth,
-  onResetRange,
   selectedRange,
   title,
 }: HistoryMonthNavigatorProps) {
@@ -42,7 +41,6 @@ export default function HistoryMonthNavigator({
     isCalendarOpen,
     onApplyRange,
     onMoveMonth,
-    onResetRange,
     selectedRange,
     toggleCalendar,
   });

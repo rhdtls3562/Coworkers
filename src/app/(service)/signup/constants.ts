@@ -1,5 +1,3 @@
-import { ROUTES } from '@/constants/ROUTES';
-
 export const SIGNUP_TEXT = {
   title: '회원가입',
   nicknameLabel: '닉네임',
@@ -13,10 +11,4 @@ export const SIGNUP_TEXT = {
   signupButton: '가입하기',
   loginGuide: '이미 계정이 있으신가요?',
   loginLink: '로그인하기',
-  divider: 'OR',
-  kakaoSignUp: '카카오로 회원가입하기',
-} as const;
-
-export const SIGNUP_LINKS = {
-  login: ROUTES.LOGIN,
 } as const;

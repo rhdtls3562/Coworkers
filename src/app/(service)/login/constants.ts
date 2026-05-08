@@ -12,11 +12,4 @@ export const LOGIN_TEXT = {
   loginButton: '로그인',
   signupGuide: '아직 계정이 없으신가요?',
   signupLink: '가입하기',
-  divider: 'OR',
-  kakaoLogin: '카카오로 로그인하기',
-} as const;
-
-export const LOGIN_LINKS = {
-  forgotPassword: '/find-password',
-  signup: '/signup',
 } as const;

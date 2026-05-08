@@ -8,14 +8,22 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch } from 'react-hook-form';
 
 import { ERROR_MESSAGES } from '@/constants/ERROR_MESSAGES';
-import { ROUTES } from '@/constants/ROUTES';
 import { useSignInMutation } from '@/hooks/useAuth';
 import { loginFormSchema, type LoginFormValues } from '@/types/auth';
+import { resolvePostAuthPath } from '@/utils/authRedirect';
 import { extractAuthSession, saveAuthSession } from '@/utils/authSession';
 
 const TEAM_ID = process.env.NEXT_PUBLIC_TEAM_ID;
 
-export default function useLoginForm() {
+type UseLoginFormParams = {
+  prefilledEmail?: string;
+  redirectTo?: string;
+};
+
+export default function useLoginForm({
+  prefilledEmail,
+  redirectTo,
+}: UseLoginFormParams) {
   const router = useRouter();
   const [serverError, setServerError] = useState('');
   const signInMutation = useSignInMutation({
@@ -31,13 +39,7 @@ export default function useLoginForm() {
       }
 
       saveAuthSession(session);
-
-      if (!TEAM_ID) {
-        router.push(ROUTES.HOME);
-        return;
-      }
-
-      router.push(ROUTES.TEAM(TEAM_ID));
+      router.push(resolvePostAuthPath(TEAM_ID, redirectTo));
     },
   });
 
@@ -48,7 +50,7 @@ export default function useLoginForm() {
     register,
   } = useForm<LoginFormValues>({
     defaultValues: {
-      email: '',
+      email: prefilledEmail ?? '',
       password: '',
     },
     mode: 'onBlur',

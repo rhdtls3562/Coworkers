@@ -6,27 +6,24 @@ import {
   BOARD_DETAIL_DROPDOWN_ITEMS,
   BOARD_DETAIL_MENU,
 } from '@/app/(service)/boards/[articleId]/constants';
-import type {
-  Comment,
-  UserProfileResponse,
-} from '@/app/(service)/boards/[articleId]/types';
+import type { Comment } from '@/app/(service)/boards/[articleId]/types';
 import { useToast } from '@/components/common/toast';
 
 type UseBoardDetailCommentItemParams = {
   comment: Comment;
-  userProfile: UserProfileResponse;
+  currentUserId?: number | null;
 };
 
 export const useBoardDetailCommentItem = ({
   comment,
-  userProfile,
+  currentUserId,
 }: UseBoardDetailCommentItemParams) => {
   const { showToast } = useToast();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(comment.content);
 
-  const isOwnComment = comment.writer.id === userProfile.id;
+  const isOwnComment = comment.writer.id === currentUserId;
 
   const handleEdit = () => {
     // TODO: 수정 기능 구현 로직

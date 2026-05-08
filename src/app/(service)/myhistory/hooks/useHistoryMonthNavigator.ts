@@ -15,12 +15,35 @@ import {
 } from '@/app/(service)/myhistory/utils/formatHistoryDate';
 import type { DatePickerRangeValue } from '@/components/common/form/types';
 
+function createDraftRange(
+  endDate: Date | null,
+  startDate: Date | null,
+): MyHistoryDraftDateRange {
+  return {
+    endDate,
+    startDate,
+  };
+}
+
+function getRangeMonthLimit(
+  draftRange: MyHistoryDraftDateRange,
+  isSelectingEndDate: boolean,
+) {
+  if (!draftRange.startDate || !isSelectingEndDate) {
+    return {};
+  }
+
+  return {
+    maxDate: getMonthEndDate(draftRange.startDate),
+    minDate: getMonthStartDate(draftRange.startDate),
+  };
+}
+
 export default function useHistoryMonthNavigator({
   closeCalendar,
   isCalendarOpen,
   onApplyRange,
   onMoveMonth,
-  onResetRange,
   selectedRange,
   toggleCalendar,
 }: UseHistoryMonthNavigatorParams) {
@@ -31,29 +54,21 @@ export default function useHistoryMonthNavigator({
   const isSelectingEndDate = Boolean(
     draftRange.startDate && !draftRange.endDate,
   );
-
-  const rangeMonthLimit = useMemo(() => {
-    if (!draftRange.startDate || !isSelectingEndDate) return {};
-
-    return {
-      maxDate: getMonthEndDate(draftRange.startDate),
-      minDate: getMonthStartDate(draftRange.startDate),
-    };
-  }, [draftRange.startDate, isSelectingEndDate]);
+  const rangeMonthLimit = useMemo(
+    () => getRangeMonthLimit(draftRange, isSelectingEndDate),
+    [draftRange, isSelectingEndDate],
+  );
 
   const handleRangeChange = (nextRange: DatePickerRangeValue) => {
     const [nextStartDate, nextEndDate] = nextRange;
 
     if (!nextStartDate) {
-      setDraftRange({ endDate: null, startDate: null });
+      setDraftRange(createDraftRange(null, null));
       return;
     }
 
     if (!nextEndDate) {
-      setDraftRange({
-        endDate: null,
-        startDate: nextStartDate,
-      });
+      setDraftRange(createDraftRange(null, nextStartDate));
       return;
     }
 
@@ -72,22 +87,15 @@ export default function useHistoryMonthNavigator({
     onMoveMonth(monthOffset);
   };
 
+  const syncDraftRangeWithSelectedRange = () => {
+    setDraftRange(
+      createDraftRange(selectedRange.endDate, selectedRange.startDate),
+    );
+  };
+
   const handleToggleCalendar = () => {
     if (!isCalendarOpen) {
-      if (selectedRange.mode === 'range') {
-        setDraftRange({
-          endDate: null,
-          startDate: null,
-        });
-        onResetRange();
-        toggleCalendar();
-        return;
-      }
-
-      setDraftRange({
-        endDate: selectedRange.endDate,
-        startDate: selectedRange.startDate,
-      });
+      syncDraftRangeWithSelectedRange();
     }
 
     toggleCalendar();

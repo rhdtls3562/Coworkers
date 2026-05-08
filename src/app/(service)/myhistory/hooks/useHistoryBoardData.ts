@@ -12,8 +12,8 @@ import useHistoryTeamDetails from '@/app/(service)/myhistory/hooks/useHistoryTea
 import useProgressiveHistoryDateKeys from '@/app/(service)/myhistory/hooks/useProgressiveHistoryDateKeys';
 import type { UseHistoryBoardDataParams } from '@/app/(service)/myhistory/types';
 import {
-  getHistorySections,
-  getHistorySummaryData,
+  buildHistoryDateSections,
+  buildHistorySummaryData,
 } from '@/app/(service)/myhistory/utils/myHistoryData';
 
 export default function useHistoryBoardData({
@@ -50,12 +50,13 @@ export default function useHistoryBoardData({
   });
 
   const historySections = useMemo(
-    () => getHistorySections(completedTasks, taskListSources, activeFilterId),
+    () =>
+      buildHistoryDateSections(completedTasks, taskListSources, activeFilterId),
     [activeFilterId, completedTasks, taskListSources],
   );
 
   const summaryData = useMemo(
-    () => getHistorySummaryData(currentUserId, teamDetails, taskListSources),
+    () => buildHistorySummaryData(currentUserId, teamDetails, taskListSources),
     [currentUserId, taskListSources, teamDetails],
   );
 

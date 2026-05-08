@@ -18,6 +18,12 @@ type UseForgotPasswordFormParams = {
   onSuccess: () => void;
 };
 
+function getForgotPasswordErrorMessage(message: string) {
+  return message.includes('이메일')
+    ? '가입하지 않은 이메일입니다. 입력한 이메일을 다시 확인해주세요.'
+    : '비밀번호 재설정 링크를 보내지 못했습니다. 잠시 후 다시 시도해주세요.';
+}
+
 export default function useForgotPasswordForm({
   onSuccess,
 }: UseForgotPasswordFormParams) {
@@ -25,7 +31,7 @@ export default function useForgotPasswordForm({
   const [serverError, setServerError] = useState('');
   const sendResetPasswordEmailMutation = useSendResetPasswordEmailMutation({
     onError: (error) => {
-      setServerError(error.message);
+      setServerError(getForgotPasswordErrorMessage(error.message));
     },
     onSuccess: () => {
       onSuccess();

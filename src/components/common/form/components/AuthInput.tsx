@@ -57,8 +57,10 @@ export default function AuthInput({
           aria-describedby={hasError ? errorId : undefined}
           className={cn(
             'h-11 text-sm md:h-12 md:text-base',
-            isPasswordInput && 'pr-14 md:pr-16',
-            hasError && 'border-status-danger focus:border-status-danger',
+            {
+              'border-status-danger focus:border-status-danger': hasError,
+              'pr-14 md:pr-16': isPasswordInput,
+            },
             className,
           )}
           {...props}
@@ -72,7 +74,9 @@ export default function AuthInput({
             aria-label={isPasswordVisible ? '비밀번호 숨기기' : '비밀번호 보기'}
             className={cn(
               'absolute right-4 top-1/2 flex size-5 -translate-y-1/2 items-center justify-center md:size-6',
-              disabled && 'cursor-not-allowed opacity-40',
+              {
+                'cursor-not-allowed opacity-40': disabled,
+              },
             )}
           >
             {isPasswordVisible ? (

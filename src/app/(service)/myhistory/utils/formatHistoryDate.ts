@@ -2,6 +2,7 @@
  * 마이 히스토리 날짜 범위 생성과 표시 문자열 포맷을 담당하는 유틸입니다.
  */
 
+import { MY_HISTORY_DATE_RANGE_MODES } from '@/app/(service)/myhistory/constants';
 import type { MyHistoryDateRange } from '@/app/(service)/myhistory/types';
 export {
   addDays,
@@ -33,7 +34,7 @@ function padDay(day: number) {
 
 export function createHistoryMonthRange(
   date: Date,
-  mode: MyHistoryDateRange['mode'] = 'month',
+  mode: MyHistoryDateRange['mode'] = MY_HISTORY_DATE_RANGE_MODES.MONTH,
 ): MyHistoryDateRange {
   return {
     endDate: getMonthEndDate(date),
@@ -45,7 +46,7 @@ export function createHistoryMonthRange(
 export function createHistoryAllRange(date: Date): MyHistoryDateRange {
   return {
     endDate: date,
-    mode: 'all',
+    mode: MY_HISTORY_DATE_RANGE_MODES.ALL,
     startDate: date,
   };
 }
@@ -75,11 +76,14 @@ function isSameHistoryDay(firstDate: Date, secondDate: Date) {
 }
 
 export function getHistoryRangeTitleParts(range: MyHistoryDateRange) {
-  if (range.mode === 'all') {
+  if (range.mode === MY_HISTORY_DATE_RANGE_MODES.ALL) {
     return ['전체'] as const;
   }
 
-  if (range.mode === 'month' || isFullHistoryMonthRange(range)) {
+  if (
+    range.mode === MY_HISTORY_DATE_RANGE_MODES.MONTH ||
+    isFullHistoryMonthRange(range)
+  ) {
     return [formatHistoryMonth(range.startDate)] as const;
   }
 

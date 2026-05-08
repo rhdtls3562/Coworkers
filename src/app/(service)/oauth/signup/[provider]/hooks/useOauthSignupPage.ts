@@ -5,8 +5,8 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { OAUTH_SIGNUP_TEXT } from '@/app/(service)/oauth/signup/[provider]/constants';
-import { ROUTES } from '@/constants/ROUTES';
 import { useSignInWithOauthMutation } from '@/hooks/useAuth';
+import { buildLoginPath, resolvePostAuthPath } from '@/utils/authRedirect';
 import { extractAuthSession, saveAuthSession } from '@/utils/authSession';
 
 const TEAM_ID = process.env.NEXT_PUBLIC_TEAM_ID;
@@ -52,7 +52,7 @@ export default function useOauthSignupPage({
       }
 
       saveAuthSession(session);
-      router.replace(TEAM_ID ? ROUTES.TEAM(TEAM_ID) : ROUTES.HOME);
+      router.replace(resolvePostAuthPath(TEAM_ID, state));
     },
   });
   const initialErrorMessage =
@@ -109,7 +109,7 @@ export default function useOauthSignupPage({
   return {
     errorMessage: mutationErrorMessage || initialErrorMessage,
     handleGoLogin: () => {
-      router.replace(ROUTES.LOGIN);
+      router.replace(buildLoginPath({ redirectTo: state }));
     },
     isPending: signInWithOauthMutation.isPending,
   };

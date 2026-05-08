@@ -4,6 +4,14 @@
 
 import SignupPageContent from '@/app/(service)/signup/components/SignupPageContent';
 
-export default function SignupPage() {
-  return <SignupPageContent />;
+type SignupPageProps = {
+  searchParams: Promise<{
+    redirectTo?: string;
+  }>;
+};
+
+export default async function SignupPage({ searchParams }: SignupPageProps) {
+  const { redirectTo } = await searchParams;
+
+  return <SignupPageContent redirectTo={redirectTo} />;
 }

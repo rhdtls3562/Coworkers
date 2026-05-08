@@ -1,25 +1,16 @@
 'use client';
 
 /**
- * 내 히스토리 화면의 날짜 범위, 완료 이력, 보드 상태를 조합하는 훅입니다.
+ * 내 히스토리 화면의 완료 이력 조회와 보드 표시 상태를 조합하는 훅입니다.
  */
 
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 import useHistoryBoardData from '@/app/(service)/myhistory/hooks/useHistoryBoardData';
-import type {
-  MyHistoryCompletedTaskRecord,
-  MyHistoryDateRange,
-  MyHistoryResolvedDateRange,
-} from '@/app/(service)/myhistory/types';
+import useHistorySelectedRange from '@/app/(service)/myhistory/hooks/useHistorySelectedRange';
+import type { MyHistoryCompletedTaskRecord } from '@/app/(service)/myhistory/types';
 import {
-  addMonths,
-  createHistoryAllRange,
-  createHistoryMonthRange,
-  formatHistoryRangeTitle,
-} from '@/app/(service)/myhistory/utils/formatHistoryDate';
-import {
-  getHistorySectionsInRange,
+  buildVisibleHistorySections,
   hasHistoryTasks,
 } from '@/app/(service)/myhistory/utils/getHistorySections';
 import {
@@ -30,8 +21,6 @@ import {
 import { useCompletedTasksQuery } from '@/hooks/useUser';
 
 export default function useHistoryBoard(activeFilterId: string | null) {
-  const [selectedRangeOverride, setSelectedRangeOverride] =
-    useState<MyHistoryDateRange | null>(null);
   const { data, isError, isLoading } = useCompletedTasksQuery();
 
   const completedTasks = useMemo<readonly MyHistoryCompletedTaskRecord[]>(
@@ -42,18 +31,22 @@ export default function useHistoryBoard(activeFilterId: string | null) {
     () => getLatestHistoryTaskDate(completedTasks) ?? new Date(),
     [completedTasks],
   );
-  const selectedRange = useMemo(() => {
-    if (selectedRangeOverride) {
-      return selectedRangeOverride;
-    }
-    return createHistoryAllRange(defaultAnchorDate);
-  }, [defaultAnchorDate, selectedRangeOverride]);
+  const {
+    handleApplyRange,
+    handleMoveMonth,
+    handleResetRange,
+    isAllRange,
+    selectedRange,
+    title,
+  } = useHistorySelectedRange({
+    defaultAnchorDate,
+  });
   const completedTasksInRange = useMemo(
     () =>
-      selectedRange.mode === 'all'
+      isAllRange
         ? completedTasks
         : getCompletedTasksInRange(completedTasks, selectedRange),
-    [completedTasks, selectedRange],
+    [completedTasks, isAllRange, selectedRange],
   );
   const {
     filters,
@@ -65,42 +58,13 @@ export default function useHistoryBoard(activeFilterId: string | null) {
   } = useHistoryBoardData({
     activeFilterId,
     completedTasks: completedTasksInRange,
-    isAllRange: selectedRange.mode === 'all',
-    shouldLimitTeamQueries:
-      activeFilterId !== null && selectedRange.mode === 'all',
+    isAllRange,
+    shouldLimitTeamQueries: activeFilterId !== null && isAllRange,
   });
   const datedHistorySections = useMemo(
-    () => getHistorySectionsInRange(historySections, selectedRange),
+    () => buildVisibleHistorySections(historySections, selectedRange),
     [historySections, selectedRange],
   );
-
-  const handleApplyRange = ({
-    endDate,
-    startDate,
-  }: MyHistoryResolvedDateRange) => {
-    setSelectedRangeOverride({
-      endDate,
-      mode: 'range',
-      startDate,
-    });
-  };
-
-  const handleMoveMonth = (monthOffset: number) => {
-    setSelectedRangeOverride((prevRange) =>
-      createHistoryMonthRange(
-        addMonths(
-          prevRange?.mode === 'all'
-            ? defaultAnchorDate
-            : (prevRange?.startDate ?? defaultAnchorDate),
-          monthOffset,
-        ),
-      ),
-    );
-  };
-
-  const handleResetRange = () => {
-    setSelectedRangeOverride(null);
-  };
 
   return {
     datedHistorySections,
@@ -114,6 +78,6 @@ export default function useHistoryBoard(activeFilterId: string | null) {
     isProgressivelyLoading,
     selectedRange,
     summaryItems,
-    title: formatHistoryRangeTitle(selectedRange),
+    title,
   } as const;
 }

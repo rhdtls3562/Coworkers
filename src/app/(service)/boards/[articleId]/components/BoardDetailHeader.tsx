@@ -16,10 +16,13 @@ export default function BoardDetailHeader({
   userProfile,
 }: {
   boardDetail: BoardDetailProps['boardDetail'];
-  userProfile: UserProfileResponse;
+  userProfile: UserProfileResponse | null;
 }) {
   const { menuItems, isDeleteModalOpen, handleDeleteConfirm } =
-    useBoardDetailMenu(boardDetail.id.toString());
+    useBoardDetailMenu(
+      boardDetail.id.toString(),
+      boardDetail.writer.id === userProfile?.id,
+    );
   const { isLiked, likeCount, handleLikeClick } = useLike(boardDetail);
 
   return (
@@ -28,18 +31,20 @@ export default function BoardDetailHeader({
         <h2 className="flex-1 truncate text-text-primary font-bold text-lg leading-5.25 md:text-xl md:leading-6">
           {boardDetail.title}
         </h2>
-        <ListDropdown
-          trigger={
-            <IcMoreVerticalLarge
-              width={24}
-              height={24}
-              className="cursor-pointer"
-              role="img"
-              aria-label="더보기 메뉴"
-            />
-          }
-          items={menuItems}
-        />
+        {menuItems.length > 0 ? (
+          <ListDropdown
+            trigger={
+              <IcMoreVerticalLarge
+                width={24}
+                height={24}
+                className="cursor-pointer"
+                role="img"
+                aria-label="더보기 메뉴"
+              />
+            }
+            items={menuItems}
+          />
+        ) : null}
         {isDeleteModalOpen && (
           <Modal
             onClose={handleDeleteConfirm}
@@ -55,7 +60,7 @@ export default function BoardDetailHeader({
       <div className="flex items-center justify-between gap-2 mt-2 pb-3 border-b border-border-secondary md:mt-4">
         <div className="flex min-w-0 flex-1 items-center">
           <CommentWriterAvatar
-            image={userProfile.image}
+            image={userProfile?.image ?? null}
             nickname={boardDetail.writer.nickname}
             width={24}
             height={24}

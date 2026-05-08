@@ -1,17 +1,14 @@
 import CommentEditingContent from '@/app/(service)/boards/[articleId]/components/CommentEditingContent';
 import CommentReadonlyContent from '@/app/(service)/boards/[articleId]/components/CommentReadonlyContent';
 import { useBoardDetailCommentItem } from '@/app/(service)/boards/[articleId]/hooks/useBoardDetailCommentItem';
-import type {
-  Comment,
-  UserProfileResponse,
-} from '@/app/(service)/boards/[articleId]/types';
+import type { Comment } from '@/app/(service)/boards/[articleId]/types';
 
 export default function BoardDetailCommentItem({
   comment,
-  userProfile,
+  currentUserId,
 }: {
   comment: Comment;
-  userProfile: UserProfileResponse;
+  currentUserId?: number | null;
 }) {
   const {
     isOwnComment,
@@ -24,7 +21,7 @@ export default function BoardDetailCommentItem({
     handleEditedContentChange,
     handleDeleteConfirm,
     setIsDeleteModalOpen,
-  } = useBoardDetailCommentItem({ comment, userProfile });
+  } = useBoardDetailCommentItem({ comment, currentUserId });
 
   return (
     <>

@@ -11,7 +11,7 @@ import {
 import { useToast } from '@/components/common/toast';
 import { ROUTES } from '@/constants/ROUTES';
 
-export const useBoardDetailMenu = (articleId: string) => {
+export const useBoardDetailMenu = (articleId: string, canManage: boolean) => {
   const router = useRouter();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const { showToast } = useToast();
@@ -38,5 +38,9 @@ export const useBoardDetailMenu = (articleId: string) => {
     },
   }));
 
-  return { menuItems, isDeleteModalOpen, handleDeleteConfirm };
+  return {
+    handleDeleteConfirm,
+    isDeleteModalOpen,
+    menuItems: canManage ? menuItems : [],
+  };
 };

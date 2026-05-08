@@ -20,7 +20,6 @@ export default function HistoryBoard({
   isProgressivelyLoading,
   onApplyRange,
   onMoveMonth,
-  onResetRange,
   onSelectFilter,
   selectedRange,
   title,
@@ -39,7 +38,6 @@ export default function HistoryBoard({
         selectedRange={selectedRange}
         onApplyRange={onApplyRange}
         onMoveMonth={onMoveMonth}
-        onResetRange={onResetRange}
       />
 
       {filters.length > 0 ? (

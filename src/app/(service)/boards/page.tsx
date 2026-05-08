@@ -3,6 +3,9 @@
  * API 미연동 상태에서도 정렬 로직은 동일하게 유지합니다.
  */
 
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
+
 import BoardBestList from '@/app/(service)/boards/components/BoardBestList';
 import BoardHeader from '@/app/(service)/boards/components/BoardHeader';
 import BoardList from '@/app/(service)/boards/components/BoardList';
@@ -18,6 +21,8 @@ import {
   hasPosts,
   isSearchMode,
 } from '@/app/(service)/boards/utils/boardUtils';
+import { ROUTES } from '@/constants/ROUTES';
+import { buildLoginPath } from '@/utils/authRedirect';
 
 export default async function BoardsPage({
   searchParams,
@@ -28,6 +33,16 @@ export default async function BoardsPage({
   const keyword = parsedParams.search;
   const isSearchModeValue = isSearchMode(keyword);
   const isWriteMode = parsedParams.write === 'true';
+
+  if (isWriteMode) {
+    const cookieStore = await cookies();
+    const accessToken = cookieStore.get('access-token')?.value;
+
+    if (!accessToken) {
+      redirect(buildLoginPath({ redirectTo: `${ROUTES.BOARDS}?write=true` }));
+    }
+  }
+
   const fetchedPosts: Post[] = [];
   const bestPosts = getBoardBestPosts(fetchedPosts);
   const listPosts = sortBoardMainListPostsByRecent(fetchedPosts);

@@ -47,7 +47,7 @@ export default async function BoardDetailPage({
     return renderFallback(errorMessage);
   }
 
-  if (!boardDetail || !userProfile) {
+  if (!boardDetail) {
     return renderFallback('게시글 데이터를 불러오지 못했습니다.');
   }
 

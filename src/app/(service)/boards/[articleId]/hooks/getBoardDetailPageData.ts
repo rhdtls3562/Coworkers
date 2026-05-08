@@ -20,15 +20,17 @@ export async function getBoardDetailPageData({
   }
 
   try {
-    const [boardDetailData, userProfileData] = await Promise.all([
-      fetchWithAuth(teamEndpoint(`/articles/${articleId}`, TEAM_ID)),
-      fetchWithAuth(teamEndpoint('/user', TEAM_ID)),
-    ]);
+    const boardDetailData = await fetchWithAuth(
+      teamEndpoint(`/articles/${articleId}`, TEAM_ID),
+    );
+    const userProfileData = await fetchWithAuth(teamEndpoint('/user', TEAM_ID))
+      .then((data) => data as UserProfileResponse)
+      .catch(() => null);
 
     return {
       boardDetail: boardDetailData as Post,
       errorMessage: null,
-      userProfile: userProfileData as UserProfileResponse,
+      userProfile: userProfileData,
     } as const;
   } catch {
     return {

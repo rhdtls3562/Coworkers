@@ -2,15 +2,21 @@
 
 import Link from 'next/link';
 
-import { SIGNUP_LINKS, SIGNUP_TEXT } from '@/app/(service)/signup/constants';
+import { SIGNUP_TEXT } from '@/app/(service)/signup/constants';
 import useSignupForm from '@/app/(service)/signup/hooks/useSignupForm';
-import { IcKakaotalk } from '@/assets';
 import { PrimaryButton } from '@/components/common/button';
-import { AuthInput } from '@/components/common/form';
-import FullLogo from '@/components/common/logo/FullLogo';
-import { ROUTES } from '@/constants/ROUTES';
+import {
+  AuthInput,
+  AuthSocialSection,
+  AuthTitleBlock,
+} from '@/components/common/form';
+import { buildLoginPath } from '@/utils/authRedirect';
 
-export default function SignupForm() {
+type SignupFormProps = {
+  redirectTo?: string;
+};
+
+export default function SignupForm({ redirectTo }: SignupFormProps) {
   const {
     emailField,
     emailError,
@@ -23,22 +29,11 @@ export default function SignupForm() {
     passwordError,
     serverError,
     handleSubmit,
-  } = useSignupForm();
+  } = useSignupForm({ redirectTo });
 
   return (
     <section className="mx-auto w-full max-w-lg rounded-[20px] bg-background-inverse px-5.25 py-9.25 md:px-8 md:py-12.5">
-      <h1 className="mb-8 flex justify-center md:mb-10">
-        <Link href={ROUTES.HOME} aria-label="Coworkers 홈으로 이동">
-          <FullLogo
-            size="auth"
-            className="origin-center scale-90 md:scale-100"
-          />
-        </Link>
-      </h1>
-
-      <h2 className="mb-6 text-center text-base font-semibold text-text-primary md:mb-8 md:text-lg">
-        {SIGNUP_TEXT.title}
-      </h2>
+      <AuthTitleBlock title={SIGNUP_TEXT.title} />
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-5 md:px-6">
         <AuthInput
@@ -90,39 +85,14 @@ export default function SignupForm() {
       <p className="mt-6 text-center text-sm text-text-secondary">
         {SIGNUP_TEXT.loginGuide}
         <Link
-          href={SIGNUP_LINKS.login}
+          href={buildLoginPath({ redirectTo })}
           className="ml-1 font-medium text-brand-primary underline"
         >
           {SIGNUP_TEXT.loginLink}
         </Link>
       </p>
 
-      <div className="mx-auto mt-10 flex w-full max-w-md items-center gap-4 md:px-6">
-        <div className="h-px flex-1 bg-background-tertiary" />
-        <span className="text-sm text-text-secondary">
-          {SIGNUP_TEXT.divider}
-        </span>
-        <div className="h-px flex-1 bg-background-tertiary" />
-      </div>
-
-      <button
-        type="button"
-        onClick={() => {
-          window.location.assign(ROUTES.OAUTH_AUTHORIZE('kakao'));
-        }}
-        className="mx-auto mt-4 flex h-11 w-full max-w-md items-center justify-between md:px-6 "
-      >
-        <span className="text-sm text-text-secondary">
-          {SIGNUP_TEXT.kakaoSignUp}
-        </span>
-        <IcKakaotalk
-          width={44}
-          height={44}
-          className="h-11 w-11 cursor-pointer"
-          role="img"
-          aria-label="카카오 아이콘"
-        />
-      </button>
+      <AuthSocialSection mode="signup" redirectTo={redirectTo} />
     </section>
   );
 }

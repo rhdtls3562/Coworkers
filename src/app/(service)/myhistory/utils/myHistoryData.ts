@@ -6,8 +6,8 @@ export type {
   HistoryTaskListDetailSource,
   HistoryTeamDetail,
 } from '@/app/(service)/myhistory/types';
-export { getHistorySections } from '@/app/(service)/myhistory/utils/myHistorySectionBuilders';
-export { getHistorySummaryData } from '@/app/(service)/myhistory/utils/myHistorySummaryBuilders';
+export { buildHistoryDateSections } from '@/app/(service)/myhistory/utils/myHistorySectionBuilders';
+export { buildHistorySummaryData } from '@/app/(service)/myhistory/utils/myHistorySummaryBuilders';
 export {
   getCompletedTasksInRange,
   getLatestHistoryTaskDate,

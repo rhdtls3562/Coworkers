@@ -7,6 +7,7 @@ const TEAM_ID = process.env.NEXT_PUBLIC_TEAM_ID;
 const PUBLIC_PATH_PREFIXES = [
   ROUTES.LOGIN,
   ROUTES.SIGNUP,
+  ROUTES.BOARDS,
   '/oauth',
   '/reset-password',
   '/password-reset',

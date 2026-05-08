@@ -2,29 +2,33 @@
 
 import { useState } from 'react';
 
-import { useRouter } from 'next/navigation';
-
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch } from 'react-hook-form';
 
-import { useToast } from '@/components/common/toast';
-import { ROUTES } from '@/constants/ROUTES';
+import useAutoSignInAfterSignup from '@/app/(service)/signup/hooks/useAutoSignInAfterSignup';
 import { useSignUpMutation } from '@/hooks/useAuth';
 import { signUpFormSchema, type SignUpFormValues } from '@/types/auth';
 
 const TEAM_ID = process.env.NEXT_PUBLIC_TEAM_ID;
 
-export default function useSignupForm() {
-  const router = useRouter();
-  const { showToast } = useToast();
+type UseSignupFormParams = {
+  redirectTo?: string;
+};
+
+export default function useSignupForm({ redirectTo }: UseSignupFormParams) {
   const [serverError, setServerError] = useState('');
+  const { handleSignUpSuccess, isPending: isAutoSignInPending } =
+    useAutoSignInAfterSignup({ redirectTo });
   const signUpMutation = useSignUpMutation({
     onError: (error) => {
       setServerError(error.message);
     },
-    onSuccess: () => {
-      showToast('가입이 완료되었습니다.', 'success');
-      router.push(ROUTES.LOGIN);
+    onSuccess: (_, variables) => {
+      handleSignUpSuccess({
+        email: variables.body.email,
+        password: variables.body.password,
+        teamId: variables.teamId,
+      });
     },
   });
   const {
@@ -72,7 +76,8 @@ export default function useSignupForm() {
     emailError: errors.email?.message,
     emailField: register('email'),
     handleSubmit: handleSubmitForm,
-    isDisabled: !isSubmittable || signUpMutation.isPending,
+    isDisabled:
+      !isSubmittable || isAutoSignInPending || signUpMutation.isPending,
     nicknameError: errors.nickname?.message,
     nicknameField: register('nickname'),
     passwordConfirmationError: errors.passwordConfirmation?.message,

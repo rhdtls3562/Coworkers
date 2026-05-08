@@ -2,10 +2,10 @@ import { z } from 'zod';
 
 export const passwordSchema = z
   .object({
-    newPassword: z.string().min(8, '비밀번호는 8자 이상 입력해주세요.'),
+    currentPassword: z.string().min(8, '비밀번호는 8자 이상 입력해주세요.'),
     confirmPassword: z.string(),
   })
-  .refine((data) => data.newPassword === data.confirmPassword, {
+  .refine((data) => data.currentPassword === data.confirmPassword, {
     message: '비밀번호가 일치하지 않아요.',
-    path: ['confirmPassword'],
+    path: ['confirmPassword'], // 에러를 confirmPassword 필드에 표시
   });

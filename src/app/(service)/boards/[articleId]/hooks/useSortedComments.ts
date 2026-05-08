@@ -10,7 +10,7 @@ import type { Comment } from '@/app/(service)/boards/[articleId]/types';
 
 type UseSortedCommentsParams = {
   comments: Comment[];
-  userId: number;
+  userId?: number | null;
 };
 
 const parseDateToTime = (value: string) => {
