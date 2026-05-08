@@ -6,34 +6,15 @@
 
 import { useQuery } from '@tanstack/react-query';
 
-import type { getTaskComments } from '@/api/commentApi';
-import type { QueryKeyId, TaskQueryParams } from '@/api/queryKeys';
 import { commentQueryOptions, taskQueryOptions } from '@/api/queryOptions';
-import type { QueryOptionsOverrides } from '@/api/queryOptions/factory';
-import type { getTaskDetail, getTasks } from '@/api/taskApi';
-
-type TasksData = Awaited<ReturnType<typeof getTasks>>;
-type TaskDetailData = Awaited<ReturnType<typeof getTaskDetail>>;
-type TaskCommentsData = Awaited<ReturnType<typeof getTaskComments>>;
-
-type UseTasksParams<TData = TasksData> = {
-  options?: QueryOptionsOverrides<TasksData, TData>;
-  params: TaskQueryParams;
-  teamId: string;
-};
-
-type UseTaskDetailParams<TData = TaskDetailData> = {
-  options?: QueryOptionsOverrides<TaskDetailData, TData>;
-  taskId: QueryKeyId;
-  taskListId: QueryKeyId;
-  teamId: string;
-};
-
-type UseTaskCommentsParams<TData = TaskCommentsData> = {
-  options?: QueryOptionsOverrides<TaskCommentsData, TData>;
-  taskId: QueryKeyId;
-  teamId: string;
-};
+import type {
+  TaskCommentsData,
+  TaskDetailData,
+  TasksData,
+  UseTaskCommentsParams,
+  UseTaskDetailParams,
+  UseTasksParams,
+} from '@/hooks/task.types';
 
 export function useTasksQuery<TData = TasksData>({
   options,

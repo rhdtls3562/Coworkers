@@ -7,59 +7,31 @@ import { useAccountForm } from '@/app/(service)/mypage/hook/useAccountForm';
 import type { AccountFormProps } from '@/app/(service)/mypage/types';
 import AddUserImg from '@/components/common/adduserimg/AddUserImg';
 import { Input } from '@/components/common/form';
-import { useMeQuery } from '@/hooks/useUser';
-
-type MeResponse = {
-  email?: string;
-  image?: string | null;
-  nickname?: string;
-};
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null;
-}
-
-function toMeResponse(data: unknown): MeResponse {
-  if (!isRecord(data)) {
-    return {};
-  }
-
-  const candidate = isRecord(data.data) ? data.data : data;
-
-  return {
-    email: typeof candidate.email === 'string' ? candidate.email : undefined,
-    image:
-      typeof candidate.image === 'string' || candidate.image === null
-        ? candidate.image
-        : undefined,
-    nickname:
-      typeof candidate.nickname === 'string' ? candidate.nickname : undefined,
-  };
-}
 
 export default function AccountForm({
   isDirty,
   onDirtyChange,
+  userInfo,
+  onSubmitData,
+  onSubmitError,
 }: AccountFormProps) {
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
-  const { data: meResponse } = useMeQuery();
-  const me = toMeResponse(meResponse);
-
   const {
     email,
-    name,
-    errors,
-    register,
+    nameRegister,
     handleSubmit,
     handleNameChange,
+    handleImageChange,
     onSubmit,
+    imageResetKey,
   } = useAccountForm({
-    initialEmail: me.email ?? '',
-    initialName: me.nickname ?? '',
+    initialEmail: userInfo.email ?? '',
+    initialName: userInfo.nickname ?? '',
+    initialImage: userInfo.image ?? null,
     isDirty,
     onDirtyChange,
+    onSubmitData,
   });
-
   return (
     <>
       <form
@@ -67,19 +39,22 @@ export default function AccountForm({
         onSubmit={handleSubmit(onSubmit)}
         className="flex gap-6 flex-col"
       >
-        <AddUserImg src={me.image ?? undefined} />
+        <AddUserImg
+          key={imageResetKey}
+          src={userInfo.image ?? undefined}
+          onChangeFile={handleImageChange}
+        />
 
         <div className="flex flex-col gap-3">
           <label htmlFor="userName">이름</label>
 
-          <Input
-            id="userName"
-            value={name}
-            {...register('name')}
-            onChange={handleNameChange}
-          />
+          <Input id="userName" {...nameRegister} onChange={handleNameChange} />
 
-          {errors.name && <p>{errors.name.message}</p>}
+          {onSubmitError && (
+            <p className="text-sm text-status-danger font-medium">
+              {onSubmitError}
+            </p>
+          )}
         </div>
 
         <div className="flex flex-col gap-2">
