@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import Link from 'next/link';
 
@@ -13,19 +13,24 @@ import {
   AuthSocialSection,
   AuthTitleBlock,
 } from '@/components/common/form';
+import { useToast } from '@/components/common/toast';
 import { buildSignupPath } from '@/utils/authRedirect';
 
 type LoginFormProps = {
+  loginNotice?: 'auth-required';
   prefilledEmail?: string;
   redirectTo?: string;
 };
 
 export default function LoginForm({
+  loginNotice,
   prefilledEmail,
   redirectTo,
 }: LoginFormProps) {
+  const { showToast } = useToast();
   const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] =
     useState(false);
+  const hasShownNoticeRef = useRef(false);
 
   const {
     emailError,
@@ -39,6 +44,15 @@ export default function LoginForm({
     prefilledEmail,
     redirectTo,
   });
+
+  useEffect(() => {
+    if (loginNotice !== 'auth-required' || hasShownNoticeRef.current) {
+      return;
+    }
+
+    hasShownNoticeRef.current = true;
+    showToast('로그인 후 이용해 주세요.', 'error');
+  }, [loginNotice, showToast]);
 
   return (
     <section className="mx-auto w-full max-w-lg rounded-[20px] bg-background-inverse px-5.25 py-9.25 md:px-8 md:py-12.5">

@@ -32,7 +32,12 @@ export default function BoardDetailComments({
       return;
     }
 
-    router.push(buildLoginPath({ redirectTo: pathname }));
+    router.push(
+      buildLoginPath({
+        notice: 'auth-required',
+        redirectTo: pathname,
+      }),
+    );
   };
 
   return (

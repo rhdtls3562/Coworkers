@@ -14,9 +14,15 @@ export default function BoardWriteFloatingButton() {
 
   const handleClick = () => {
     if (!hasAuthSession()) {
-      router.push(buildLoginPath({ redirectTo: writePath }), {
-        scroll: false,
-      });
+      router.push(
+        buildLoginPath({
+          notice: 'auth-required',
+          redirectTo: writePath,
+        }),
+        {
+          scroll: false,
+        },
+      );
       return;
     }
 

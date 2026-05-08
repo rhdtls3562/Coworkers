@@ -8,6 +8,7 @@ const DUMMY_BASE_URL = 'https://coworkers.local';
 
 type BuildLoginPathParams = {
   email?: string;
+  notice?: 'auth-required';
   redirectTo?: string | null;
 };
 
@@ -38,10 +39,12 @@ export function getSafeRedirectTo(redirectTo?: string | null) {
 
 export function buildLoginPath({
   email,
+  notice,
   redirectTo,
 }: BuildLoginPathParams = {}) {
   return buildPathWithSearch(ROUTES.LOGIN, {
     email,
+    notice,
     redirectTo: getSafeRedirectTo(redirectTo),
   });
 }

@@ -39,7 +39,12 @@ export default async function BoardsPage({
     const accessToken = cookieStore.get('access-token')?.value;
 
     if (!accessToken) {
-      redirect(buildLoginPath({ redirectTo: `${ROUTES.BOARDS}?write=true` }));
+      redirect(
+        buildLoginPath({
+          notice: 'auth-required',
+          redirectTo: `${ROUTES.BOARDS}?write=true`,
+        }),
+      );
     }
   }
 
