@@ -72,7 +72,6 @@ export function useCreateTeamForm() {
       const uploadedImage = values.teamImage
         ? await uploadImageMutation.mutateAsync({
             file: values.teamImage,
-            teamId: TEAM_ID,
           })
         : null;
       const createdTeam = await createTeamMutation.mutateAsync({

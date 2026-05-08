@@ -97,6 +97,7 @@ export default function ImageUploadField({
                 alt={previewAlt}
                 width={98}
                 height={98}
+                loading="eager"
                 className="h-full w-full object-cover"
               />
             ) : (

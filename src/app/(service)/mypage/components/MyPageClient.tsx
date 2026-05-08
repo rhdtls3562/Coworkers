@@ -2,24 +2,27 @@
  * 계정 설정 페이지를 구성하는 파일입니다.
  */
 'use client';
+
 import { useState } from 'react';
 
 import AccountForm from '@/app/(service)/mypage/components/AccountForm';
 import WithdrawModal from '@/app/(service)/mypage/components/WithdrawModal';
 import { IcLogout } from '@/assets/index';
 import { PrimaryButton } from '@/components/common/button';
+import { useToast } from '@/components/common/toast';
 import { useMeQuery, useUpdateMeMutation } from '@/hooks/useUser';
 
 export default function MyPage() {
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-
+  const { showToast } = useToast();
   const { data: me } = useMeQuery();
 
   const { mutateAsync: updateProfile } = useUpdateMeMutation({
     onSuccess: () => {
       setSubmitError(null);
+      showToast('변경되었습니다.', 'success');
     },
     onError: (error) => {
       setSubmitError(error.message);
