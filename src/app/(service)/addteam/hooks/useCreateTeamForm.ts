@@ -4,29 +4,36 @@
  * 팀 생성하기 폼 상태와 제출 로직을 관리하는 훅입니다.
  */
 
+import { useState } from 'react';
+
+import { useRouter } from 'next/navigation';
+
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 
+import {
+  createTeamFormSchema,
+  type CreateTeamFormValues,
+} from '@/app/(service)/addteam/utils/createTeamFormSchema';
 import { useToast } from '@/components/common/toast';
+import { ROUTES } from '@/constants/ROUTES';
+import { useUploadImageMutation } from '@/hooks/useImage';
+import { useCreateTeamMutation } from '@/hooks/useTeam';
 
-const createTeamFormSchema = z.object({
-  teamImage: z.custom<File | null>().optional(),
-  teamName: z
-    .string()
-    .trim()
-    .min(1, '팀 이름을 입력해주세요.')
-    .refine(
-      (value) => !/[^a-zA-Z0-9가-힣\s]/.test(value),
-      '특수기호가 포함된 이름은 사용할 수 없습니다.',
-    )
-    .refine((value) => value.length <= 8, '8자 이내로 작성해 주세요.'),
-});
+const TEAM_ID = process.env.NEXT_PUBLIC_TEAM_ID;
 
-type CreateTeamFormValues = z.infer<typeof createTeamFormSchema>;
+function getCreateTeamErrorMessage(error: unknown) {
+  return error instanceof Error
+    ? error.message
+    : '팀 생성 중 문제가 발생했어요. 다시 시도해주세요.';
+}
 
 export function useCreateTeamForm() {
+  const router = useRouter();
   const { showToast } = useToast();
+  const [serverError, setServerError] = useState('');
+  const uploadImageMutation = useUploadImageMutation();
+  const createTeamMutation = useCreateTeamMutation();
   const {
     formState: { errors, isValid },
     handleSubmit,
@@ -42,22 +49,54 @@ export function useCreateTeamForm() {
   });
 
   const handleChangeFile = (newFile: File | null) => {
+    setServerError('');
     setValue('teamImage', newFile, {
       shouldDirty: true,
+      shouldValidate: true,
     });
   };
 
-  const handleSubmitForm = handleSubmit((values) => {
-    // TODO: API 연결
-    console.log('팀 생성:', values.teamName, values.teamImage);
-    showToast('팀이 생성되었습니다.', 'success');
+  const teamNameField = register('teamName', {
+    onChange: () => setServerError(''),
+  });
+
+  const handleSubmitForm = handleSubmit(async (values) => {
+    setServerError('');
+
+    if (!TEAM_ID) {
+      setServerError('팀 정보가 설정되지 않았습니다.');
+      return;
+    }
+
+    try {
+      const uploadedImage = values.teamImage
+        ? await uploadImageMutation.mutateAsync({
+            file: values.teamImage,
+            teamId: TEAM_ID,
+          })
+        : null;
+      const createdTeam = await createTeamMutation.mutateAsync({
+        body: {
+          image: uploadedImage?.url,
+          name: values.teamName.trim(),
+        },
+        teamId: TEAM_ID,
+      });
+
+      router.push(ROUTES.TEAM(String(createdTeam.id)));
+      showToast('팀이 생성되었습니다.', 'success');
+    } catch (error) {
+      setServerError(getCreateTeamErrorMessage(error));
+      return;
+    }
   });
 
   return {
-    errorMessage: errors.teamName?.message,
+    errorMessage: errors.teamName?.message ?? serverError,
     handleChangeFile,
     handleSubmit: handleSubmitForm,
-    isDisabled: !isValid,
-    teamNameField: register('teamName'),
+    isDisabled:
+      !isValid || createTeamMutation.isPending || uploadImageMutation.isPending,
+    teamNameField,
   };
 }
