@@ -3,8 +3,9 @@
  */
 'use client';
 
-import { ImgAddButtonProps } from '@/components/common/adduserimg/types';
 import ImageUploadField from '@/components/common/form/components/ImageUploadField';
+
+import { ImgAddButtonProps } from './types';
 
 export default function AddUserImg({ src, onChangeFile }: ImgAddButtonProps) {
   return (

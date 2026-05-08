@@ -15,6 +15,7 @@ export function useModalState() {
     setSelectedMember(null); // 닫을 때 초기화
   };
   const openMemberDetail = (member: MemberChipsProps) => {
+    // 추가
     setSelectedMember(member);
     setOpenModal('memberDetail');
   };

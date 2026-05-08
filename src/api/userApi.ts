@@ -9,19 +9,17 @@ import type {
   CompletedTaskHistoryQueryParams,
   QueryParams,
 } from '@/api/queryKeys';
-import { ResetPasswordBody, SendResetPasswordEmailBody } from '@/api/types';
-import { ChangePassword, UserInfo } from '@/app/(service)/mypage/types';
+import type {
+  ResetPasswordBody,
+  SendResetPasswordEmailBody,
+} from '@/api/types';
+import { getStoredAccessToken } from '@/utils/authSession';
 
 export async function getMe() {
-  return apiClient<UserInfo>(teamEndpoint('/user'));
-}
-export async function updateMe(
-  body: Partial<Pick<UserInfo, 'nickname' | 'image'>>,
-) {
-  return apiClient<UserInfo>(teamEndpoint('/user'), {
-    method: HTTP_METHODS.PATCH,
-    body: JSON.stringify(body),
-  });
+  if (!getStoredAccessToken()) {
+    return null;
+  }
+  return apiClient<unknown>(teamEndpoint('/user'));
 }
 
 export async function deleteMe() {
@@ -45,13 +43,6 @@ export async function getCompletedTasks(
 ) {
   const endpoint = `${teamEndpoint('/user/history')}${buildQueryString(params)}`;
   return apiClient<unknown>(endpoint);
-}
-
-export async function changePassword(body: ChangePassword) {
-  return apiClient<{ message: string }>(teamEndpoint('/user/password'), {
-    method: HTTP_METHODS.PATCH,
-    body: JSON.stringify(body),
-  });
 }
 
 export async function sendResetPasswordEmail(

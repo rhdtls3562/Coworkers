@@ -15,14 +15,20 @@ import type { CursorPaginationQueryParams, QueryKeyId } from '@/api/queryKeys';
 import { queryKeys } from '@/api/queryKeys';
 import { QUERY_OPTION_DEFAULTS } from '@/api/queryOptions/constants';
 import {
+  createInfiniteQueryOptions,
   createListQueryOptions,
   createQueryOptions,
+  type InfiniteQueryOptionsOverrides,
   type QueryOptionsOverrides,
 } from '@/api/queryOptions/factory';
 import type {
   ArticleCommentsData,
   TaskCommentsData,
 } from '@/api/queryOptions/types';
+
+type CursorPageResponse = {
+  nextCursor: number | null;
+};
 
 /** 할 일 댓글 조회용 query options입니다. */
 export const commentQueryOptions = {
@@ -51,6 +57,29 @@ export const articleCommentQueryOptions = {
       options,
       queryFn: () => getArticleComments(teamId, articleId, params),
       queryKey: queryKeys.articleComment.list(teamId, articleId, params),
+      staleTime: QUERY_OPTION_DEFAULTS.COMMENT_LIST_STALE_TIME,
+    }),
+  infiniteList: <TData = ArticleCommentsData>(
+    teamId: string,
+    articleId: QueryKeyId,
+    params: CursorPaginationQueryParams,
+    options?: InfiniteQueryOptionsOverrides<ArticleCommentsData, number, TData>,
+  ) =>
+    createInfiniteQueryOptions<ArticleCommentsData, number, TData>({
+      getNextPageParam: (lastPage) => {
+        const page = lastPage as CursorPageResponse;
+
+        return page.nextCursor ?? undefined;
+      },
+      initialPageParam: 0,
+      options,
+      queryFn: ({ pageParam }) =>
+        getArticleComments(teamId, articleId, { ...params, cursor: pageParam }),
+      queryKey: queryKeys.articleComment.infiniteList(
+        teamId,
+        articleId,
+        params,
+      ),
       staleTime: QUERY_OPTION_DEFAULTS.COMMENT_LIST_STALE_TIME,
     }),
 } as const;

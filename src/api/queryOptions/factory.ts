@@ -9,22 +9,27 @@
  * 핵심 규칙:
  * - `createQueryOptions`: 일반 조회용
  * - `createListQueryOptions`: 목록 조회용 (기본 `keepPreviousData` 포함)
+ * - `createInfiniteQueryOptions`: 무한 스크롤 조회용
  * - `createMutationOptions`: mutation용
  */
 
 import {
+  type InfiniteData,
+  infiniteQueryOptions,
   keepPreviousData,
   mutationOptions,
   queryOptions,
 } from '@tanstack/react-query';
 
 import type {
+  CreateInfiniteQueryOptionsParams,
   CreateMutationOptionsParams,
   CreateQueryOptionsParams,
   QueryKey,
 } from '@/api/queryOptions/factory.types';
 
 export type {
+  InfiniteQueryOptionsOverrides,
   MutationOptionsOverrides,
   QueryOptionsOverrides,
 } from '@/api/queryOptions/factory.types';
@@ -59,6 +64,34 @@ export function createListQueryOptions<
 }: CreateQueryOptionsParams<TQueryFnData, TData, TQueryKey>) {
   return queryOptions({
     placeholderData: keepPreviousData,
+    queryFn,
+    queryKey,
+    staleTime,
+    ...options,
+  });
+}
+
+export function createInfiniteQueryOptions<
+  TQueryFnData,
+  TPageParam,
+  TData = InfiniteData<TQueryFnData, TPageParam>,
+  TQueryKey extends QueryKey = QueryKey,
+>({
+  getNextPageParam,
+  initialPageParam,
+  options,
+  queryFn,
+  queryKey,
+  staleTime,
+}: CreateInfiniteQueryOptionsParams<
+  TQueryFnData,
+  TPageParam,
+  TData,
+  TQueryKey
+>) {
+  return infiniteQueryOptions({
+    getNextPageParam,
+    initialPageParam,
     queryFn,
     queryKey,
     staleTime,

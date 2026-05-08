@@ -19,14 +19,20 @@ import type { ArticleListQueryParams, QueryKeyId } from '@/api/queryKeys';
 import { queryKeys } from '@/api/queryKeys';
 import { QUERY_OPTION_DEFAULTS } from '@/api/queryOptions/constants';
 import {
+  createInfiniteQueryOptions,
   createListQueryOptions,
   createQueryOptions,
+  type InfiniteQueryOptionsOverrides,
   type QueryOptionsOverrides,
 } from '@/api/queryOptions/factory';
 import type {
   ArticleDetailData,
   ArticleListData,
 } from '@/api/queryOptions/types';
+
+type CursorPageResponse = {
+  nextCursor: number | null;
+};
 
 /** 게시글 조회용 query options입니다. 목록 / 상세 hook이 이 설정을 사용합니다. */
 export const articleQueryOptions = {
@@ -50,6 +56,24 @@ export const articleQueryOptions = {
       options,
       queryFn: () => getArticleList(teamId, params),
       queryKey: queryKeys.article.list(teamId, params),
+      staleTime: QUERY_OPTION_DEFAULTS.LIST_STALE_TIME,
+    }),
+  infiniteList: <TData = ArticleListData>(
+    teamId: string,
+    params?: ArticleListQueryParams,
+    options?: InfiniteQueryOptionsOverrides<ArticleListData, number, TData>,
+  ) =>
+    createInfiniteQueryOptions<ArticleListData, number, TData>({
+      getNextPageParam: (lastPage) => {
+        const page = lastPage as CursorPageResponse;
+
+        return page.nextCursor ?? undefined;
+      },
+      initialPageParam: 0,
+      options,
+      queryFn: ({ pageParam }) =>
+        getArticleList(teamId, { ...params, cursor: pageParam }),
+      queryKey: queryKeys.article.infiniteList(teamId, params),
       staleTime: QUERY_OPTION_DEFAULTS.LIST_STALE_TIME,
     }),
 } as const;

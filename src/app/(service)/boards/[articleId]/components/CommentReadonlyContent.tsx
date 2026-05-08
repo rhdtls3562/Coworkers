@@ -1,5 +1,6 @@
 import CommentWriterAvatar from '@/app/(service)/boards/[articleId]/components/CommentWriterAvatar';
 import type { Comment } from '@/app/(service)/boards/[articleId]/types';
+import { formatDateToYmd } from '@/app/(service)/boards/utils/boardUtils';
 import { IcMoreVerticalLarge } from '@/assets';
 import ListDropdown from '@/components/common/dropdown/components/ListDropdown';
 import Modal from '@/components/common/modal';
@@ -39,7 +40,7 @@ export default function CommentReadonlyContent({
             {comment.content}
           </p>
           <p className="text-sm font-medium text-interaction-inactive">
-            {comment.createdAt}
+            {formatDateToYmd(comment.createdAt)}
           </p>
         </div>
         <div className="shrink-0">

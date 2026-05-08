@@ -25,13 +25,7 @@ export type PostListResponse = {
   list: Post[];
 };
 
-export type BoardBestListProps = {
-  boardBestPosts: Post[];
-  hasBoardPosts: boolean;
-};
-
 export type BoardListProps = {
-  boardPosts: Post[];
   isSearchMode: boolean;
   keyword?: string;
 };

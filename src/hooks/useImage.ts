@@ -26,7 +26,8 @@ export function useUploadImageMutation(
 ) {
   return useMutation(
     createMutationOptions({
-      mutationFn: ({ file }: UploadImageVariables) => uploadImage(file),
+      mutationFn: ({ file, teamId, token }: UploadImageVariables) =>
+        uploadImage(teamId, file, token),
       mutationKey: queryKeys.image.upload(),
       options,
     }),
