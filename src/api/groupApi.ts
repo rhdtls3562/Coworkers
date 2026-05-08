@@ -4,14 +4,8 @@
 
 import { apiClient, teamEndpoint } from '@/api/apiClient';
 import { buildQueryString } from '@/api/buildQueryString';
-import { API_PATH_SEGMENTS, HTTP_METHODS } from '@/api/constants';
+import { API_PATH_SEGMENTS } from '@/api/constants';
 import type { QueryKeyId, TeamScopedDateQueryParams } from '@/api/queryKeys';
-import type {
-  AcceptGroupInvitationBody,
-  AcceptGroupInvitationResponse,
-  CreateGroupBody,
-  CreateGroupResponse,
-} from '@/api/types';
 
 export async function getTeamDetail(groupId: QueryKeyId) {
   return apiClient<unknown>(
@@ -28,27 +22,4 @@ export async function getTeamTasksByDate(
   )}${buildQueryString(params)}`;
 
   return apiClient<unknown>(endpoint);
-}
-
-export async function createGroup(teamId: string, body: CreateGroupBody) {
-  return apiClient<CreateGroupResponse>(
-    teamEndpoint(API_PATH_SEGMENTS.GROUPS, teamId),
-    {
-      body: JSON.stringify(body),
-      method: HTTP_METHODS.POST,
-    },
-  );
-}
-
-export async function acceptGroupInvitation(
-  teamId: string,
-  body: AcceptGroupInvitationBody,
-) {
-  return apiClient<AcceptGroupInvitationResponse>(
-    teamEndpoint(`${API_PATH_SEGMENTS.GROUPS}/accept-invitation`, teamId),
-    {
-      body: JSON.stringify(body),
-      method: HTTP_METHODS.POST,
-    },
-  );
 }

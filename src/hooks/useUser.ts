@@ -17,6 +17,7 @@ import {
   type QueryOptionsOverrides,
 } from '@/api/queryOptions/factory';
 import {
+  changePassword,
   deleteMe,
   getCompletedTasks,
   getMe,
@@ -24,6 +25,7 @@ import {
   getMyMemberships,
   resetPassword,
   sendResetPasswordEmail,
+  updateMe,
 } from '@/api/userApi';
 
 type CompletedTasksData = Awaited<ReturnType<typeof getCompletedTasks>>;
@@ -56,6 +58,13 @@ type UseMeParams<TData = MeData> = {
 };
 
 type DeleteMeVariables = void;
+
+type ChangePassword = {
+  password: string;
+  passwordConfirmation: string;
+};
+type ChangePasswordData = Awaited<ReturnType<typeof changePassword>>;
+
 type SendResetPasswordEmailVariables = {
   body: {
     email: string;
@@ -72,6 +81,10 @@ type ResetPasswordVariables = {
   };
   teamId: string;
 };
+
+type UpdateMeData = Awaited<ReturnType<typeof updateMe>>;
+
+type UpdateMeVariables = Partial<Pick<MeData, 'nickname' | 'image'>>;
 
 export function useMeQuery<TData = MeData>({
   options,
@@ -100,6 +113,16 @@ export function useSendResetPasswordEmailMutation(
     createMutationOptions({
       mutationFn: ({ body, teamId }: SendResetPasswordEmailVariables) =>
         sendResetPasswordEmail(teamId, body),
+      options,
+    }),
+  );
+}
+export function useChangePasswordMutation(
+  options?: MutationOptionsOverrides<ChangePasswordData, ChangePassword>,
+) {
+  return useMutation(
+    createMutationOptions({
+      mutationFn: (variables: ChangePassword) => changePassword(variables),
       options,
     }),
   );
@@ -136,4 +159,15 @@ export function useCompletedTasksQuery<TData = CompletedTasksData>({
   params,
 }: UseCompletedTasksParams<TData> = {}) {
   return useQuery(userQueryOptions.completedTasks<TData>(params, options));
+}
+
+export function useUpdateMeMutation(
+  options?: MutationOptionsOverrides<UpdateMeData, UpdateMeVariables>,
+) {
+  return useMutation(
+    createMutationOptions({
+      mutationFn: (variables: UpdateMeVariables) => updateMe(variables),
+      options,
+    }),
+  );
 }

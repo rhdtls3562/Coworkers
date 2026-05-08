@@ -31,28 +31,6 @@ export type SignInWithOauthBody = {
   token: string;
 };
 
-export type CreateGroupBody = {
-  image?: string;
-  name: string;
-};
-
-export type CreateGroupResponse = {
-  createdAt: string;
-  id: number;
-  image: string | null;
-  name: string;
-  updatedAt: string;
-};
-
-export type AcceptGroupInvitationBody = {
-  token: string;
-  userEmail: string;
-};
-
-export type AcceptGroupInvitationResponse = {
-  groupId: number;
-};
-
 export type SendResetPasswordEmailBody = {
   email: string;
   redirectUrl: string;
