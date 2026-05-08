@@ -30,18 +30,17 @@ export function useAccountForm({
 }: UseAccountFormProps) {
   const { showToast } = useToast();
   const uploadImageMutation = useUploadImageMutation();
-  const { control, handleSubmit, register, reset } = useForm<AccountFormValues>(
-    {
+  const { control, formState, handleSubmit, register, reset } =
+    useForm<AccountFormValues>({
       defaultValues: {
-        name: initialName,
+        nickname: initialName,
       },
       mode: 'onChange',
       resolver: zodResolver(accountSchema),
-    },
-  );
+    });
   const resetName = useCallback(
     (name: string) => {
-      reset({ name });
+      reset({ nickname: name });
     },
     [reset],
   );
@@ -61,7 +60,7 @@ export function useAccountForm({
   });
   const name = useWatch({
     control,
-    name: 'name',
+    name: 'nickname',
   });
 
   useAccountUnsavedChangesGuard({
@@ -85,7 +84,7 @@ export function useAccountForm({
     checkIsDirty(name);
   };
 
-  const { onChange: onNameChange, ...nameRegister } = register('name');
+  const { onChange: onNameChange, ...nameRegister } = register('nickname');
 
   const handleNameChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -94,27 +93,31 @@ export function useAccountForm({
     checkIsDirty(event.target.value);
   };
 
-  const onSubmit = async (data: AccountFormValues) => {
-    const payload: Partial<Pick<UserInfo, 'nickname' | 'image'>> = {};
+  const onSubmit = useCallback(
+    async (data: AccountFormValues) => {
+      const payload: Partial<Pick<UserInfo, 'nickname' | 'image'>> = {};
 
-    if (data.name !== baseNameRef.current) {
-      payload.nickname = data.name;
-    }
+      if (data.nickname !== baseNameRef.current) {
+        payload.nickname = data.nickname;
+      }
 
-    if (imageRef.current !== baseImageRef.current) {
-      payload.image = imageRef.current ?? undefined;
-    }
+      if (imageRef.current !== baseImageRef.current) {
+        payload.image = imageRef.current ?? undefined;
+      }
 
-    try {
-      await onSubmitData(payload);
-      baseNameRef.current = data.name;
-      baseImageRef.current = imageRef.current;
-      onDirtyChange(false);
-    } catch {}
-  };
+      try {
+        await onSubmitData(payload);
+        baseNameRef.current = data.nickname;
+        baseImageRef.current = imageRef.current;
+        onDirtyChange(false);
+      } catch {}
+    },
+    [baseNameRef, baseImageRef, imageRef, onSubmitData, onDirtyChange],
+  );
 
   return {
     email: initialEmail,
+    errors: formState.errors,
     handleImageChange,
     handleNameChange,
     handleSubmit,
