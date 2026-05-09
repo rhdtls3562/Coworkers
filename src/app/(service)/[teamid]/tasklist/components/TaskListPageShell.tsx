@@ -6,6 +6,10 @@
 
 import { useMemo, useState } from 'react';
 
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+
+import { teamQueryOptions, userQueryOptions } from '@/api/queryOptions';
+import { createTaskList, deleteTaskList, updateTaskList } from '@/api/taskApi';
 import TaskListBoard from '@/app/(service)/[teamid]/tasklist/components/TaskListBoard';
 import TaskListColumnDeleteModal from '@/app/(service)/[teamid]/tasklist/components/TaskListColumnDeleteModal';
 import TaskListContentArea from '@/app/(service)/[teamid]/tasklist/components/TaskListContentArea';
@@ -15,7 +19,6 @@ import TaskListFAB from '@/app/(service)/[teamid]/tasklist/components/TaskListFA
 import TaskListPageHeader from '@/app/(service)/[teamid]/tasklist/components/TaskListPageHeader';
 import TaskListRenameColumnModal from '@/app/(service)/[teamid]/tasklist/components/TaskListRenameColumnModal';
 import TaskListSidebar from '@/app/(service)/[teamid]/tasklist/components/TaskListSidebar';
-import { TASK_LIST_INITIAL_COLUMNS } from '@/app/(service)/[teamid]/tasklist/constants';
 import type { TaskListColumnItem } from '@/app/(service)/[teamid]/tasklist/types';
 import { useToast } from '@/components/common/toast';
 
@@ -25,12 +28,40 @@ type TaskListPageShellProps = {
 
 export default function TaskListPageShell({ teamId }: TaskListPageShellProps) {
   const { showToast } = useToast();
-  const [columns, setColumns] = useState<TaskListColumnItem[]>(() => [
-    ...TASK_LIST_INITIAL_COLUMNS,
-  ]);
-  const [activeId, setActiveId] = useState<string>(
-    TASK_LIST_INITIAL_COLUMNS[1]?.id ?? TASK_LIST_INITIAL_COLUMNS[0]?.id ?? '',
-  );
+  const queryClient = useQueryClient();
+
+  // 1. 내 그룹 목록 조회
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { data: groups } = useQuery({
+    ...userQueryOptions.groups(),
+  });
+
+  // 첫 번째 그룹 자동 선택
+  // URL 파라미터의 teamId를 기반으로 그룹 ID 설정
+  const groupId = Number(teamId);
+
+  // 2. 선택된 그룹 상세 조회 → taskLists 가져오기
+  const { data: groupDetail } = useQuery({
+    ...teamQueryOptions.detail(String(groupId)),
+    enabled: groupId !== null,
+  });
+
+  // 3. taskLists를 사이드바 columns 형태로 변환
+  const columns: TaskListColumnItem[] = useMemo(() => {
+    if (!groupDetail?.taskLists) return [];
+    return groupDetail.taskLists.map((tl) => ({
+      id: String(tl.id),
+      title: tl.name,
+      completed: tl.tasks.filter((t) => t.doneAt !== null).length,
+      total: tl.tasks.length,
+    }));
+  }, [groupDetail]);
+
+  const [activeId, setActiveId] = useState<string>('');
+
+  // 첫 번째 taskList 자동 선택
+  const effectiveActiveId = activeId || columns[0]?.id || '';
+
   const [columnPendingDelete, setColumnPendingDelete] =
     useState<TaskListColumnItem | null>(null);
   const [columnPendingRename, setColumnPendingRename] =
@@ -39,9 +70,9 @@ export default function TaskListPageShell({ teamId }: TaskListPageShellProps) {
   const [isCreateTaskOpen, setIsCreateTaskOpen] = useState(false);
 
   const columnTitle = useMemo(() => {
-    const found = columns.find((c) => c.id === activeId);
+    const found = columns.find((c) => c.id === effectiveActiveId);
     return found?.title ?? '할 일';
-  }, [columns, activeId]);
+  }, [columns, effectiveActiveId]);
 
   const handleRequestDeleteColumn = (item: TaskListColumnItem) => {
     setColumnPendingDelete(item);
@@ -55,30 +86,34 @@ export default function TaskListPageShell({ teamId }: TaskListPageShellProps) {
     setColumnPendingDelete(null);
   };
 
-  const handleConfirmDeleteColumn = () => {
-    if (!columnPendingDelete) return;
-    const removedId = columnPendingDelete.id;
-    setColumnPendingDelete(null);
-    const nextColumns = columns.filter((c) => c.id !== removedId);
-    setColumns(nextColumns);
-    if (activeId === removedId) {
-      setActiveId(nextColumns[0]?.id ?? '');
+  const handleConfirmDeleteColumn = async () => {
+    if (!columnPendingDelete || !groupId) return;
+
+    try {
+      await deleteTaskList(String(groupId), columnPendingDelete.id);
+      await queryClient.invalidateQueries({ queryKey: ['teams'] });
+      setColumnPendingDelete(null);
+      showToast('삭제되었습니다.', 'error');
+    } catch {
+      // TODO: 에러 처리
     }
-    showToast('삭제되었습니다.', 'error');
   };
 
-  const handleCreateColumn = (name: string) => {
-    const id = crypto.randomUUID();
-    setColumns((prev) => [
-      ...prev,
-      { id, title: name, completed: 0, total: 0 },
-    ]);
-    setActiveId(id);
-    setIsCreateColumnOpen(false);
-    showToast('할일 목록이 생성되었습니다.', 'success');
+  const handleCreateColumn = async (name: string) => {
+    if (!groupId) return;
+
+    try {
+      await createTaskList(String(groupId), { name });
+      await queryClient.invalidateQueries({ queryKey: ['teams'] });
+      setIsCreateColumnOpen(false);
+      showToast('할일 목록이 생성되었습니다.', 'success');
+    } catch {
+      // TODO: 에러 처리
+    }
   };
 
-  const handleCreateTask = () => {
+  const handleCreateTask = async () => {
+    await queryClient.invalidateQueries({ queryKey: ['teams'] });
     setIsCreateTaskOpen(false);
     showToast('할일이 생성되었습니다.', 'success');
   };
@@ -87,20 +122,17 @@ export default function TaskListPageShell({ teamId }: TaskListPageShellProps) {
     setColumnPendingRename(null);
   };
 
-  const handleRenameColumn = (name: string) => {
-    if (!columnPendingRename) {
-      return;
+  const handleRenameColumn = async (name: string) => {
+    if (!columnPendingRename || !groupId) return;
+
+    try {
+      await updateTaskList(String(groupId), columnPendingRename.id, { name });
+      await queryClient.invalidateQueries({ queryKey: ['teams'] });
+      setColumnPendingRename(null);
+      showToast('변경되었습니다.', 'success');
+    } catch {
+      // TODO: 에러 처리
     }
-
-    const targetId = columnPendingRename.id;
-
-    setColumns((prev) =>
-      prev.map((column) =>
-        column.id === targetId ? { ...column, title: name } : column,
-      ),
-    );
-    setColumnPendingRename(null);
-    showToast('변경되었습니다.', 'success');
   };
 
   return (
@@ -109,7 +141,7 @@ export default function TaskListPageShell({ teamId }: TaskListPageShellProps) {
         <div className="-mx-4 bg-background-secondary px-4 pb-8 pt-7.5 sm:-mx-5 sm:px-5 md:-mx-10 md:px-10 lg:contents">
           <TaskListPageHeader
             teamId={teamId}
-            teamName={teamId}
+            teamName={groupDetail?.name ?? teamId}
             className="lg:col-span-2"
             onConfirmTeamPageDelete={() => {
               showToast('삭제되었습니다.', 'error');
@@ -118,7 +150,7 @@ export default function TaskListPageShell({ teamId }: TaskListPageShellProps) {
           <TaskListSidebar
             className="mt-7.5 lg:col-start-1 lg:row-start-2 lg:mt-0"
             columns={columns}
-            activeId={activeId}
+            activeId={effectiveActiveId}
             onSelectColumn={setActiveId}
             onRequestRenameColumn={handleRequestRenameColumn}
             onRequestDeleteColumn={handleRequestDeleteColumn}
@@ -128,6 +160,8 @@ export default function TaskListPageShell({ teamId }: TaskListPageShellProps) {
         <TaskListBoard
           className="lg:col-start-2 lg:row-start-2"
           columnTitle={columnTitle}
+          groupId={groupId}
+          taskListId={effectiveActiveId}
           teamId={teamId}
         />
       </TaskListContentArea>
@@ -141,10 +175,12 @@ export default function TaskListPageShell({ teamId }: TaskListPageShellProps) {
         />
       )}
 
-      {isCreateTaskOpen && (
+      {isCreateTaskOpen && groupId && (
         <TaskListCreateTaskModal
           onClose={() => setIsCreateTaskOpen(false)}
           onSubmit={handleCreateTask}
+          groupId={groupId}
+          taskListId={effectiveActiveId}
         />
       )}
 

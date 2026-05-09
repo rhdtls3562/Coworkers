@@ -12,9 +12,10 @@ import type {
   CreateGroupBody,
   CreateGroupResponse,
 } from '@/api/types';
+import type { GroupDetail } from '@/types/group';
 
 export async function getTeamDetail(groupId: QueryKeyId) {
-  return apiClient<unknown>(
+  return apiClient<GroupDetail>(
     teamEndpoint(`${API_PATH_SEGMENTS.GROUPS}/${groupId}`),
   );
 }
