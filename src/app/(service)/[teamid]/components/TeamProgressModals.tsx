@@ -9,6 +9,7 @@ import {
   useDeleteTeamMutation,
   useRemoveMemberTeamMutation,
 } from '@/hooks/useTeam';
+import { useMeQuery } from '@/hooks/useUser';
 
 export function TeamProgressModals({
   is,
@@ -21,6 +22,8 @@ export function TeamProgressModals({
 }: TeamProgressModalProps) {
   const params = useParams();
   const router = useRouter();
+  const { data: meData } = useMeQuery();
+
   const { mutate: deleteTeam } = useDeleteTeamMutation();
   const { mutate: removeMemberTeam } = useRemoveMemberTeamMutation();
 
@@ -45,6 +48,21 @@ export function TeamProgressModals({
       {
         onSuccess: () => {
           reset();
+        },
+      },
+    );
+  };
+  const handleLeaveTeam = () => {
+    if (!meData?.id) return;
+
+    removeMemberTeam(
+      {
+        teamId: params.teamid as string,
+        memberUserId: meData.id,
+      },
+      {
+        onSuccess: () => {
+          router.push('/');
         },
       },
     );
@@ -86,6 +104,7 @@ export function TeamProgressModals({
           title="해당 팀에서 나가시겠어요?"
           confirmText="팀 나가기"
           toastMessage="팀에서 나왔습니다."
+          onConfirm={handleLeaveTeam}
         />
       )}
 
