@@ -10,16 +10,16 @@ import type {
   QueryParams,
 } from '@/api/queryKeys';
 import type {
+  MembershipInfo,
   ResetPasswordBody,
   SendResetPasswordEmailBody,
+  UserInfo,
 } from '@/api/types';
-import type { ChangePassword, UserInfo } from '@/app/(service)/mypage/types';
-import type { GroupSummary } from '@/types/group';
+import type { ChangePassword } from '@/app/(service)/mypage/types';
 
 export async function getMe() {
   return apiClient<UserInfo>(teamEndpoint('/user'));
 }
-
 export async function updateMe(
   body: Partial<Pick<UserInfo, 'nickname' | 'image'>>,
 ) {
@@ -37,12 +37,12 @@ export async function deleteMe() {
 
 export async function getMyGroups(params?: QueryParams) {
   const endpoint = `${teamEndpoint('/user/groups')}${buildQueryString(params)}`;
-  return apiClient<GroupSummary[]>(endpoint);
+  return apiClient<unknown>(endpoint);
 }
 
 export async function getMyMemberships(params?: QueryParams) {
   const endpoint = `${teamEndpoint('/user/memberships')}${buildQueryString(params)}`;
-  return apiClient<unknown>(endpoint);
+  return apiClient<MembershipInfo>(endpoint);
 }
 
 export async function getCompletedTasks(

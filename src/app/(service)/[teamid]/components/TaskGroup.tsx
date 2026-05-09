@@ -1,9 +1,10 @@
 import { ModalTaskAdd } from '@/app/(service)/[teamid]/components/modals/ModalTaskAddEdit';
+import TaskItem from '@/app/(service)/[teamid]/components/TaskItem';
 import { useModalState } from '@/app/(service)/[teamid]/hooks/useModalState';
 import { TaskProps } from '@/app/(service)/[teamid]/types';
 import { IcPlusSub } from '@/assets/index';
 
-export default function TaskGroup({ status }: TaskProps) {
+export default function TaskGroup({ status, taskLists }: TaskProps) {
   const { open, close, is } = useModalState();
 
   return (
@@ -22,10 +23,21 @@ export default function TaskGroup({ status }: TaskProps) {
           />
         </button>
       </div>
-      <div className="rounded-2xl border border-border-secondary bg-background-inverse px-6 py-8 text-center text-sm font-normal text-text-default">
-        아직 등록된 할 일이 없어요.
-      </div>
+      {taskLists.map((taskItems) => (
+        <TaskItem
+          key={taskItems.id}
+          title={taskItems.name}
+          status={status}
+          tasks={taskItems.tasks}
+          taskListId={taskItems.id}
+        />
+      ))}
 
+      {taskLists.length === 0 && (
+        <div className="rounded-2xl px-6 py-8 text-center text-sm font-normal text-text-default block xl:hidden">
+          아직 등록된 할 일이 없어요.
+        </div>
+      )}
       {is('taskAdd') && <ModalTaskAdd onClose={close} />}
     </div>
   );

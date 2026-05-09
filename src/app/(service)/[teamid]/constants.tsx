@@ -1,4 +1,7 @@
-import type { MemberChipsProps } from '@/app/(service)/[teamid]/types';
+import type {
+  MemberChipsProps,
+  OpenModal,
+} from '@/app/(service)/[teamid]/types';
 import { IcMoreVerticalGray, IcSettingsLarge } from '@/assets/index';
 
 export const TEAM_MEMBERS: MemberChipsProps[] = [];
@@ -17,3 +20,16 @@ export const DROPDOWN_BUTTON = (
     aria-label="드롭다운 버튼"
   />
 );
+
+export const CREATE_MASTER_ITEMS = (
+  teamid: string,
+  push: (path: string) => void, // router.push
+  open: OpenModal,
+) => [
+  { label: '수정하기', onClick: () => push(`/${teamid}/edit`) },
+  { label: '삭제하기', onClick: () => open('teamDelete') },
+];
+
+export const CREATE_MEMBER_ITEMS = (open: OpenModal) => [
+  { label: '팀 나가기', onClick: () => open('teamLeave') },
+];
