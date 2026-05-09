@@ -4,6 +4,8 @@
 
 'use client';
 
+import { useCallback } from 'react';
+
 import TaskListBoardEmptyTaskRow from '@/app/(service)/[teamid]/tasklist/components/TaskListBoardEmptyTaskRow';
 import TaskListMonthNavigator from '@/app/(service)/[teamid]/tasklist/components/TaskListMonthNavigator';
 import TaskListTaskDeleteModal from '@/app/(service)/[teamid]/tasklist/components/TaskListTaskDeleteModal';
@@ -23,40 +25,50 @@ import useRightPanel from '@/components/layout/hooks/useRightPanel';
 import { cn } from '@/utils/cn';
 
 export default function TaskListBoard({
-  className,
   columnTitle,
-  groupId,
-  taskListId,
+  className,
   teamId,
 }: TaskListBoardProps) {
   const { openRightPanel } = useRightPanel();
   const {
     handleCloseDeleteModal,
     handleConfirmDelete,
+    handleRemoveTask,
     handleRequestDelete,
+    handleSyncTaskChecked,
+    handleSyncTaskDetail,
     handleToggleChecked,
     isTaskListEmpty,
     selectedDate,
     setSelectedDate,
     sortedTasks,
     taskPendingDelete,
-  } = useTaskListBoard(groupId, taskListId);
+  } = useTaskListBoard();
 
-  const handleOpenTaskDetail = (
-    task: (typeof sortedTasks)[number],
-    mode: TaskListTaskDetailOpenMode,
-  ) => {
-    openRightPanel({
-      content: (
-        <TaskListTaskDetailPanel
-          key={`${task.id}-${mode}`}
-          initialMode={mode}
-          task={task}
-          teamId={teamId}
-        />
-      ),
-    });
-  };
+  const handleOpenTaskDetail = useCallback(
+    (task: (typeof sortedTasks)[number], mode: TaskListTaskDetailOpenMode) => {
+      openRightPanel({
+        content: (
+          <TaskListTaskDetailPanel
+            key={`${task.id}-${mode}`}
+            initialMode={mode}
+            task={task}
+            teamId={teamId}
+            onDeleteTask={handleRemoveTask}
+            onSyncTaskChecked={handleSyncTaskChecked}
+            onSyncTaskDetail={handleSyncTaskDetail}
+          />
+        ),
+      });
+    },
+    [
+      handleRemoveTask,
+      handleSyncTaskChecked,
+      handleSyncTaskDetail,
+      openRightPanel,
+      teamId,
+    ],
+  );
 
   return (
     <section
