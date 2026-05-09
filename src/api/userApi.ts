@@ -14,6 +14,7 @@ import type {
   SendResetPasswordEmailBody,
 } from '@/api/types';
 import type { ChangePassword, UserInfo } from '@/app/(service)/mypage/types';
+import type { GroupSummary } from '@/types/group';
 
 export async function getMe() {
   return apiClient<UserInfo>(teamEndpoint('/user'));
@@ -36,7 +37,7 @@ export async function deleteMe() {
 
 export async function getMyGroups(params?: QueryParams) {
   const endpoint = `${teamEndpoint('/user/groups')}${buildQueryString(params)}`;
-  return apiClient<unknown>(endpoint);
+  return apiClient<GroupSummary[]>(endpoint);
 }
 
 export async function getMyMemberships(params?: QueryParams) {

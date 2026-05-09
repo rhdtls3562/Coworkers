@@ -1,12 +1,10 @@
 /**
  * 플로팅 버튼으로 열리는 할 일 만들기 모달입니다.
- * 공용 Modal의 children(폼 본문)과 하단 버튼 props를 사용합니다.
- * 상단 제목·안내 문구는 피그마 16/14에 맞추어 children에서 렌더합니다.
- * 치수는 Tailwind·픽셀 토큰(h-[75px] 메모 등)으로 맞춥니다.
  */
 
 'use client';
 
+import { createRecurring } from '@/api/taskApi';
 import TaskListCreateTaskModalDateTimeSection from '@/app/(service)/[teamid]/tasklist/components/TaskListCreateTaskModalDateTimeSection';
 import TaskListCreateTaskModalRepeatSection from '@/app/(service)/[teamid]/tasklist/components/TaskListCreateTaskModalRepeatSection';
 import {
@@ -30,6 +28,8 @@ import { cn } from '@/utils/cn';
 export default function TaskListCreateTaskModal({
   onClose,
   onSubmit,
+  groupId,
+  taskListId,
 }: TaskListCreateTaskModalProps) {
   const {
     calendarButtonRef,
@@ -56,9 +56,31 @@ export default function TaskListCreateTaskModal({
     weekDays,
   } = useTaskListCreateTaskForm();
 
-  const handleCreate = () => {
-    onSubmit?.();
-    onClose();
+  const handleCreate = async () => {
+    if (!title.trim()) return;
+
+    const frequencyMap = {
+      once: 'ONCE',
+      daily: 'DAILY',
+      weekly: 'WEEKLY',
+      monthly: 'MONTHLY',
+    } as const;
+
+    const body = {
+      name: title.trim(),
+      description: memo.trim(),
+      startDate: selected.toISOString(),
+      frequencyType: frequencyMap[repeat],
+      ...(repeat === 'monthly' ? { monthDay } : {}),
+    };
+
+    try {
+      await createRecurring(String(groupId), taskListId, body);
+      await onSubmit?.();
+      onClose();
+    } catch {
+      // TODO: 에러 처리
+    }
   };
 
   return (

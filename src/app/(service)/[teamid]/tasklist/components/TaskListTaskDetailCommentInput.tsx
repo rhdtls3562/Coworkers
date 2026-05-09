@@ -2,9 +2,19 @@
 
 import { type ChangeEvent, type KeyboardEvent, useRef, useState } from 'react';
 
+import Image from 'next/image';
+
 import { IcArrowUpCircle, IcArrowUpCircleActive, IcUserLarge } from '@/assets';
 
-export default function TaskListTaskDetailCommentInput() {
+type TaskListTaskDetailCommentInputProps = {
+  onSubmit: (content: string) => void;
+  userImage: string | null;
+};
+
+export default function TaskListTaskDetailCommentInput({
+  onSubmit,
+  userImage,
+}: TaskListTaskDetailCommentInputProps) {
   const [value, setValue] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -29,6 +39,7 @@ export default function TaskListTaskDetailCommentInput() {
       return;
     }
 
+    onSubmit(value.trim());
     setValue('');
 
     if (!textareaRef.current) {
@@ -49,9 +60,19 @@ export default function TaskListTaskDetailCommentInput() {
 
   return (
     <div className="flex items-center gap-3 border-y border-background-tertiary py-3">
-      <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-background-tertiary md:size-9">
-        <IcUserLarge width={20} height={20} aria-hidden="true" />
-      </span>
+      {userImage ? (
+        <Image
+          src={userImage}
+          alt="내 프로필"
+          width={36}
+          height={36}
+          className="size-8 shrink-0 rounded-lg object-cover md:size-9"
+        />
+      ) : (
+        <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-background-tertiary md:size-9">
+          <IcUserLarge width={20} height={20} aria-hidden="true" />
+        </span>
+      )}
 
       <textarea
         ref={textareaRef}
@@ -66,9 +87,9 @@ export default function TaskListTaskDetailCommentInput() {
       <button
         type="button"
         aria-label="댓글 등록"
-        onClick={handleSubmit}
+        onMouseDown={handleSubmit}
         disabled={!isActive}
-        className="flex size-6 shrink-0 items-center justify-center"
+        className="flex size-6 shrink-0 items-center justify-center cursor-pointer"
       >
         {isActive ? (
           <IcArrowUpCircleActive

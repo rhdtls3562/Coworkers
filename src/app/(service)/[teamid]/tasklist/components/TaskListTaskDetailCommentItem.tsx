@@ -1,5 +1,7 @@
 'use client';
 
+import Image from 'next/image';
+
 import TaskListTaskDetailCommentActions from '@/app/(service)/[teamid]/tasklist/components/TaskListTaskDetailCommentActions';
 import {
   COMMENT_ACTIONS_SLOT_CLASS_NAME,
@@ -13,6 +15,32 @@ import type { TaskListTaskDetailCommentItemProps } from '@/app/(service)/[teamid
 import { IcMoreVerticalSmall, IcUserLarge } from '@/assets';
 import { ListDropdown } from '@/components/common/dropdown';
 import { cn } from '@/utils/cn';
+
+function CommentAvatar({
+  author,
+  authorImage,
+}: {
+  author: string;
+  authorImage: string | null;
+}) {
+  if (authorImage) {
+    return (
+      <Image
+        src={authorImage}
+        alt={`${author} 프로필`}
+        width={36}
+        height={36}
+        className="mt-0.5 size-8 shrink-0 rounded-lg object-cover md:size-9"
+      />
+    );
+  }
+
+  return (
+    <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg bg-background-tertiary md:size-9">
+      <IcUserLarge width={20} height={20} aria-hidden="true" />
+    </span>
+  );
+}
 
 export default function TaskListTaskDetailCommentItem({
   comment,
@@ -31,9 +59,10 @@ export default function TaskListTaskDetailCommentItem({
     return (
       <li className={cn('bg-icon-inverse py-4', COMMENT_ROW_BLEED_X)}>
         <div className="flex gap-3">
-          <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg bg-background-tertiary md:size-9">
-            <IcUserLarge width={20} height={20} aria-hidden="true" />
-          </span>
+          <CommentAvatar
+            author={comment.author}
+            authorImage={comment.authorImage}
+          />
 
           <div className="min-w-0 flex-1">
             <p className="text-sm font-bold text-text-primary md:text-base">
@@ -72,9 +101,10 @@ export default function TaskListTaskDetailCommentItem({
   return (
     <li className={commentItemRootClassName(isOwnComment)}>
       <div className="flex gap-3">
-        <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg bg-background-tertiary md:size-9">
-          <IcUserLarge width={20} height={20} aria-hidden="true" />
-        </span>
+        <CommentAvatar
+          author={comment.author}
+          authorImage={comment.authorImage}
+        />
 
         <div className="min-w-0 flex-1">
           {isOwnComment ? (

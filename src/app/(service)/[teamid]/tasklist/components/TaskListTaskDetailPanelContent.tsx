@@ -13,6 +13,7 @@ import { ContentTextarea, TitleInput } from '@/components/common/form';
 
 type TaskListTaskDetailPanelContentProps = {
   comments: TaskListTaskComment[];
+  currentUserImage: string | null;
   currentUserName: string;
   description: string;
   draftCommentContent: string;
@@ -22,6 +23,7 @@ type TaskListTaskDetailPanelContentProps = {
   isTaskEditing: boolean;
   onCancelCommentEdit: () => void;
   onChangeDraftContent: (value: string) => void;
+  onCreateComment: (content: string) => void;
   onDeleteComment: (id: string) => void;
   onStartCommentEdit: (comment: TaskListTaskComment) => void;
   onSubmitCommentEdit: () => void;
@@ -35,6 +37,7 @@ type TaskListTaskDetailPanelContentProps = {
 
 export default function TaskListTaskDetailPanelContent({
   comments,
+  currentUserImage,
   currentUserName,
   description,
   draftCommentContent,
@@ -44,6 +47,7 @@ export default function TaskListTaskDetailPanelContent({
   isTaskEditing,
   onCancelCommentEdit,
   onChangeDraftContent,
+  onCreateComment,
   onDeleteComment,
   onStartCommentEdit,
   onSubmitCommentEdit,
@@ -101,6 +105,7 @@ export default function TaskListTaskDetailPanelContent({
 
       <div className="mt-5 md:mt-6">
         <TaskListTaskDetailMeta
+          assigneeImage={currentUserImage}
           assigneeName={task.assigneeName}
           frequency={task.repeatLabel}
           startedAtLabel={task.startedAtLabel}
@@ -129,7 +134,10 @@ export default function TaskListTaskDetailPanelContent({
           </h3>
 
           <div className="mt-4">
-            <TaskListTaskDetailCommentInput />
+            <TaskListTaskDetailCommentInput
+              userImage={currentUserImage}
+              onSubmit={onCreateComment}
+            />
           </div>
 
           <ul className="mt-5 divide-y divide-background-tertiary">

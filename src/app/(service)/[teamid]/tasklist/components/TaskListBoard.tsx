@@ -23,25 +23,24 @@ import useRightPanel from '@/components/layout/hooks/useRightPanel';
 import { cn } from '@/utils/cn';
 
 export default function TaskListBoard({
-  columnTitle,
   className,
+  columnTitle,
+  groupId,
+  taskListId,
   teamId,
 }: TaskListBoardProps) {
   const { openRightPanel } = useRightPanel();
   const {
     handleCloseDeleteModal,
     handleConfirmDelete,
-    handleRemoveTask,
     handleRequestDelete,
-    handleSyncTaskChecked,
-    handleSyncTaskDetail,
     handleToggleChecked,
     isTaskListEmpty,
     selectedDate,
     setSelectedDate,
     sortedTasks,
     taskPendingDelete,
-  } = useTaskListBoard();
+  } = useTaskListBoard(groupId, taskListId);
 
   const handleOpenTaskDetail = (
     task: (typeof sortedTasks)[number],
@@ -54,9 +53,6 @@ export default function TaskListBoard({
           initialMode={mode}
           task={task}
           teamId={teamId}
-          onDeleteTask={handleRemoveTask}
-          onSyncTaskChecked={handleSyncTaskChecked}
-          onSyncTaskDetail={handleSyncTaskDetail}
         />
       ),
     });
