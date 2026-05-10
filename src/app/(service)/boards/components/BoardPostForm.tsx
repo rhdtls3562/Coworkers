@@ -91,7 +91,9 @@ export default function BoardPostForm({
           />
         </div>
         <div className="mt-6 md:mt-8">
-          <span className={FIELD_LABEL}>이미지</span>
+          <label htmlFor="image" className={FIELD_LABEL}>
+            이미지
+          </label>
           <ImageUploadField
             variant="post"
             src={formData.image || null}
