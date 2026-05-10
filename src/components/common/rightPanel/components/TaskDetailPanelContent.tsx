@@ -17,6 +17,7 @@ import type { TaskDetailPanelContentProps } from '@/components/common/rightPanel
 
 export default function TaskDetailPanelContent({
   apiTeamId,
+  assigneeImage,
   assigneeName,
   completionActionDoneValue = true,
   completionActionLabel,
@@ -34,7 +35,9 @@ export default function TaskDetailPanelContent({
 }: TaskDetailPanelContentProps) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const {
+    assigneeImage: editableAssigneeImage,
     comments: editableComments,
+    currentUserImage,
     description,
     draftCommentContent,
     draftDescription,
@@ -61,6 +64,7 @@ export default function TaskDetailPanelContent({
     title,
   } = useTaskDetailPanel({
     apiTeamId,
+    assigneeImage,
     completionActionDoneValue,
     groupId: teamId,
     initialDescription: initialDescription,
@@ -110,6 +114,7 @@ export default function TaskDetailPanelContent({
 
         <div className="mt-5 md:mt-6">
           <TaskDetailPanelMeta
+            assigneeImage={editableAssigneeImage}
             assigneeName={assigneeName}
             frequency={frequency}
             startedAt={startedAt}
@@ -119,6 +124,7 @@ export default function TaskDetailPanelContent({
         <TaskDetailPanelBody
           commentCount={editableComments.length}
           comments={editableComments}
+          currentUserImage={currentUserImage}
           description={description}
           draftCommentContent={draftCommentContent}
           draftDescription={draftDescription}

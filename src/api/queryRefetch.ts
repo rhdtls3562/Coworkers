@@ -88,6 +88,25 @@ export async function refetchTaskCommentQueries(
   });
 }
 
+export async function refetchTaskQueries(
+  queryClient: QueryClient,
+  teamId: string,
+  taskId: QueryKeyId,
+  taskListId: QueryKeyId,
+) {
+  await refetchQueryKeys({
+    queryClient,
+    queryKeysToRefetch: [
+      queryKeys.task.detail(teamId, taskId, taskListId),
+      queryKeys.task.lists(teamId),
+      queryKeys.taskList.detail(teamId, taskListId),
+      queryKeys.taskList.lists(teamId),
+      queryKeys.taskList.all(teamId),
+      queryKeys.team.detail(teamId),
+    ],
+  });
+}
+
 export async function refetchHistoryTaskQueries(
   queryClient: QueryClient,
   teamId: string,

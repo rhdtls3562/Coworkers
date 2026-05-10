@@ -4,8 +4,9 @@
 
 'use client';
 
-import { IcMoreVerticalSmall, IcUserLarge } from '@/assets';
+import { IcMoreVerticalSmall } from '@/assets';
 import { ListDropdown } from '@/components/common/dropdown';
+import RightPanelAvatar from '@/components/common/rightPanel/components/RightPanelAvatar';
 import TaskDetailCommentActions from '@/components/common/rightPanel/components/TaskDetailCommentActions';
 import type { TaskDetailCommentItemProps } from '@/components/common/rightPanel/types';
 
@@ -24,9 +25,11 @@ export default function TaskDetailCommentItem({
     return (
       <li className="bg-background-secondary py-4 first:pt-4 last:pb-4">
         <div className="flex gap-3 px-4 md:px-5">
-          <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg bg-background-tertiary md:size-9">
-            <IcUserLarge width={20} height={20} aria-hidden="true" />
-          </span>
+          <RightPanelAvatar
+            alt=""
+            className="mt-0.5"
+            image={comment.authorImage}
+          />
 
           <div className="min-w-0 flex-1">
             <p className="text-sm font-bold text-text-primary md:text-base">
@@ -61,9 +64,11 @@ export default function TaskDetailCommentItem({
   return (
     <li className="py-4 first:pt-0 last:pb-0">
       <div className="flex gap-3">
-        <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg bg-background-tertiary md:size-9">
-          <IcUserLarge width={20} height={20} aria-hidden="true" />
-        </span>
+        <RightPanelAvatar
+          alt=""
+          className="mt-0.5"
+          image={comment.authorImage}
+        />
 
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-4">

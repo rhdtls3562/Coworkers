@@ -34,22 +34,12 @@ export default function TaskListTaskRow({
   onToggleChecked,
   onRequestDelete,
 }: TaskListTaskRowProps) {
-  const handleRowDoubleClick = (event: React.MouseEvent<HTMLElement>) => {
-    const target = event.target as HTMLElement;
-    if (target.closest('[data-task-detail-ignore]')) {
-      return;
-    }
-
-    onOpenDetail(task, 'view');
-  };
-
   return (
     <article
       className={cn(
         'relative flex items-start rounded-xl border border-background-tertiary bg-background-primary px-3 py-3 sm:px-4',
         task.checked && 'bg-background-secondary',
       )}
-      onDoubleClick={handleRowDoubleClick}
     >
       <div className="min-w-0 flex-1 pr-10 sm:pr-11">
         <div className="flex min-w-0 items-center gap-2">
@@ -89,6 +79,7 @@ export default function TaskListTaskRow({
       <div
         className="absolute right-3 top-3 sm:right-4 sm:top-3"
         data-task-detail-ignore
+        onClick={(e) => e.stopPropagation()}
       >
         <TaskListTaskRowOptionsMenu
           className="shrink-0"

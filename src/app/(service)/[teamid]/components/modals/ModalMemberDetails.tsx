@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-import { ModalMemberProps } from '@/app/(service)/[teamid]/types';
+import { ModalMembersProps } from '@/app/(service)/[teamid]/types';
 import { IcUserXlarge } from '@/assets/index';
 import Modal from '@/components/common/modal';
 import { useToast } from '@/components/common/toast';
@@ -10,8 +10,7 @@ export function ModalMemberDetail({
   onClose,
   onPrimaryButtonClick,
   member,
-  role,
-}: ModalMemberProps) {
+}: ModalMembersProps) {
   const { showToast } = useToast();
 
   const handleCopyEmail = async () => {
@@ -38,8 +37,8 @@ export function ModalMemberDetail({
       onClose={onClose}
       primaryButtonText="이메일 복사하기"
       onPrimaryButtonClick={handleCopyEmail}
-      subButtonText={role === 'ADMIN' ? '멤버 삭제' : undefined}
-      onSubButtonClick={role === 'ADMIN' ? handleDelete : undefined}
+      subButtonText="멤버 삭제"
+      onSubButtonClick={handleDelete}
       isButtonAlign={true}
     >
       <div className="flex flex-col justify-center items-center">
