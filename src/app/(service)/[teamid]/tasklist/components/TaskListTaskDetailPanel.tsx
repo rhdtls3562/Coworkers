@@ -5,11 +5,14 @@ import TaskDetailPanelContent from '@/components/common/rightPanel/components/Ta
 
 const API_TEAM_ID = process.env.NEXT_PUBLIC_TEAM_ID ?? '';
 
+// TaskListTaskDetailPanel
 export default function TaskListTaskDetailPanel({
   initialMode,
   task,
   teamId,
 }: TaskListTaskDetailPanelProps) {
+  const isDone = task.checked;
+
   return (
     <TaskDetailPanelContent
       key={`${task.id}-${initialMode}`}
@@ -24,6 +27,8 @@ export default function TaskListTaskDetailPanel({
       taskListId={task.taskListId}
       teamId={teamId}
       title={task.title}
+      completionActionDoneValue={!isDone}
+      completionActionLabel={isDone ? '완료 취소하기' : '완료하기'}
     />
   );
 }
