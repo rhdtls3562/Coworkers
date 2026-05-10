@@ -97,3 +97,31 @@ export type RefetchQueryKeysParams = {
   queryClient: QueryClient;
   queryKeysToRefetch: readonly QueryKey[];
 };
+
+export type UserInfo = {
+  id: number;
+  nickname: string;
+  email: string;
+  image: string | null;
+  teamId: string;
+  createdAt: string;
+  updatedAt: string;
+  memberships: MembershipInfo[];
+};
+
+export type MembershipInfo = {
+  userId: number;
+  groupId: number;
+  userName: string;
+  userEmail: string;
+  userImage: string | null;
+  role: 'ADMIN' | 'MEMBER';
+  group: {
+    id: number;
+    name: string;
+    image: string | null;
+    createdAt: string;
+    updatedAt: string;
+    teamId: string;
+  };
+};
