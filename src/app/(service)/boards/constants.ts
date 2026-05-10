@@ -1,5 +1,4 @@
 import type { ArticleListQueryParams } from '@/api/queryKeys';
-import type { ArticleSubmitAction } from '@/app/(service)/boards/utils/boardUtils';
 
 export const BOARD_ORDER_BY = {
   RECENT: 'recent',
@@ -22,9 +21,6 @@ export const BOARD_LIST_LOAD_MORE_ELEMENT_ID = 'board-list-load-more-sentinel';
 
 export const BOARD_LIST_LOAD_MORE_ROOT_MARGIN = '240px';
 
-export const BOARD_EDIT_UNSAVED_LEAVE_TOAST_MESSAGE =
-  '저장하지 않은 수정 내용은 적용되지 않습니다.';
-
 export const BOARD_DEVICE_TYPE = {
   PC: 'PC',
   TABLET: 'TABLET',
@@ -41,8 +37,3 @@ export const BOARD_SORT_OPTIONS = [
   { label: '최신순', value: 'latest' },
   { label: '좋아요순', value: 'likes' },
 ] as const;
-
-export const ARTICLE_SUBMIT_FALLBACK: Record<ArticleSubmitAction, string> = {
-  create: '등록 중 오류가 발생했습니다.',
-  update: '수정 중 오류가 발생했습니다.',
-};

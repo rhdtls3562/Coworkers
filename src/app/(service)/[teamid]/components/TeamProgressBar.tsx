@@ -1,10 +1,10 @@
 import ProgressBar from '@ramonak/react-progress-bar';
 
-export default function TeamProgressBar() {
+export default function TeamProgressBar({ completed }: { completed: number }) {
   return (
     <>
       <ProgressBar
-        completed="25"
+        completed={completed}
         bgColor="var(--color-brand-primary)"
         baseBgColor="var(--color-background-secondary)"
         height="100%"
