@@ -72,12 +72,35 @@ export default function useTaskListPageShell({
 
   const handleConfirmDeleteColumn = useCallback(async () => {
     if (!columnPendingDelete) return;
-    await deleteTaskList(teamId, columnPendingDelete.id);
-    if (columnPendingDelete.id === activeId) setActiveId('');
+
+    const deletedColumnId = columnPendingDelete.id;
+
+    await deleteTaskList(teamId, deletedColumnId);
+
+    queryClient.removeQueries({
+      queryKey: queryKeys.taskList.detail(teamId, deletedColumnId),
+    });
+
+    if (deletedColumnId === activeId) {
+      setActiveId('');
+    }
+
     setColumnPendingDelete(null);
-    await refetchTaskListPage();
+
+    await Promise.all([
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.team.detail(teamId),
+      }),
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.task.lists(teamId),
+      }),
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.taskList.all(teamId),
+      }),
+    ]);
+
     showToast('삭제되었습니다.', 'error');
-  }, [activeId, columnPendingDelete, refetchTaskListPage, showToast, teamId]);
+  }, [activeId, columnPendingDelete, queryClient, showToast, teamId]);
 
   const handleCreateColumn = useCallback(
     async (name: string) => {

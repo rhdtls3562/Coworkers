@@ -29,7 +29,6 @@ export type UserInfo = {
   email: string;
   nickname: string;
   image?: string | null;
-  memberships?: { groupId: number }[];
 };
 
 export type ChangePassword = {

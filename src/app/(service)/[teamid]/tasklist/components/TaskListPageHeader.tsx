@@ -1,7 +1,5 @@
 /**
  * 할 일 리스트 메인 영역 상단 팀 헤더입니다.
- * 모바일·태블릿: 제목은 flex-none+max-w로 글자 너비만 쓰고 gap-1으로 톱니와 붙임. lg+: 제목 flex-1 팀 카드.
- * 톱니: 수정하기(팀 설정 이동) · 삭제하기(확인 모달) 드롭다운.
  */
 
 'use client';
@@ -19,7 +17,7 @@ type TaskListPageHeaderProps = {
   teamId: string;
   teamName: string;
   className?: string;
-  onConfirmTeamPageDelete?: () => void;
+  onConfirmTeamPageDelete?: () => void | Promise<void>;
 };
 
 export default function TaskListPageHeader({
@@ -31,8 +29,8 @@ export default function TaskListPageHeader({
   const router = useRouter();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  const handleConfirmDelete = () => {
-    onConfirmTeamPageDelete?.();
+  const handleConfirmDelete = async () => {
+    await onConfirmTeamPageDelete?.();
     setIsDeleteModalOpen(false);
   };
 
@@ -58,6 +56,7 @@ export default function TaskListPageHeader({
         >
           {teamName}
         </h2>
+
         <TaskListTaskRowOptionsMenu
           className={cn(
             'inline-flex shrink-0 items-center justify-center',

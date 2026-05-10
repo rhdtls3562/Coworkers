@@ -57,7 +57,7 @@ export async function updateGroup(
 }
 
 export async function deleteGroup(groupId: QueryKeyId) {
-  return apiClient<unknown>(
+  return apiClient<void>(
     teamEndpoint(`${API_PATH_SEGMENTS.GROUPS}/${groupId}`),
     {
       method: HTTP_METHODS.DELETE,
@@ -65,25 +65,6 @@ export async function deleteGroup(groupId: QueryKeyId) {
   );
 }
 
-export async function removeMemberGroup(
-  groupId: QueryKeyId,
-  memberUserId: QueryKeyId,
-) {
-  return apiClient<unknown>(
-    teamEndpoint(
-      `${API_PATH_SEGMENTS.GROUPS}/${groupId}/member/${memberUserId}`,
-    ),
-    {
-      method: HTTP_METHODS.DELETE,
-    },
-  );
-}
-
-export async function getGroupInvitation(groupId: QueryKeyId) {
-  return apiClient<string>(
-    teamEndpoint(`${API_PATH_SEGMENTS.GROUPS}/${groupId}/invitation`),
-  );
-}
 export async function acceptGroupInvitation(
   teamId: string,
   body: AcceptGroupInvitationBody,

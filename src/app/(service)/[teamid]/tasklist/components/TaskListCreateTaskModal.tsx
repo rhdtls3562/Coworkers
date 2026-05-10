@@ -59,6 +59,10 @@ export default function TaskListCreateTaskModal({
   const handleCreate = async () => {
     if (!title.trim()) return;
 
+    if (repeat === 'weekly' && weekDays.length === 0) {
+      return;
+    }
+
     const frequencyMap = {
       once: 'ONCE',
       daily: 'DAILY',
@@ -71,6 +75,7 @@ export default function TaskListCreateTaskModal({
       description: memo.trim(),
       startDate: selected.toISOString(),
       frequencyType: frequencyMap[repeat],
+      ...(repeat === 'weekly' ? { weekDays } : {}),
       ...(repeat === 'monthly' ? { monthDay } : {}),
     };
 
