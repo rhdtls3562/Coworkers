@@ -1,18 +1,15 @@
 'use client';
 
 /**
- * 게시글 수정 화면에서 저장하지 않은 변경사항이 있을 때 링크 이탈을 막는 훅입니다.
+ * 게시글 수정 화면에서 저장하지 않은 변경사항이 있을 때 이탈·전역 UI 클릭을 막는 훅입니다.
  */
 
 import { useEffect, useRef } from 'react';
 
+import shouldBlockBoardEditInteraction from '@/app/(service)/boards/utils/boardEditShouldBlockInteraction';
 import { useToast } from '@/components/common/toast';
 
 const BOARD_EDIT_UNSAVED_TOAST_DURATION = 3000;
-
-function shouldBlockBoardEditNavigation(target: EventTarget | null) {
-  return target instanceof Element && Boolean(target.closest('a[href]'));
-}
 
 type UseBoardEditUnsavedChangesGuardParams = {
   hasUnsavedChanges: boolean;
@@ -69,7 +66,7 @@ export default function useBoardEditUnsavedChangesGuard({
     };
 
     const handlePointerDownCapture = (event: PointerEvent) => {
-      if (!shouldBlockBoardEditNavigation(event.target)) {
+      if (!shouldBlockBoardEditInteraction(event.target)) {
         return;
       }
 
@@ -86,7 +83,7 @@ export default function useBoardEditUnsavedChangesGuard({
         return;
       }
 
-      if (!shouldBlockBoardEditNavigation(event.target)) {
+      if (!shouldBlockBoardEditInteraction(event.target)) {
         return;
       }
 

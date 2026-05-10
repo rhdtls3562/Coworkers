@@ -124,10 +124,14 @@ export default function BoardPostForm({
     <form onSubmit={onSubmit} className={formClassName}>
       {outerClassName ? (
         <div className={outerClassName}>
-          <div className={innerClassName}>{main}</div>
+          <div className={innerClassName} data-allow-unsaved="true">
+            {main}
+          </div>
         </div>
       ) : (
-        <div className={innerClassName}>{main}</div>
+        <div className={innerClassName} data-allow-unsaved="true">
+          {main}
+        </div>
       )}
     </form>
   );
