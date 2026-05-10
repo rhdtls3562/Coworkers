@@ -11,14 +11,14 @@ export default function MemberCard({
 }: MemberCardProps) {
   return (
     <div className="flex gap-3 items-center cursor-default">
-      <div className="overflow-hidden w-9 h-9 rounded-xl bg-background-tertiary flex items-center justify-center">
+      <div className="overflow-hidden w-9 h-9 rounded-xl bg-background-tertiary flex items-center justify-center shrink-0">
         {userImage ? (
           <Image
             src={userImage}
             width={36}
             height={36}
             alt={`${name}'s profile photo`}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover "
           />
         ) : (
           <IcUserXlarge

@@ -12,10 +12,9 @@ import type {
   CreateGroupBody,
   CreateGroupResponse,
 } from '@/api/types';
-import type { GroupDetail } from '@/types/group';
 
 export async function getTeamDetail(groupId: QueryKeyId) {
-  return apiClient<GroupDetail>(
+  return apiClient<unknown>(
     teamEndpoint(`${API_PATH_SEGMENTS.GROUPS}/${groupId}`),
   );
 }
@@ -50,6 +49,42 @@ export async function acceptGroupInvitation(
     {
       body: JSON.stringify(body),
       method: HTTP_METHODS.POST,
+    },
+  );
+}
+
+export async function updateGroup(
+  groupId: QueryKeyId,
+  body: { image?: string; name: string },
+) {
+  return apiClient<unknown>(
+    teamEndpoint(`${API_PATH_SEGMENTS.GROUPS}/${groupId}`),
+    {
+      body: JSON.stringify(body),
+      method: HTTP_METHODS.PATCH,
+    },
+  );
+}
+
+export async function deleteGroup(groupId: QueryKeyId) {
+  return apiClient<unknown>(
+    teamEndpoint(`${API_PATH_SEGMENTS.GROUPS}/${groupId}`),
+    {
+      method: HTTP_METHODS.DELETE,
+    },
+  );
+}
+
+export async function removeMemberGroup(
+  groupId: QueryKeyId,
+  memberUserId: QueryKeyId,
+) {
+  return apiClient<unknown>(
+    teamEndpoint(
+      `${API_PATH_SEGMENTS.GROUPS}/${groupId}/member/${memberUserId}`,
+    ),
+    {
+      method: HTTP_METHODS.DELETE,
     },
   );
 }

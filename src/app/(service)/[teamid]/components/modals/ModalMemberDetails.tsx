@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-import { ModalMembersProps } from '@/app/(service)/[teamid]/types';
+import { ModalMemberProps } from '@/app/(service)/[teamid]/types';
 import { IcUserXlarge } from '@/assets/index';
 import Modal from '@/components/common/modal';
 import { useToast } from '@/components/common/toast';
@@ -10,7 +10,7 @@ export function ModalMemberDetail({
   onClose,
   onPrimaryButtonClick,
   member,
-}: ModalMembersProps) {
+}: ModalMemberProps) {
   const { showToast } = useToast();
 
   const handleCopyEmail = async () => {

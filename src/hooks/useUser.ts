@@ -31,7 +31,7 @@ import {
 
 type CompletedTasksData = Awaited<ReturnType<typeof getCompletedTasks>>;
 type DeleteMeData = Awaited<ReturnType<typeof deleteMe>>;
-type MeData = Awaited<ReturnType<typeof getMe>>;
+export type MeData = Awaited<ReturnType<typeof getMe>>;
 type MyGroupsData = Awaited<ReturnType<typeof getMyGroups>>;
 type MyMembershipsData = Awaited<ReturnType<typeof getMyMemberships>>;
 type ResetPasswordData = Awaited<ReturnType<typeof resetPassword>>;
