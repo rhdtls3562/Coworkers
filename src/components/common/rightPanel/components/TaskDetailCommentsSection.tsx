@@ -5,7 +5,6 @@ import type { TaskDetailCommentsSectionProps } from '@/components/common/rightPa
 export default function TaskDetailCommentsSection({
   commentCount,
   comments,
-  currentUserImage,
   draftCommentContent,
   editingCommentId,
   isCommentSubmitting,
@@ -27,7 +26,6 @@ export default function TaskDetailCommentsSection({
         <TaskDetailCommentInput
           isSubmitting={isSubmittingNewComment}
           onSubmit={onCreateComment}
-          userImage={currentUserImage}
         />
       </div>
 

@@ -11,7 +11,6 @@ import type { UseTaskDetailPanelParams } from '@/components/common/rightPanel/ty
 
 export default function useTaskDetailPanel({
   apiTeamId,
-  assigneeImage,
   completionActionDoneValue,
   initialDescription,
   initialMode,
@@ -93,9 +92,7 @@ export default function useTaskDetailPanel({
     draftState.draftCommentContent !== draftState.editingCommentOriginalContent;
 
   return {
-    assigneeImage,
     comments: commentsState.comments,
-    currentUserImage: commentsState.currentUserImage,
     description: draftState.description,
     draftCommentContent: draftState.draftCommentContent,
     draftDescription: draftState.draftDescription,

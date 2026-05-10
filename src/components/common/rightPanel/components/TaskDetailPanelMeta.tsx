@@ -4,12 +4,10 @@
 
 'use client';
 
-import { IcCalendarSmall, IcRepeatSmall } from '@/assets';
-import RightPanelAvatar from '@/components/common/rightPanel/components/RightPanelAvatar';
+import { IcCalendarSmall, IcRepeatSmall, IcUserLarge } from '@/assets';
 import type { TaskDetailPanelMetaProps } from '@/components/common/rightPanel/types';
 
 export default function TaskDetailPanelMeta({
-  assigneeImage,
   assigneeName,
   frequency,
   startedAt,
@@ -17,7 +15,9 @@ export default function TaskDetailPanelMeta({
   return (
     <div>
       <div className="flex items-center gap-2.5">
-        <RightPanelAvatar alt="" image={assigneeImage} />
+        <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-background-tertiary md:size-9">
+          <IcUserLarge width={20} height={20} aria-hidden="true" />
+        </span>
         <span className="text-sm font-semibold text-text-primary md:text-base">
           {assigneeName}
         </span>

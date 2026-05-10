@@ -11,10 +11,7 @@ import {
   createMutationOptions,
   type MutationOptionsOverrides,
 } from '@/api/queryOptions/factory';
-import {
-  refetchHistoryTaskQueries,
-  refetchTaskQueries,
-} from '@/api/queryRefetch';
+import { refetchHistoryTaskQueries } from '@/api/queryRefetch';
 import { deleteTask, updateTask } from '@/api/taskApi';
 import type { TaskUpdateBody } from '@/api/types';
 
@@ -55,12 +52,6 @@ export function useUpdateTaskMutation(
       options: {
         ...options,
         onSuccess: async (data, variables, onMutateResult, context) => {
-          await refetchTaskQueries(
-            queryClient,
-            variables.teamId,
-            variables.taskId,
-            variables.taskListId,
-          );
           await refetchHistoryTaskQueries(
             queryClient,
             variables.teamId,
@@ -90,12 +81,6 @@ export function useDeleteTaskMutation(
       options: {
         ...options,
         onSuccess: async (data, variables, onMutateResult, context) => {
-          await refetchTaskQueries(
-            queryClient,
-            variables.teamId,
-            variables.taskId,
-            variables.taskListId,
-          );
           await refetchHistoryTaskQueries(
             queryClient,
             variables.teamId,

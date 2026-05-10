@@ -6,19 +6,16 @@
 
 import { type ChangeEvent, type KeyboardEvent, useRef, useState } from 'react';
 
-import { IcArrowUpCircle, IcArrowUpCircleActive } from '@/assets';
-import RightPanelAvatar from '@/components/common/rightPanel/components/RightPanelAvatar';
+import { IcArrowUpCircle, IcArrowUpCircleActive, IcUserLarge } from '@/assets';
 
 type TaskDetailCommentInputProps = {
   isSubmitting: boolean;
   onSubmit: (content: string) => Promise<boolean>;
-  userImage?: string;
 };
 
 export default function TaskDetailCommentInput({
   isSubmitting,
   onSubmit,
-  userImage,
 }: TaskDetailCommentInputProps) {
   const [value, setValue] = useState('');
   const [isSubmittingLocally, setIsSubmittingLocally] = useState(false);
@@ -81,7 +78,9 @@ export default function TaskDetailCommentInput({
 
   return (
     <div className="flex items-center gap-3 border-y border-background-tertiary py-3">
-      <RightPanelAvatar alt="" image={userImage} />
+      <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-background-tertiary md:size-9">
+        <IcUserLarge width={20} height={20} aria-hidden="true" />
+      </span>
 
       <textarea
         ref={textareaRef}

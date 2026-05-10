@@ -2,6 +2,7 @@
  * API 레이어 전반에서 공통으로 사용하는 요청, 응답, 클라이언트 타입 모음입니다.
  */
 
+import type { QueryParams } from '@/api/queryKeys';
 import type { LoginFormValues, SignUpFormValues } from '@/types/auth';
 
 import type { QueryClient, QueryKey } from '@tanstack/react-query';
@@ -34,8 +35,6 @@ export type CreateGroupBody = {
   image?: string;
   name: string;
 };
-
-export type UpdateGroupBody = Partial<CreateGroupBody>;
 
 export type CreateGroupResponse = {
   createdAt: string;
@@ -81,13 +80,7 @@ export type TaskUpdateBody = {
   name?: string;
 };
 
-export type RecurringBody = {
-  name: string;
-  description: string;
-  startDate: string;
-  frequencyType: 'ONCE' | 'DAILY' | 'WEEKLY' | 'MONTHLY';
-  monthDay?: number;
-};
+export type RecurringBody = QueryParams;
 
 export type UploadImageResponse = {
   url: string;
@@ -96,4 +89,32 @@ export type UploadImageResponse = {
 export type RefetchQueryKeysParams = {
   queryClient: QueryClient;
   queryKeysToRefetch: readonly QueryKey[];
+};
+
+export type UserInfo = {
+  id: number;
+  nickname: string;
+  email: string;
+  image: string | null;
+  teamId: string;
+  createdAt: string;
+  updatedAt: string;
+  memberships: MembershipInfo[];
+};
+
+export type MembershipInfo = {
+  userId: number;
+  groupId: number;
+  userName: string;
+  userEmail: string;
+  userImage: string | null;
+  role: 'ADMIN' | 'MEMBER';
+  group: {
+    id: number;
+    name: string;
+    image: string | null;
+    createdAt: string;
+    updatedAt: string;
+    teamId: string;
+  };
 };

@@ -3,7 +3,6 @@
 import { useEffect, useRef } from 'react';
 
 import { RIGHT_PANEL_UNSAVED_TOAST_DURATION } from '@/components/common/rightPanel/constants';
-import { registerRightPanelUnsavedGuard } from '@/components/common/rightPanel/utils/rightPanelUnsavedRegistry';
 import shouldBlockUnsavedInteraction from '@/components/common/rightPanel/utils/shouldBlockUnsavedInteraction';
 import { useToast } from '@/components/common/toast';
 
@@ -31,7 +30,6 @@ export default function useUnsavedChangesToastGuard({
 
   useEffect(() => {
     if (!hasUnsavedChanges) {
-      registerRightPanelUnsavedGuard(null);
       return;
     }
 
@@ -53,8 +51,6 @@ export default function useUnsavedChangesToastGuard({
         toastTimeoutRef.current = null;
       }, RIGHT_PANEL_UNSAVED_TOAST_DURATION);
     };
-
-    registerRightPanelUnsavedGuard(showUnsavedChangesToast);
 
     const blockInteraction = (event: Event) => {
       event.preventDefault();
@@ -92,7 +88,6 @@ export default function useUnsavedChangesToastGuard({
     document.addEventListener('click', handleClickCapture, true);
 
     return () => {
-      registerRightPanelUnsavedGuard(null);
       document.removeEventListener(
         'pointerdown',
         handlePointerDownCapture,

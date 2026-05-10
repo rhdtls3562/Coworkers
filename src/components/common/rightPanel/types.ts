@@ -38,7 +38,6 @@ export type RightPanelCloseButtonProps = {
 export type TaskDetailPanelBodyProps = {
   commentCount: number;
   comments: readonly RightPanelComment[];
-  currentUserImage?: string;
   description: string;
   draftCommentContent: string;
   draftDescription: string;
@@ -57,7 +56,6 @@ export type TaskDetailPanelBodyProps = {
 
 export type TaskDetailPanelContentProps = {
   apiTeamId: string;
-  assigneeImage?: string | null;
   assigneeName: string;
   completionActionDoneValue?: boolean;
   completionActionLabel?: string;
@@ -92,7 +90,6 @@ export type TaskDetailPanelHeaderProps = {
 };
 
 export type TaskDetailPanelMetaProps = {
-  assigneeImage?: string | null;
   assigneeName: string;
   frequency: string;
   startedAt: string;
@@ -101,7 +98,6 @@ export type TaskDetailPanelMetaProps = {
 export type TaskDetailCommentsSectionProps = {
   commentCount: number;
   comments: readonly RightPanelComment[];
-  currentUserImage?: string;
   draftCommentContent: string;
   editingCommentId: string | null;
   isCommentSubmitting: boolean;
@@ -147,7 +143,6 @@ export type UseTaskDetailDraftStateParams = {
 
 export type UseTaskDetailPanelParams = UseTaskDetailDraftStateParams &
   UseTaskDetailCommentsParams & {
-    assigneeImage?: string | null;
     completionActionDoneValue: boolean;
     onTaskCheckedChanged?: (checked: boolean) => void;
     onTaskDeleted?: () => void;

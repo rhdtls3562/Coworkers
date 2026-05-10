@@ -5,7 +5,6 @@ import type { TaskDetailPanelBodyProps } from '@/components/common/rightPanel/ty
 export default function TaskDetailPanelBody({
   commentCount,
   comments,
-  currentUserImage,
   description,
   draftCommentContent,
   draftDescription,
@@ -41,7 +40,6 @@ export default function TaskDetailPanelBody({
       <TaskDetailCommentsSection
         commentCount={commentCount}
         comments={comments}
-        currentUserImage={currentUserImage}
         draftCommentContent={draftCommentContent}
         editingCommentId={editingCommentId}
         isCommentSubmitting={isCommentSubmitting}
