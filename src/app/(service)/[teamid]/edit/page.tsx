@@ -1,6 +1,7 @@
-// page.tsx
+/**
+ * 팀 수정하기 페이지를 구성하는 파일입니다.
+ */
 'use client';
-
 import { useState } from 'react';
 
 import { useParams, useRouter } from 'next/navigation';
@@ -33,6 +34,7 @@ export default function EditTeamPage() {
     try {
       await updateTeamMutation.mutateAsync({
         body: { name: teamName.trim() },
+        groupId: teamId,
         teamId: API_TEAM_ID,
       });
       showToast('팀 이름이 수정 되었습니다.', 'success');

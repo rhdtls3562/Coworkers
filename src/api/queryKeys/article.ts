@@ -7,8 +7,9 @@
  * - `list`, `detail`, `all` 범위를 어떤 기준으로 나눌지 정할 때
  *
  * 자주 쓰는 기준:
+ * - `article.all(...)`: 팀 스코프 articles 전체(목록·무한목록·상세 등 mutation 후 무효화)
  * - `article.list(...)`: 게시글 목록 한 벌
- * - `article.lists(...)`: 게시글 목록 전체 범위
+ * - `article.lists(...)`: `list` 세그먼트 접두사(부분 무효화용)
  * - `article.detail(...)`: 게시글 상세 하나
  * - `articleComment.article(...)`: 특정 게시글에 달린 댓글 전체 범위
  */
@@ -34,7 +35,7 @@ import type {
  * 예:
  * - 게시글 목록 조회 -> `list`
  * - 게시글 상세 조회 -> `detail`
- * - 게시글 mutation 후 목록 전체 갱신 -> `lists`
+ * - 게시글 mutation 후 캐시 갱신 -> `all` (`list`/`infiniteList`/`detail` 등 일괄 무효화)
  */
 export const articleQueryKeys = {
   all: (teamId: string) =>
