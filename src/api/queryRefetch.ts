@@ -43,10 +43,10 @@ export async function refetchUserQueries(queryClient: QueryClient) {
   });
 }
 
+/** 팀 스코프 articles 전체 무효화(단건 id로 좁히지 않음). */
 export async function refetchArticleQueries(
   queryClient: QueryClient,
   teamId: string,
-  _articleId?: QueryKeyId,
 ) {
   await refetchArticleScope(queryClient, teamId);
 }
