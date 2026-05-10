@@ -2,24 +2,23 @@ import MemberCard from '@/app/(service)/[teamid]/components/MemberCard';
 import { ConfirmModal } from '@/app/(service)/[teamid]/components/modals/ConfirmModal';
 import { ModalMemberDetail } from '@/app/(service)/[teamid]/components/modals/ModalMemberDetails';
 import { ModalMembersInvite } from '@/app/(service)/[teamid]/components/modals/ModalMemberInvite';
+import { TEAM_MEMBERS } from '@/app/(service)/[teamid]/constants';
 import { useModalState } from '@/app/(service)/[teamid]/hooks/useModalState';
 import {
   MemberChipsProps,
   TeamMemberListContentProps,
-  TeamMemberProps,
 } from '@/app/(service)/[teamid]/types';
 
-export default function TeamMemberList({ teamData }: TeamMemberProps) {
+export default function TeamMemberList() {
   const { open, close, is, openMemberDetail, selectedMember } = useModalState();
 
-  const members = teamData.members;
   return (
     <section className="hidden xl:flex w-60 bg-background-inverse mt-11 px-5 py-6 rounded-2xl border border-border-secondary shrink-0 flex-col gap-4 h-fit min-h-28">
       <div className="flex justify-between items-center">
         <h2 className="text-text-primary text-base font-medium">
           멤버{' '}
           <span className="text-text-default font-normal">
-            ({members.length}명)
+            ({TEAM_MEMBERS.length}명)
           </span>
         </h2>
         <button
@@ -32,7 +31,7 @@ export default function TeamMemberList({ teamData }: TeamMemberProps) {
         </button>
       </div>
       <TeamMemberListContent
-        members={members}
+        members={TEAM_MEMBERS}
         onMemberClick={(member) => {
           close(); // memberInvite 닫기
           openMemberDetail(member); // memberDetail 열기

@@ -1,4 +1,5 @@
 import { TeamMemberListContent } from '@/app/(service)/[teamid]/components/TeamMemberList';
+import { TEAM_MEMBERS } from '@/app/(service)/[teamid]/constants';
 import { ModalMembersProps } from '@/app/(service)/[teamid]/types';
 import Modal from '@/components/common/modal';
 
@@ -7,12 +8,11 @@ export function ModalMembers({
   onClose,
   onPrimaryButtonClick,
   onMemberClick,
-  members,
 }: ModalMembersProps) {
   return (
     <Modal
       title="멤버"
-      subTitle={`(${members.length}명)`}
+      subTitle={`(${TEAM_MEMBERS.length}명)`}
       onClose={onClose}
       hasCloseButton={false}
       lineButtonText="취소"
@@ -21,7 +21,7 @@ export function ModalMembers({
       onPrimaryButtonClick={onPrimaryButtonClick ?? onClose}
     >
       <TeamMemberListContent
-        members={members}
+        members={TEAM_MEMBERS}
         onMemberClick={onMemberClick ?? (() => {})}
       />
     </Modal>
