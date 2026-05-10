@@ -16,6 +16,7 @@ export function TeamProgressModals({
   close,
   open,
   reset,
+  role,
   selectedMember,
   openMemberDetail,
   members,
@@ -89,6 +90,7 @@ export function TeamProgressModals({
           onClose={close}
           member={selectedMember}
           onPrimaryButtonClick={() => open('memberDelete')}
+          role={role}
         />
       )}
       {is('memberInvite') && <ModalMembersInvite onClose={close} />}

@@ -10,6 +10,7 @@ export function ModalMemberDetail({
   onClose,
   onPrimaryButtonClick,
   member,
+  role,
 }: ModalMemberProps) {
   const { showToast } = useToast();
 
@@ -37,8 +38,8 @@ export function ModalMemberDetail({
       onClose={onClose}
       primaryButtonText="이메일 복사하기"
       onPrimaryButtonClick={handleCopyEmail}
-      subButtonText="멤버 삭제"
-      onSubButtonClick={handleDelete}
+      subButtonText={role === 'ADMIN' ? '멤버 삭제' : undefined}
+      onSubButtonClick={role === 'ADMIN' ? handleDelete : undefined}
       isButtonAlign={true}
     >
       <div className="flex flex-col justify-center items-center">

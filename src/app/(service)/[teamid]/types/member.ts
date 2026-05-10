@@ -35,6 +35,7 @@ export type ModalMemberProps = {
   onPrimaryButtonClick?: () => void;
   member: MemberChipsProps | null;
   onMemberClick?: (member: MemberChipsProps) => void;
+  role?: string;
 };
 
 /** 멤버 목록 모달 Props */

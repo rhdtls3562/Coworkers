@@ -59,4 +59,5 @@ export type TeamProgressModalProps = {
   selectedMember: MemberChipsProps | null;
   openMemberDetail: (member: MemberChipsProps) => void;
   members: MemberChipsProps[];
+  role?: string;
 };
