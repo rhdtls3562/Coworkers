@@ -2,19 +2,51 @@
 
 import { useCallback, useMemo, useState } from 'react';
 
-import { TASK_LIST_INITIAL_TASKS } from '@/app/(service)/[teamid]/tasklist/constants';
-import type {
-  TaskListBoardTask,
-  TaskListTaskDetailApplyPatch,
-} from '@/app/(service)/[teamid]/tasklist/types';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+
+import { queryKeys } from '@/api/queryKeys';
+import { taskQueryOptions } from '@/api/queryOptions';
+import { deleteTask, updateTask } from '@/api/taskApi';
+import type { TaskListBoardTask } from '@/app/(service)/[teamid]/tasklist/types';
 import { useToast } from '@/components/common/toast';
 
-export function useTaskListBoard() {
+export function useTaskListBoard(groupId: string | null, taskListId: string) {
   const { showToast } = useToast();
+  const queryClient = useQueryClient();
   const [selectedDate, setSelectedDate] = useState(() => new Date());
-  const [tasks, setTasks] = useState<TaskListBoardTask[]>(
-    () => TASK_LIST_INITIAL_TASKS,
-  );
+
+  const dateString = selectedDate.toISOString().slice(0, 10);
+
+  const { data: taskListDetail } = useQuery({
+    ...taskQueryOptions.taskListDetail(String(groupId), taskListId, {
+      date: dateString,
+    }),
+    enabled: groupId !== null && taskListId !== '',
+  });
+
+  const tasks: TaskListBoardTask[] = useMemo(() => {
+    if (!taskListDetail?.tasks) return [];
+    return taskListDetail.tasks.map((task) => ({
+      assigneeImage: task.writer.image,
+      id: String(task.id),
+      title: task.name,
+      checked: task.doneAt !== null,
+      commentCount: task.commentCount,
+      dueDateLabel: task.date.slice(0, 10),
+      repeatLabel:
+        task.frequency === 'ONCE'
+          ? ''
+          : `매${task.frequency === 'DAILY' ? '일' : task.frequency === 'WEEKLY' ? '주' : '월'} 반복`,
+      sortOrder: task.displayIndex,
+      assigneeName: task.writer.nickname,
+      description: task.description ?? '',
+      startedAtLabel: task.date.slice(0, 10),
+      taskListId: String(taskListId),
+      teamId: groupId ?? '',
+      comments: [],
+    }));
+  }, [taskListDetail, taskListId, groupId]);
+
   const [taskPendingDelete, setTaskPendingDelete] =
     useState<TaskListBoardTask | null>(null);
 
@@ -25,9 +57,22 @@ export function useTaskListBoard() {
 
   const isTaskListEmpty = sortedTasks.length === 0;
 
-  const handleToggleChecked = useCallback((id: string, checked: boolean) => {
-    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, checked } : t)));
-  }, []);
+  const handleToggleChecked = useCallback(
+    async (id: string, checked: boolean) => {
+      if (!groupId) return;
+      try {
+        await updateTask(groupId, taskListId, id, { done: checked });
+        await queryClient.invalidateQueries({
+          queryKey: queryKeys.taskList.detail(groupId, taskListId, {
+            date: dateString,
+          }),
+        });
+      } catch {
+        // TODO: 에러 처리
+      }
+    },
+    [dateString, groupId, taskListId, queryClient],
+  );
 
   const handleRequestDelete = useCallback((task: TaskListBoardTask) => {
     setTaskPendingDelete(task);
@@ -37,51 +82,33 @@ export function useTaskListBoard() {
     setTaskPendingDelete(null);
   }, []);
 
-  const handleConfirmDelete = useCallback(() => {
-    if (!taskPendingDelete) return;
-    const id = taskPendingDelete.id;
-    setTaskPendingDelete(null);
-    setTasks((prev) => prev.filter((t) => t.id !== id));
-    showToast('삭제되었습니다.', 'error');
-  }, [taskPendingDelete, showToast]);
-
-  const handleSyncTaskDetail = useCallback(
-    (taskId: string, patch: TaskListTaskDetailApplyPatch) => {
-      setTasks((prev) =>
-        prev.map((t) =>
-          t.id === taskId
-            ? {
-                ...t,
-                title: patch.title,
-                description: patch.description,
-              }
-            : t,
-        ),
-      );
-    },
-    [],
-  );
-
-  const handleSyncTaskChecked = useCallback(
-    (taskId: string, checked: boolean) => {
-      setTasks((prev) =>
-        prev.map((t) => (t.id === taskId ? { ...t, checked } : t)),
-      );
-    },
-    [],
-  );
-
-  const handleRemoveTask = useCallback((taskId: string) => {
-    setTasks((prev) => prev.filter((task) => task.id !== taskId));
-  }, []);
+  const handleConfirmDelete = useCallback(async () => {
+    if (!taskPendingDelete || !groupId) return;
+    try {
+      await deleteTask(groupId, taskListId, taskPendingDelete.id);
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.taskList.detail(groupId, taskListId, {
+          date: dateString,
+        }),
+      });
+      setTaskPendingDelete(null);
+      showToast('삭제되었습니다.', 'error');
+    } catch {
+      // TODO: 에러 처리
+    }
+  }, [
+    dateString,
+    taskPendingDelete,
+    groupId,
+    taskListId,
+    queryClient,
+    showToast,
+  ]);
 
   return {
     handleCloseDeleteModal,
     handleConfirmDelete,
-    handleRemoveTask,
     handleRequestDelete,
-    handleSyncTaskChecked,
-    handleSyncTaskDetail,
     handleToggleChecked,
     isTaskListEmpty,
     selectedDate,

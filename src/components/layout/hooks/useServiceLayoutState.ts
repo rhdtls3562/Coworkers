@@ -5,6 +5,7 @@ import { useCallback, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 
 import type { RightPanelContent } from '@/components/common/rightPanel';
+import { getRightPanelUnsavedGuard } from '@/components/common/rightPanel/utils/rightPanelUnsavedRegistry';
 import useAnimatedVisibility from '@/components/layout/hooks/useAnimatedVisibility';
 import useCloseLayoutOverlayOnPathChange from '@/components/layout/hooks/useCloseLayoutOverlayOnPathChange';
 import useLayoutMediaSync from '@/components/layout/hooks/useLayoutMediaSync';
@@ -37,6 +38,13 @@ export default function useServiceLayoutState(): ServiceLayoutContextValue {
   });
 
   const closeRightPanel = useCallback(() => {
+    const unsavedGuard = getRightPanelUnsavedGuard();
+
+    if (unsavedGuard) {
+      unsavedGuard();
+      return;
+    }
+
     if (!isRightPanelRendered) {
       setRightPanelContent(null);
       return;

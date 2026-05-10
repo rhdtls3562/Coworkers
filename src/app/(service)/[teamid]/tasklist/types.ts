@@ -1,5 +1,4 @@
 /** 할 일 리스트 라우트에서 사용하는 타입 정의입니다. */
-
 import type { ReactNode, RefObject } from 'react';
 
 export type TaskListColumnItem = {
@@ -12,12 +11,14 @@ export type TaskListColumnItem = {
 export type TaskListTaskComment = {
   id: string;
   author: string;
+  authorImage: string | null;
   content: string;
   meta: string;
 };
 
 export type TaskListBoardTask = {
   assigneeName: string;
+  assigneeImage: string | null;
   id: string;
   checked: boolean;
   commentCount: number;
@@ -47,12 +48,16 @@ export type TaskListOpenTaskDetail = {
 export type TaskListBoardProps = {
   className?: string;
   columnTitle: string;
+  groupId: string | null;
+  taskListId: string;
   teamId: string;
 };
 
 export type TaskListCreateTaskModalProps = {
   onClose: () => void;
   onSubmit?: () => void;
+  groupId: number;
+  taskListId: string;
 };
 
 export type TaskListCalendarVariant =
@@ -99,12 +104,6 @@ export type TaskListSidebarProps = {
 
 export type TaskListTaskDetailPanelProps = {
   initialMode: TaskListTaskDetailOpenMode;
-  onDeleteTask: (taskId: string) => void;
-  onSyncTaskChecked: (taskId: string, checked: boolean) => void;
-  onSyncTaskDetail: (
-    taskId: string,
-    patch: TaskListTaskDetailApplyPatch,
-  ) => void;
   task: TaskListBoardTask;
   teamId: string;
 };

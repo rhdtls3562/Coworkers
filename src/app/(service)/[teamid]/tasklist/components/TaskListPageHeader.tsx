@@ -41,8 +41,8 @@ export default function TaskListPageHeader({
       <header
         className={cn(
           'flex min-w-0 items-center bg-transparent p-0',
-          'h-5 w-full max-w-24.5 gap-1',
-          'md:h-7 md:w-34 md:max-w-34 md:shrink-0',
+          'h-5 w-full gap-1',
+          'md:h-7 md:shrink-0',
           'lg:h-16 lg:w-full lg:max-w-none lg:gap-0 lg:overflow-hidden lg:rounded-xl lg:bg-background-inverse lg:shadow-[0_8px_20px_rgba(49,84,153,0.12)]',
           className,
         )}
@@ -50,11 +50,10 @@ export default function TaskListPageHeader({
       >
         <h2
           className={cn(
-            'min-w-0 flex-none truncate font-bold text-text-primary',
-            'text-base leading-5',
-            'max-w-[calc(100%-1.5rem)]',
-            'md:text-2xl md:leading-7 md:max-w-[calc(100%-1.75rem)]',
-            'lg:max-w-none lg:flex-1 lg:pl-6',
+            'min-w-0 flex-1 truncate font-bold text-text-primary',
+            'text-[20px] leading-5',
+            'md:text-2xl md:leading-7',
+            'lg:flex-1 lg:pl-6',
           )}
         >
           {teamName}

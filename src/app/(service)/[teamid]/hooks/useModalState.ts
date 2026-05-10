@@ -12,15 +12,13 @@ export function useModalState() {
   const open = (key: ModalKey) => setOpenModal(key);
   const close = () => {
     setOpenModal(null);
+    setSelectedMember(null); // 닫을 때 초기화
   };
   const openMemberDetail = (member: MemberChipsProps) => {
     setSelectedMember(member);
     setOpenModal('memberDetail');
   };
-  const reset = () => {
-    setOpenModal(null);
-    setSelectedMember(null);
-  };
+
   const handleInvite = () => setOpenModal('memberInvite');
 
   return {
@@ -29,7 +27,6 @@ export function useModalState() {
     open,
     close,
     openMemberDetail,
-    reset,
     handleInvite,
     is: (key: ModalKey) => openModal === key,
   };

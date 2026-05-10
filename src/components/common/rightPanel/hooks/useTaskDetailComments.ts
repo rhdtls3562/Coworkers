@@ -35,6 +35,13 @@ export default function useTaskDetailComments({
     (typeof meData.id === 'number' || typeof meData.id === 'string')
       ? String(meData.id)
       : undefined;
+  const currentUserImage =
+    typeof meData === 'object' &&
+    meData !== null &&
+    'image' in meData &&
+    typeof meData.image === 'string'
+      ? meData.image
+      : undefined;
   const taskCommentsQuery = useTaskCommentsQuery<RightPanelComment[]>({
     options: {
       enabled: Boolean(apiTeamId && taskId),
@@ -102,7 +109,6 @@ export default function useTaskDetailComments({
         taskId,
         teamId: apiTeamId,
       });
-      showToast('댓글이 삭제되었습니다.', 'error');
       return true;
     } catch (error) {
       showToast(
@@ -115,6 +121,7 @@ export default function useTaskDetailComments({
 
   return {
     comments,
+    currentUserImage,
     currentUserId,
     handleCreateComment,
     handleDeleteComment,
