@@ -1,8 +1,3 @@
-/**
- * 모바일·태블릿(lg 미만)에서 할 일 목록 컬럼을 선택하는 드롭다운입니다.
- * 모바일: 180×44. md+: 트리거 240×44, 펼침 목록 행은 체크(선택 시)·제목 / 배지를 gap-15(60px)로 양끝 정렬.
- */
-
 'use client';
 
 import type { TaskListColumnItem } from '@/app/(service)/[teamid]/tasklist/types';
@@ -79,7 +74,7 @@ export default function TaskListColumnDropdown({
       {isOpen ? (
         <ul
           role="listbox"
-          className="absolute left-0 right-0 z-20 mt-2 max-h-80 overflow-y-auto rounded-xl border border-background-tertiary bg-background-primary py-1 shadow-lg"
+          className="absolute left-0 right-0 z-20 mt-2 max-h-80 overflow-y-auto rounded-xl border border-background-tertiary bg-background-primary shadow-lg"
         >
           {items.map((item) => {
             const isSelected = item.id === activeId;
@@ -91,7 +86,7 @@ export default function TaskListColumnDropdown({
                   aria-selected={isSelected}
                   className={cn(
                     'flex w-full min-w-0 items-center gap-2 px-3 py-3 text-left text-sm font-medium text-text-primary',
-                    'md:items-center md:justify-between md:gap-15 md:px-4 md:py-2',
+                    'md:items-center md:justify-between md:gap-15 md:px-4 md:py-3',
                     'hover:bg-background-secondary',
                     isSelected && 'bg-brand-secondary text-brand-primary',
                   )}
