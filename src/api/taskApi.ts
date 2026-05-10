@@ -11,6 +11,7 @@ import type {
   TeamScopedDateQueryParams,
 } from '@/api/queryKeys';
 import type { RecurringBody, TaskUpdateBody } from '@/api/types';
+import type { TaskListDetail } from '@/types/task';
 
 function createGroupTaskListsPath(groupId: QueryKeyId) {
   return `${API_PATH_SEGMENTS.GROUPS}/${groupId}${API_PATH_SEGMENTS.TASK_LISTS}`;
@@ -45,7 +46,7 @@ export async function getTaskListDetail(
     createTaskListPath(groupId, taskListId),
   )}${buildQueryString(params)}`;
 
-  return apiClient<unknown>(endpoint);
+  return apiClient<TaskListDetail>(endpoint);
 }
 
 export async function getTasks(groupId: QueryKeyId, params: TaskQueryParams) {
@@ -151,6 +152,42 @@ export async function deleteRecurring(
     {
       method: HTTP_METHODS.DELETE,
       token,
+    },
+  );
+}
+
+export async function createTaskList(
+  groupId: QueryKeyId,
+  body: { name: string },
+) {
+  return apiClient<unknown>(teamEndpoint(createGroupTaskListsPath(groupId)), {
+    body: JSON.stringify(body),
+    method: HTTP_METHODS.POST,
+  });
+}
+
+export async function updateTaskList(
+  groupId: QueryKeyId,
+  taskListId: QueryKeyId,
+  body: { name: string },
+) {
+  return apiClient<unknown>(
+    teamEndpoint(createTaskListPath(groupId, taskListId)),
+    {
+      body: JSON.stringify(body),
+      method: HTTP_METHODS.PATCH,
+    },
+  );
+}
+
+export async function deleteTaskList(
+  groupId: QueryKeyId,
+  taskListId: QueryKeyId,
+) {
+  return apiClient<void>(
+    teamEndpoint(createTaskListPath(groupId, taskListId)),
+    {
+      method: HTTP_METHODS.DELETE,
     },
   );
 }

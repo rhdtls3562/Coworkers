@@ -1,14 +1,18 @@
 'use client';
 
+import Image from 'next/image';
+
 import { IcCalendarSmall, IcRepeatSmall, IcUserLarge } from '@/assets';
 
 type TaskListTaskDetailMetaProps = {
+  assigneeImage: string | null;
   assigneeName: string;
   frequency: string;
   startedAtLabel: string;
 };
 
 export default function TaskListTaskDetailMeta({
+  assigneeImage,
   assigneeName,
   frequency,
   startedAtLabel,
@@ -16,9 +20,19 @@ export default function TaskListTaskDetailMeta({
   return (
     <div>
       <div className="flex items-center gap-2.5">
-        <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-background-tertiary md:size-9">
-          <IcUserLarge width={20} height={20} aria-hidden="true" />
-        </span>
+        {assigneeImage ? (
+          <Image
+            src={assigneeImage}
+            alt={`${assigneeName} 프로필`}
+            width={36}
+            height={36}
+            className="size-8 shrink-0 rounded-lg object-cover md:size-9"
+          />
+        ) : (
+          <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-background-tertiary md:size-9">
+            <IcUserLarge width={20} height={20} aria-hidden="true" />
+          </span>
+        )}
         <span className="text-sm font-semibold text-text-primary md:text-base">
           {assigneeName}
         </span>
