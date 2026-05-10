@@ -25,12 +25,10 @@ type UseTeamTasksByDateParams<TData = TeamTasksByDateData> = {
   teamId: string;
 };
 
-export function useTeamDetailQuery<TData = TeamDetailData>(
-  {
-    options,
-    teamId,
-  }: UseTeamDetailParams<TData> = {} as UseTeamDetailParams<TData>,
-) {
+export function useTeamDetailQuery<TData = TeamDetailData>({
+  options,
+  teamId,
+}: UseTeamDetailParams<TData>) {
   return useQuery(teamQueryOptions.detail<TData>(teamId, options));
 }
 
@@ -45,7 +43,4 @@ export function useTeamTasksByDateQuery<TData = TeamTasksByDateData>({
 export {
   useAcceptTeamInvitationMutation,
   useCreateTeamMutation,
-  useDeleteTeamMutation,
-  useUpdateTeamMutation,
-  useRemoveMemberTeamMutation,
 } from '@/hooks/useTeamMutations';

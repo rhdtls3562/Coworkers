@@ -155,9 +155,6 @@ export type UseTaskDetailTaskActionsParams = {
   currentDoneState: boolean;
   draftDescription: string;
   draftTitle: string;
-  onTaskCheckedChanged?: (checked: boolean) => void;
-  onTaskDeleted?: () => void;
-  onTaskUpdated?: (title: string, description: string) => void;
   taskId: string;
   taskListId: string;
   teamId: string;
