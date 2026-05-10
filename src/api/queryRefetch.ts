@@ -3,6 +3,9 @@
  *
  * 내부 구현은 `invalidateQueries`를 사용합니다.
  * 현재 프로젝트에서는 "다시 받아온다"는 의미로 `refetch`라는 이름을 사용합니다.
+ *
+ * 게시글(articles)은 팀 스코프 `queryKeys.article.all(teamId)`로 무효화해
+ * `list` / `infiniteList` / `detail` 등 접두사가 맞는 쿼리를 한 번에 갱신합니다.
  */
 
 import type { QueryKeyId } from '@/api/queryKeys';
@@ -22,6 +25,13 @@ export async function refetchQueryKeys({
   );
 }
 
+async function refetchArticleScope(queryClient: QueryClient, teamId: string) {
+  await refetchQueryKeys({
+    queryClient,
+    queryKeysToRefetch: [queryKeys.article.all(teamId)],
+  });
+}
+
 export async function refetchUserQueries(queryClient: QueryClient) {
   await refetchQueryKeys({
     queryClient,
@@ -33,28 +43,12 @@ export async function refetchUserQueries(queryClient: QueryClient) {
   });
 }
 
-export async function refetchArticleListQueries(
-  queryClient: QueryClient,
-  teamId: string,
-) {
-  await refetchQueryKeys({
-    queryClient,
-    queryKeysToRefetch: [queryKeys.article.lists(teamId)],
-  });
-}
-
+/** 팀 스코프 articles 전체 무효화(단건 id로 좁히지 않음). */
 export async function refetchArticleQueries(
   queryClient: QueryClient,
   teamId: string,
-  articleId: QueryKeyId,
 ) {
-  await refetchQueryKeys({
-    queryClient,
-    queryKeysToRefetch: [
-      queryKeys.article.detail(teamId, articleId),
-      queryKeys.article.lists(teamId),
-    ],
-  });
+  await refetchArticleScope(queryClient, teamId);
 }
 
 export async function refetchArticleCommentQueries(
@@ -62,13 +56,13 @@ export async function refetchArticleCommentQueries(
   teamId: string,
   articleId: QueryKeyId,
 ) {
-  await refetchQueryKeys({
-    queryClient,
-    queryKeysToRefetch: [
-      queryKeys.articleComment.article(teamId, articleId),
-      queryKeys.article.detail(teamId, articleId),
-    ],
-  });
+  await Promise.all([
+    refetchQueryKeys({
+      queryClient,
+      queryKeysToRefetch: [queryKeys.articleComment.article(teamId, articleId)],
+    }),
+    refetchArticleScope(queryClient, teamId),
+  ]);
 }
 
 export async function refetchTaskCommentQueries(
