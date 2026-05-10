@@ -6,6 +6,7 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
+import type { QueryParams } from '@/api/queryKeys';
 import {
   createMutationOptions,
   type MutationOptionsOverrides,
@@ -16,11 +17,12 @@ import {
   deleteRecurring,
   updateRecurring,
 } from '@/api/taskApi';
-import type { RecurringBody } from '@/api/types';
 
 type CreateRecurringData = Awaited<ReturnType<typeof createRecurring>>;
 type UpdateRecurringData = Awaited<ReturnType<typeof updateRecurring>>;
 type DeleteRecurringData = Awaited<ReturnType<typeof deleteRecurring>>;
+
+type RecurringBody = QueryParams;
 
 type CreateRecurringVariables = {
   body: RecurringBody;
