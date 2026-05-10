@@ -22,7 +22,6 @@
 여기에는 지금 자주 쓰는 공통 helper가 들어 있습니다.
 
 - `refetchUserQueries`
-- `refetchArticleListQueries`
 - `refetchArticleQueries`
 - `refetchArticleCommentQueries`
 - `refetchTaskCommentQueries`
@@ -152,7 +151,7 @@
   - `useDeleteArticleMutation`
   - `useLikeArticleMutation`
   - `useUnlikeArticleMutation`
-- 같이 보면 좋은 refetch helper: `refetchArticleListQueries`, `refetchArticleQueries`
+- 같이 보면 좋은 refetch helper: `refetchArticleQueries` (세 번째 인자 `articleId`는 선택)
 
 **게시글 댓글**
 

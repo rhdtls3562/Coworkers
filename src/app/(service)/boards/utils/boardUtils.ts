@@ -1,3 +1,4 @@
+import type { ApiError } from '@/api/types';
 import { BOARD_BEST_LIST_PARAMS } from '@/app/(service)/boards/constants';
 import type { Post } from '@/app/(service)/boards/types';
 
@@ -27,6 +28,44 @@ export const isSearchMode = (keyword?: string) => {
   return !!keyword;
 };
 
+// 게시글 제목, 내용 필수 유효성 검사
+export const isRequiredTextValid = (value: string) => {
+  return value.trim().length > 0;
+};
+
+export function getArticleUpdateSubmitErrorMessage(error: unknown): string {
+  if (!error || typeof error !== 'object') {
+    return '수정 중 오류가 발생했습니다.';
+  }
+
+  const { status, message } = error as ApiError;
+
+  if (status === 403) {
+    return '게시글은 작성자 본인만 수정할 수 있습니다.';
+  }
+
+  if (status === 404) {
+    return '존재하지 않는 게시글입니다.';
+  }
+
+  if (status === 401 && message) {
+    return message;
+  }
+
+  return '수정 중 오류가 발생했습니다.';
+}
+
+/** API 요청용: 빈 문자열은 이미지 없음(null)으로 보냅니다. */
+export const normalizeArticleImageUrl = (
+  value: string | null | undefined,
+): string | null => {
+  if (value == null || value === '') {
+    return null;
+  }
+
+  return value;
+};
+
 export const filterPostsByKeyword = (posts: Post[], keyword: string) => {
   return isSearchMode(keyword)
     ? posts.filter((post) =>
@@ -49,10 +88,6 @@ export const formatDateToYmd = (value: string) => {
   return `${year}.${month}.${day}`;
 };
 
-/**
- * 베스트 영역용 게시글을 계산합니다.
- * 좋아요가 1개 이상인 글만 대상으로 좋아요순 상위를 반환합니다.
- */
 export function getBoardBestPosts(posts: Post[]) {
   const withLikes = posts.filter((post) => post.likeCount > 0);
 

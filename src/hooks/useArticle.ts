@@ -29,10 +29,7 @@ import {
   type MutationOptionsOverrides,
   type QueryOptionsOverrides,
 } from '@/api/queryOptions/factory';
-import {
-  refetchArticleListQueries,
-  refetchArticleQueries,
-} from '@/api/queryRefetch';
+import { refetchArticleQueries } from '@/api/queryRefetch';
 
 type ArticleListData = Awaited<ReturnType<typeof getArticleList>>;
 type ArticleDetailData = Awaited<ReturnType<typeof getArticleDetail>>;
@@ -138,7 +135,7 @@ export function useCreateArticleMutation(
       options: {
         ...options,
         onSuccess: async (data, variables, onMutateResult, context) => {
-          await refetchArticleListQueries(queryClient, variables.teamId);
+          await refetchArticleQueries(queryClient, variables.teamId);
           await handleSuccess?.(data, variables, onMutateResult, context);
         },
       },

@@ -61,11 +61,9 @@ export type TeamMemberListContentProps = {
   onMemberClick: (member: MemberChipsProps) => void;
 };
 
-export type TaskListBoardProps = {
-  columnTitle: string;
-  className?: string;
-  groupId: number | null;
-  taskListId: string;
+export type TeamProgressStatsProps = {
+  today: number;
+  done: number;
 };
 
 export type TeamProgressModalProps = {
