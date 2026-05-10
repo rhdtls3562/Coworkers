@@ -19,6 +19,8 @@ export default function SidebarNavItem({
   variant = 'team',
 }: SidebarNavItemProps) {
   const isMenuVariant = variant === 'team' || variant === 'board';
+  const shouldShowCollapsedTooltip =
+    variant === 'team' && !isExpanded && !isMobileDrawer;
 
   const linkSizeClass = isMobileDrawer
     ? 'h-11 gap-4 rounded-lg px-5 text-sm hover:bg-background-secondary'
@@ -74,6 +76,7 @@ export default function SidebarNavItem({
         variant === 'addTeam' && addTeamSizeClass,
         linkToneClass,
       )}
+      aria-label={shouldShowCollapsedTooltip ? label : undefined}
       aria-current={isActive ? 'page' : undefined}
       onClick={onClick}
     >
@@ -93,7 +96,19 @@ export default function SidebarNavItem({
   );
 
   if (variant === 'team') {
-    return <li className={cn(isExpanded && 'w-full')}>{linkElement}</li>;
+    return (
+      <li className={cn('group relative', isExpanded && 'w-full')}>
+        {linkElement}
+        {shouldShowCollapsedTooltip && (
+          <span
+            role="tooltip"
+            className="pointer-events-none absolute left-full top-1/2 z-20 ml-3 -translate-y-1/2 translate-x-1 whitespace-nowrap rounded-lg bg-text-primary px-3 py-2 text-sm font-medium text-text-inverse opacity-0 shadow-lg invisible transition-all duration-200 group-hover:visible group-hover:translate-x-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-x-0 group-focus-within:opacity-100 motion-reduce:transition-none"
+          >
+            {label}
+          </span>
+        )}
+      </li>
+    );
   }
 
   return linkElement;
