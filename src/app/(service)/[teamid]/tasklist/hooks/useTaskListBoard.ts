@@ -62,11 +62,19 @@ export function useTaskListBoard(groupId: string | null, taskListId: string) {
       if (!groupId) return;
       try {
         await updateTask(groupId, taskListId, id, { done: checked });
-        await queryClient.invalidateQueries({
-          queryKey: queryKeys.taskList.detail(groupId, taskListId, {
-            date: dateString,
+        await Promise.all([
+          queryClient.invalidateQueries({
+            queryKey: queryKeys.taskList.detail(groupId, taskListId, {
+              date: dateString,
+            }),
           }),
-        });
+          queryClient.invalidateQueries({
+            queryKey: queryKeys.taskList.all(groupId),
+          }),
+          queryClient.invalidateQueries({
+            queryKey: queryKeys.team.detail(groupId),
+          }),
+        ]);
       } catch {
         // TODO: 에러 처리
       }
@@ -86,11 +94,19 @@ export function useTaskListBoard(groupId: string | null, taskListId: string) {
     if (!taskPendingDelete || !groupId) return;
     try {
       await deleteTask(groupId, taskListId, taskPendingDelete.id);
-      await queryClient.invalidateQueries({
-        queryKey: queryKeys.taskList.detail(groupId, taskListId, {
-          date: dateString,
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.taskList.detail(groupId, taskListId, {
+            date: dateString,
+          }),
         }),
-      });
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.taskList.all(groupId),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.team.detail(groupId),
+        }),
+      ]);
       setTaskPendingDelete(null);
       showToast('삭제되었습니다.', 'error');
     } catch {
