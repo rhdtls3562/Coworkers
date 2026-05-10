@@ -37,6 +37,16 @@ function createRecurringPath(groupId: QueryKeyId, taskListId: QueryKeyId) {
   return `${createTaskListPath(groupId, taskListId)}${API_PATH_SEGMENTS.RECURRING}`;
 }
 
+export async function createTaskList(
+  groupId: QueryKeyId,
+  body: { name: string },
+) {
+  return apiClient<unknown>(teamEndpoint(createGroupTaskListsPath(groupId)), {
+    body: JSON.stringify(body),
+    method: HTTP_METHODS.POST,
+  });
+}
+
 export async function getTaskListDetail(
   groupId: QueryKeyId,
   taskListId: QueryKeyId,
@@ -154,16 +164,6 @@ export async function deleteRecurring(
       token,
     },
   );
-}
-
-export async function createTaskList(
-  groupId: QueryKeyId,
-  body: { name: string },
-) {
-  return apiClient<unknown>(teamEndpoint(createGroupTaskListsPath(groupId)), {
-    body: JSON.stringify(body),
-    method: HTTP_METHODS.POST,
-  });
 }
 
 export async function updateTaskList(

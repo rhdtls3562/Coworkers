@@ -25,9 +25,13 @@ import { ROUTES } from '@/constants/ROUTES';
 
 type TaskListPageShellProps = {
   teamId: string;
+  taskId: string;
 };
 
-export default function TaskListPageShell({ teamId }: TaskListPageShellProps) {
+export default function TaskListPageShell({
+  teamId,
+  taskId,
+}: TaskListPageShellProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { showToast } = useToast();
@@ -45,14 +49,19 @@ export default function TaskListPageShell({ teamId }: TaskListPageShellProps) {
     handleRenameColumn,
     isCreateColumnOpen,
     isCreateTaskOpen,
-    setActiveId,
     setColumnPendingDelete,
     setColumnPendingRename,
     setIsCreateColumnOpen,
     setIsCreateTaskOpen,
-  } = useTaskListPageShell({
-    teamId,
-  });
+  } = useTaskListPageShell({ teamId, taskId });
+
+  const handleConfirmDeleteColumnWithNav = async () => {
+    const wasActive = columnPendingDelete?.id === taskId;
+    await handleConfirmDeleteColumn();
+    if (wasActive) {
+      router.replace(ROUTES.TASK_LIST(teamId));
+    }
+  };
 
   const handleConfirmTeamPageDelete = async () => {
     await deleteGroup(teamId);
@@ -78,7 +87,9 @@ export default function TaskListPageShell({ teamId }: TaskListPageShellProps) {
             className="mt-7.5 lg:col-start-1 lg:row-start-2 lg:mt-0"
             columns={columns}
             activeId={effectiveActiveId}
-            onSelectColumn={setActiveId}
+            onSelectColumn={(id) =>
+              router.push(ROUTES.TASK_LIST_ITEM(teamId, id))
+            }
             onRequestRenameColumn={setColumnPendingRename}
             onRequestDeleteColumn={setColumnPendingDelete}
             onAddListClick={() => setIsCreateColumnOpen(true)}
@@ -115,7 +126,7 @@ export default function TaskListPageShell({ teamId }: TaskListPageShellProps) {
       {columnPendingDelete && (
         <TaskListColumnDeleteModal
           onClose={() => setColumnPendingDelete(null)}
-          onConfirm={handleConfirmDeleteColumn}
+          onConfirm={handleConfirmDeleteColumnWithNav}
         />
       )}
 

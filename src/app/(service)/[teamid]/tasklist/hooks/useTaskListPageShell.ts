@@ -12,10 +12,12 @@ import { useTeamDetailQuery } from '@/hooks/useTeam';
 
 type UseTaskListPageShellParams = {
   teamId: string;
+  taskId: string;
 };
 
 export default function useTaskListPageShell({
   teamId,
+  taskId,
 }: UseTaskListPageShellParams) {
   const { showToast } = useToast();
   const queryClient = useQueryClient();
@@ -34,15 +36,14 @@ export default function useTaskListPageShell({
         })),
     [groupDetail?.taskLists],
   );
-  const [activeId, setActiveId] = useState('');
   const [columnPendingDelete, setColumnPendingDelete] =
     useState<TaskListColumnItem | null>(null);
   const [columnPendingRename, setColumnPendingRename] =
     useState<TaskListColumnItem | null>(null);
   const [isCreateColumnOpen, setIsCreateColumnOpen] = useState(false);
   const [isCreateTaskOpen, setIsCreateTaskOpen] = useState(false);
-  const effectiveActiveId = columns.some((column) => column.id === activeId)
-    ? activeId
+  const effectiveActiveId = columns.some((column) => column.id === taskId)
+    ? taskId
     : (columns[0]?.id ?? '');
   const columnTitle = useMemo(
     () =>
@@ -81,10 +82,6 @@ export default function useTaskListPageShell({
       queryKey: queryKeys.taskList.detail(teamId, deletedColumnId),
     });
 
-    if (deletedColumnId === activeId) {
-      setActiveId('');
-    }
-
     setColumnPendingDelete(null);
 
     await Promise.all([
@@ -100,12 +97,11 @@ export default function useTaskListPageShell({
     ]);
 
     showToast('삭제되었습니다.', 'error');
-  }, [activeId, columnPendingDelete, queryClient, showToast, teamId]);
+  }, [columnPendingDelete, queryClient, showToast, teamId]);
 
   const handleCreateColumn = useCallback(
     async (name: string) => {
       await createTaskList(teamId, { name });
-      setActiveId('');
       setIsCreateColumnOpen(false);
       await refetchTaskListPage();
       showToast('할일 목록이 생성되었습니다.', 'success');
@@ -143,7 +139,6 @@ export default function useTaskListPageShell({
     handleRenameColumn,
     isCreateColumnOpen,
     isCreateTaskOpen,
-    setActiveId,
     setColumnPendingDelete,
     setColumnPendingRename,
     setIsCreateColumnOpen,

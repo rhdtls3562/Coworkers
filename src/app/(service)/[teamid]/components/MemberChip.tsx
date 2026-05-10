@@ -10,17 +10,21 @@ export default function MemberChip({
 }) {
   return (
     <div className="border-background-tertiary border rounded-lg flex gap-2 h-8 pr-2 pl-3 justify-center items-center  ">
-      <div className="flex flex-row ">
+      <div className="flex flex-row">
         {members.map((member) =>
           member.userImage ? (
-            <Image
+            <div
               key={member.userId}
-              src={member.userImage}
-              alt={member.userName}
-              className="w-6 h-6 rounded-lg -ml-2 object-cover border border-background-inverse bg-background-tertiary"
-              width={24}
-              height={24}
-            />
+              className="w-6 h-6 rounded-lg -ml-2 border border-background-inverse bg-background-tertiary shrink-0 block overflow-hidden"
+            >
+              <Image
+                src={member.userImage}
+                alt={member.userName}
+                className="w-full h-full object-cover "
+                width={24}
+                height={24}
+              />
+            </div>
           ) : (
             <IcUserXlarge
               key={member.userId}

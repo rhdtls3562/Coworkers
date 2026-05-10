@@ -10,15 +10,15 @@ export default function MemberCard({
   onClick,
 }: MemberCardProps) {
   return (
-    <div className="flex gap-3 items-center cursor-default">
-      <div className="overflow-hidden w-9 h-9 rounded-xl bg-background-tertiary flex items-center justify-center">
+    <div className="flex gap-3 items-center cursor-default w-full">
+      <div className="overflow-hidden w-9 h-9 rounded-xl bg-background-tertiary flex items-center justify-center shrink-0">
         {userImage ? (
           <Image
             src={userImage}
             width={36}
             height={36}
             alt={`${name}'s profile photo`}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover "
           />
         ) : (
           <IcUserXlarge
@@ -30,11 +30,11 @@ export default function MemberCard({
           />
         )}
       </div>
-      <div className="flex-1">
+      <div className="flex-1 w-[calc(100%-76px)]">
         <p className="font-semibold text-text-primary text-base text-left">
           {name}
         </p>
-        <p className="font-normal text-text-secondary text-sm text-left">
+        <p className="truncate font-normal text-text-secondary text-sm text-left">
           {email}
         </p>
       </div>

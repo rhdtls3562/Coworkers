@@ -15,6 +15,8 @@ export const ROUTES = {
   BOARD_DETAIL: (articleId: string) => `/boards/${articleId}`,
   TEAM: (teamId: string) => `/${teamId}`,
   TASK_LIST: (teamId: string) => `/${teamId}/tasklist`,
+  TASK_LIST_ITEM: (teamId: string, taskId: string) =>
+    `/${teamId}/tasklist/${taskId}`,
   TASK_DETAIL: (teamId: string, taskId: string) => `/${teamId}/${taskId}`,
   OAUTH_AUTHORIZE: (provider: string) => `/api/oauth/${provider}/authorize`,
   OAUTH_CALLBACK: (provider: string) => `/oauth/${provider}`,

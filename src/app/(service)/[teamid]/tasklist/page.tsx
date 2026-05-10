@@ -1,21 +1,30 @@
-/**
- * 할 일 리스트 페이지를 구성하는 파일입니다.
- * 태블릿(md~lg)은 상단 패딩을 넉넉히 둡니다.
- * md+: 사이드바 노출 구간부터 좌우 패딩 확보. lg+는 더 넓게.
- */
+'use client';
 
-import TaskListPageShell from '@/app/(service)/[teamid]/tasklist/components/TaskListPageShell';
+import { use, useEffect } from 'react';
 
-export default async function TaskListPage({
+import { useRouter } from 'next/navigation';
+
+import { ROUTES } from '@/constants/ROUTES';
+import { useTeamDetailQuery } from '@/hooks/useTeam';
+
+export default function TaskListPage({
   params,
 }: {
   params: Promise<{ teamid: string }>;
 }) {
-  const { teamid } = await params;
+  const { teamid } = use(params);
+  const router = useRouter();
+  const { data: groupDetail } = useTeamDetailQuery({ teamId: teamid });
 
-  return (
-    <div className="min-w-0 px-4 pb-4 pt-0 sm:px-5 sm:pt-0 md:px-10 md:pb-6 md:pt-20 lg:px-21 lg:pt-30">
-      <TaskListPageShell teamId={teamid} />
-    </div>
-  );
+  const firstTaskList = (groupDetail?.taskLists ?? [])
+    .slice()
+    .sort((a, b) => a.displayIndex - b.displayIndex)[0];
+
+  useEffect(() => {
+    if (firstTaskList) {
+      router.replace(ROUTES.TASK_LIST_ITEM(teamid, String(firstTaskList.id)));
+    }
+  }, [firstTaskList, router, teamid]);
+
+  return null;
 }
