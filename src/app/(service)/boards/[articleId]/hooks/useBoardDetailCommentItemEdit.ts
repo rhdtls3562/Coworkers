@@ -4,7 +4,7 @@
  * 상세 페이지 댓글 한 건의 편집 UI 상태와 댓글 수정 mutation을 담당하는 훅입니다.
  */
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { TEAM_ID } from '@/app/(service)/boards/[articleId]/constants';
 import type { Comment } from '@/app/(service)/boards/[articleId]/types';
