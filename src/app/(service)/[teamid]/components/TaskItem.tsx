@@ -65,8 +65,8 @@ export default function TaskItem({
             >
               <span className="truncate">{title}</span>
               <IcMoreArrow
-                width="14"
-                height="14"
+                width="10"
+                height="10"
                 role="img"
                 aria-label="할일 목록 이동 버튼"
                 className="shrink-0 text-text-default group-hover:text-brand-primary"
