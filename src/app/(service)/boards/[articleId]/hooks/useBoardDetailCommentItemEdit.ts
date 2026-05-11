@@ -9,7 +9,6 @@ import { useState } from 'react';
 import { TEAM_ID } from '@/app/(service)/boards/[articleId]/constants';
 import type { Comment } from '@/app/(service)/boards/[articleId]/types';
 import { resolveBoardAuthenticatedContext } from '@/app/(service)/boards/[articleId]/utils/resolveBoardAuthenticatedContext';
-import { useToast } from '@/components/common/toast';
 import { useUpdateArticleCommentMutation } from '@/hooks/useArticleComment';
 
 type UseBoardDetailCommentItemEditParams = {
@@ -23,7 +22,6 @@ export function useBoardDetailCommentItemEdit({
   comment,
   isOwnComment,
 }: UseBoardDetailCommentItemEditParams) {
-  const { showToast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(comment.content);
   const updateMutation = useUpdateArticleCommentMutation();
@@ -35,7 +33,6 @@ export function useBoardDetailCommentItemEdit({
 
     const trimmed = editedContent.trim();
     if (!trimmed) {
-      showToast('댓글 내용을 입력해주세요.', 'error');
       return;
     }
 
@@ -44,10 +41,7 @@ export function useBoardDetailCommentItemEdit({
       return;
     }
 
-    const auth = resolveBoardAuthenticatedContext({
-      showToast,
-      teamId: TEAM_ID,
-    });
+    const auth = resolveBoardAuthenticatedContext({ teamId: TEAM_ID });
     if (!auth) {
       return;
     }
@@ -63,10 +57,6 @@ export function useBoardDetailCommentItemEdit({
       {
         onSuccess: () => {
           setIsEditing(false);
-          showToast('댓글이 수정되었습니다.', 'success');
-        },
-        onError: () => {
-          showToast('댓글 수정에 실패했습니다. 다시 시도해주세요.', 'error');
         },
       },
     );

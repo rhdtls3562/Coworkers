@@ -3,7 +3,6 @@ import type { Comment } from '@/app/(service)/boards/[articleId]/types';
 import { formatDateToYmd } from '@/app/(service)/boards/utils/boardDisplayUtils';
 import { IcMoreVerticalLarge } from '@/assets';
 import ListDropdown from '@/components/common/dropdown/components/ListDropdown';
-import Modal from '@/components/common/modal';
 
 type CommentMenuItem = {
   label: string;
@@ -13,17 +12,11 @@ type CommentMenuItem = {
 type CommentReadonlyContentProps = {
   comment: Comment;
   menuItems: CommentMenuItem[];
-  isDeleteModalOpen: boolean;
-  onCloseDeleteModal: () => void;
-  onDeleteConfirm: () => void;
 };
 
 export default function CommentReadonlyContent({
   comment,
   menuItems,
-  isDeleteModalOpen,
-  onCloseDeleteModal,
-  onDeleteConfirm,
 }: CommentReadonlyContentProps) {
   return (
     <li className="flex gap-4 border-t border-background-tertiary py-3 md:py-5">
@@ -58,17 +51,6 @@ export default function CommentReadonlyContent({
               items={menuItems}
             />
           ) : null}
-          {isDeleteModalOpen && (
-            <Modal
-              onClose={onCloseDeleteModal}
-              title="댓글을 삭제하시겠습니까?"
-              description="댓글 정보가 삭제됩니다."
-              lineButtonText="닫기"
-              onLineButtonClick={onCloseDeleteModal}
-              subButtonText="삭제"
-              onSubButtonClick={onDeleteConfirm}
-            />
-          )}
         </div>
       </div>
     </li>

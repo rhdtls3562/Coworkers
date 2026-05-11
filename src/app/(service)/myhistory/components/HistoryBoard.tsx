@@ -13,6 +13,8 @@ import { cn } from '@/utils/cn';
 export default function HistoryBoard({
   activeFilterId,
   datedHistorySections,
+  emptyDescription,
+  emptyTitle,
   filters,
   hasTasks,
   isError,
@@ -84,8 +86,8 @@ export default function HistoryBoard({
       ) : (
         <div className="flex min-h-80 flex-1 items-center justify-center">
           <div className="text-center text-sm font-normal text-text-default">
-            <p>아직 완료된 작업이 없어요.</p>
-            <p>하나씩 완료해가며 히스토리를 만들어보세요!</p>
+            <p>{emptyTitle}</p>
+            <p>{emptyDescription}</p>
           </div>
         </div>
       )}

@@ -34,16 +34,23 @@ export default function TaskListTaskRow({
   onToggleChecked,
   onRequestDelete,
 }: TaskListTaskRowProps) {
+  const handleCardClick = (e: React.MouseEvent) => {
+    const target = e.target as HTMLElement;
+    if (target.closest('[data-task-detail-ignore]')) return;
+    onOpenDetail(task, 'view');
+  };
+
   return (
     <article
+      onClick={handleCardClick}
       className={cn(
-        'relative flex items-start rounded-xl border border-background-tertiary bg-background-primary px-3 py-3 sm:px-4',
+        'relative flex cursor-pointer items-start rounded-xl border border-background-tertiary bg-background-primary px-3 py-3 sm:px-4',
         task.checked && 'bg-background-secondary',
       )}
     >
       <div className="min-w-0 flex-1 pr-10 sm:pr-11">
         <div className="flex min-w-0 items-center gap-2">
-          <span data-task-detail-ignore>
+          <span className="flex items-center" data-task-detail-ignore>
             <TodoCheckUncheck
               label={task.title}
               checked={task.checked}
@@ -52,15 +59,17 @@ export default function TaskListTaskRow({
           </span>
 
           <span
-            className="flex shrink-0 items-center gap-1 text-sm font-medium text-text-default md:text-base cursor-pointer"
+            className="relative flex shrink-0 items-center gap-1 text-sm font-medium text-text-default md:text-base cursor-pointer"
             onClick={() => onOpenDetail(task, 'view')}
           >
-            <IcComment
-              width={22}
-              height={22}
-              className="size-5.5"
-              aria-hidden="true"
-            />
+            <span className="flex items-center justify-center w-4 h-4">
+              <IcComment
+                width={22}
+                height={22}
+                className="size-5.5 absolute"
+                aria-hidden="true"
+              />
+            </span>
             {task.commentCount}
           </span>
         </div>
@@ -76,7 +85,7 @@ export default function TaskListTaskRow({
           </span>
 
           <span className="flex items-center gap-2">
-            <IcRepeatSmall width={22} height={22} aria-hidden="true" />
+            <IcRepeatSmall width={20} height={20} aria-hidden="true" />
             {task.repeatLabel}
           </span>
         </div>

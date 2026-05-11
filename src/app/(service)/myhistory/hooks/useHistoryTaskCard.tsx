@@ -36,8 +36,10 @@ export default function useHistoryTaskCard({ task }: UseHistoryTaskCardParams) {
           key={task.id}
           apiTeamId={API_TEAM_ID}
           assigneeName={assigneeName}
-          completionActionDoneValue={false}
-          completionActionLabel="완료 취소하기"
+          completionActionDoneValue={!task.isCompleted}
+          completionActionLabel={
+            task.isCompleted ? '완료 취소하기' : '완료하기'
+          }
           description={task.description}
           frequency={task.frequency}
           initialMode="view"

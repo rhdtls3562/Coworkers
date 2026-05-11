@@ -3,102 +3,55 @@
  */
 
 import type {
-  HistorySummaryAccumulator,
-  HistoryTaskListDetailSource,
-  HistoryTeamDetail,
+  HistoryTaskMeta,
+  MyHistoryCompletedTaskRecord,
   MyHistoryFilter,
   MyHistorySummaryItem,
 } from '@/app/(service)/myhistory/types';
+import { toHistoryTaskListSummaryKey } from '@/app/(service)/myhistory/utils/myHistorySummaryCountUtils';
 
-function countCompletedTasksForCurrentUser(
-  currentUserId: number | string | undefined,
-  source: HistoryTaskListDetailSource,
+type HistoryTaskMetaMap = ReadonlyMap<string, HistoryTaskMeta>;
+
+function getTaskId(task: MyHistoryCompletedTaskRecord) {
+  return typeof task.id === 'string' || typeof task.id === 'number'
+    ? String(task.id)
+    : null;
+}
+
+export function buildCompletedTaskCountMap(
+  completedTasks: readonly MyHistoryCompletedTaskRecord[],
+  taskMetaMap: HistoryTaskMetaMap,
 ) {
-  return source.tasks.filter((task) =>
-    currentUserId !== undefined
-      ? String(task.doneByUserId) === String(currentUserId)
-      : Boolean(task.doneAt),
-  ).length;
-}
+  const completedTaskMap = completedTasks.reduce<Map<string, Set<string>>>(
+    (taskCountMap, task) => {
+      const taskId = getTaskId(task);
 
-function createEmptyTeamSummary(source: HistoryTaskListDetailSource) {
-  return {
-    details: new Map(),
-    doneCount: 0,
-    name: source.teamName,
-  } satisfies HistorySummaryAccumulator;
-}
+      if (!taskId) {
+        return taskCountMap;
+      }
 
-function createEmptyTaskListSummary(source: HistoryTaskListDetailSource) {
-  return {
-    displayIndex: source.displayIndex,
-    doneCount: 0,
-    name: source.taskListName,
-    totalCount: 0,
-  } as const;
-}
+      const taskMeta = taskMetaMap.get(taskId);
 
-export function accumulateTeamSummariesFromTaskLists(
-  currentUserId: number | string | undefined,
-  sources: readonly HistoryTaskListDetailSource[],
-) {
-  return sources.reduce<Map<string, HistorySummaryAccumulator>>(
-    (summaries, source) => {
-      const teamSummary =
-        summaries.get(source.teamId) ?? createEmptyTeamSummary(source);
-      const taskListSummary =
-        teamSummary.details.get(source.taskListId) ??
-        createEmptyTaskListSummary(source);
-      const completedCount = countCompletedTasksForCurrentUser(
-        currentUserId,
-        source,
+      if (!taskMeta) {
+        return taskCountMap;
+      }
+
+      const taskListKey = toHistoryTaskListSummaryKey(
+        taskMeta.teamId,
+        taskMeta.taskListId,
       );
+      const completedTaskSet =
+        taskCountMap.get(taskListKey) ?? new Set<string>();
 
-      taskListSummary.doneCount += completedCount;
-      taskListSummary.totalCount += source.tasks.length;
-      teamSummary.doneCount += completedCount;
-      teamSummary.details.set(source.taskListId, {
-        ...taskListSummary,
-      });
-      summaries.set(source.teamId, teamSummary);
+      completedTaskSet.add(taskMeta.taskIdentityKey);
+      taskCountMap.set(taskListKey, completedTaskSet);
 
-      return summaries;
+      return taskCountMap;
     },
     new Map(),
   );
-}
 
-export function buildTeamSummaryCards(
-  teamDetails: readonly HistoryTeamDetail[],
-  teamSummaryMap: ReadonlyMap<string, HistorySummaryAccumulator>,
-) {
-  return teamDetails.map((teamDetail) => {
-    const matchedTeamSummary = teamSummaryMap.get(teamDetail.id);
-    const details = teamDetail.taskLists.map((taskList) => {
-      const matchedTaskListSummary = matchedTeamSummary?.details.get(
-        taskList.id,
-      );
-      const doneCount = matchedTaskListSummary?.doneCount ?? 0;
-      const totalCount = matchedTaskListSummary?.totalCount ?? 0;
-
-      return {
-        doneCount,
-        countText: `${doneCount}/${totalCount}`,
-        id: taskList.id,
-        totalCount,
-        title: taskList.name,
-      };
-    });
-    const doneCount = matchedTeamSummary?.doneCount ?? 0;
-
-    return {
-      count: doneCount,
-      countText: `${doneCount}개`,
-      details,
-      id: teamDetail.id,
-      title: teamDetail.name,
-    };
-  });
+  return completedTaskMap;
 }
 
 export function buildHistoryTeamFilters(

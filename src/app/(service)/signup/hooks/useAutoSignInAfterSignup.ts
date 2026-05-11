@@ -54,7 +54,7 @@ export default function useAutoSignInAfterSignup({
       }
 
       saveAuthSession(session);
-      showToast('가입과 로그인이 완료되었습니다.', 'success');
+      showToast('가입이 완료되었습니다.', 'success');
       router.push(resolvePostAuthPath(TEAM_ID, redirectTo));
     },
   });

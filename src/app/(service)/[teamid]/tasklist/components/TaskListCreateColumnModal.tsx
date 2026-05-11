@@ -35,13 +35,6 @@ export default function TaskListCreateColumnModal({
     }
   };
 
-  const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key !== 'Enter') return;
-    if (e.nativeEvent.isComposing) return;
-    e.preventDefault();
-    handleCreate();
-  };
-
   return (
     <Modal
       hasCloseButton
@@ -56,7 +49,6 @@ export default function TaskListCreateColumnModal({
           id="tasklist-column-name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          onKeyUp={handleKeyUp}
           placeholder="목록 명을 입력해주세요."
           aria-label="목록 이름"
           className="placeholder:text-interaction-inactive"

@@ -5,32 +5,57 @@
 import type {
   HistoryTaskListDetailSource,
   HistoryTaskMeta,
+  HistoryTeamDetail,
   MyHistoryCompletedTaskRecord,
   MyHistoryTask,
 } from '@/app/(service)/myhistory/types';
 import {
   formatHistoryTaskFrequency,
   toDateLabel,
+  toHistoryTaskIdentityKey,
 } from '@/app/(service)/myhistory/utils/myHistoryShared';
 
 export function getTaskMetaMap(
+  teamDetails: readonly HistoryTeamDetail[],
   sources: readonly HistoryTaskListDetailSource[],
 ) {
-  return sources.reduce<Map<string, HistoryTaskMeta>>((taskMetaMap, source) => {
+  const taskMetaMap = new Map<string, HistoryTaskMeta>();
+
+  teamDetails.forEach((teamDetail) => {
+    teamDetail.taskLists.forEach((taskList) => {
+      taskList.tasks.forEach((task) => {
+        taskMetaMap.set(task.id, {
+          commentCount: task.commentCount,
+          taskDisplayIndex: task.displayIndex,
+          taskIdentityKey: toHistoryTaskIdentityKey(task.id, task.recurringId),
+          taskListDisplayIndex: taskList.displayIndex,
+          taskListId: taskList.id,
+          taskListName: taskList.name,
+          taskName: task.name,
+          teamId: teamDetail.id,
+          teamName: teamDetail.name,
+        });
+      });
+    });
+  });
+
+  sources.forEach((source) => {
     source.tasks.forEach((task) => {
       taskMetaMap.set(task.id, {
         commentCount: task.commentCount,
         taskDisplayIndex: task.displayIndex,
+        taskIdentityKey: toHistoryTaskIdentityKey(task.id, task.recurringId),
         taskListDisplayIndex: source.displayIndex,
         taskListId: source.taskListId,
         taskListName: source.taskListName,
+        taskName: task.name,
         teamId: source.teamId,
         teamName: source.teamName,
       });
     });
+  });
 
-    return taskMetaMap;
-  }, new Map());
+  return taskMetaMap;
 }
 
 export function toHistoryTask(
@@ -44,9 +69,10 @@ export function toHistoryTask(
     dueDate: toDateLabel(task.date),
     frequency: formatHistoryTaskFrequency(task.frequency),
     id: String(task.id ?? `${task.name}-${task.doneAt}`),
+    isCompleted: true,
     startedAt: toDateLabel(task.date),
     taskListId: meta?.taskListId ?? '',
     teamId: meta?.teamId ?? '',
-    title: task.name ?? '이름 없는 할 일',
+    title: task.name?.trim() || meta?.taskName || '이름 없는 할 일',
   } satisfies MyHistoryTask;
 }

@@ -29,7 +29,7 @@ export default function HistoryTaskCard({ task }: HistoryTaskCardProps) {
     <article className="relative flex items-start rounded-lg bg-background-secondary px-3.5 py-3">
       <div className="min-w-0 flex-1">
         <div className="flex min-w-0 items-center gap-2">
-          <TodoCheckUncheck label={task.title} checked />
+          <TodoCheckUncheck label={task.title} checked={task.isCompleted} />
           <span className="flex shrink-0 items-center gap-1 text-sm font-medium text-text-default">
             <IcComment
               width={22}

@@ -11,6 +11,13 @@ import { signUpFormSchema, type SignUpFormValues } from '@/types/auth';
 
 const TEAM_ID = process.env.NEXT_PUBLIC_TEAM_ID;
 
+const DEFAULT_FORM_VALUES: SignUpFormValues = {
+  email: '',
+  nickname: '',
+  password: '',
+  passwordConfirmation: '',
+};
+
 type UseSignupFormParams = {
   redirectTo?: string;
 };
@@ -37,12 +44,7 @@ export default function useSignupForm({ redirectTo }: UseSignupFormParams) {
     handleSubmit,
     register,
   } = useForm<SignUpFormValues>({
-    defaultValues: {
-      email: '',
-      nickname: '',
-      password: '',
-      passwordConfirmation: '',
-    },
+    defaultValues: DEFAULT_FORM_VALUES,
     mode: 'onBlur',
     reValidateMode: 'onChange',
     resolver: zodResolver(signUpFormSchema),

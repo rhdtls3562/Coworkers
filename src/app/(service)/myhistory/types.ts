@@ -19,6 +19,8 @@ export type MyHistoryFilter = {
 
 export type MyHistoryFilterId = 'once' | 'recurring';
 
+export type MyHistoryViewMode = 'completed' | 'pending';
+
 export type MyHistoryDateSelectionMode =
   (typeof MY_HISTORY_DATE_RANGE_MODES)[keyof typeof MY_HISTORY_DATE_RANGE_MODES];
 
@@ -61,6 +63,7 @@ export type MyHistoryTask = {
   dueDate: string;
   frequency: string;
   id: string;
+  isCompleted: boolean;
   startedAt: string;
   taskListId: string;
   teamId: string;
@@ -104,6 +107,19 @@ export type HistoryTaskListSummary = {
   displayIndex: number;
   id: string;
   name: string;
+  tasks: HistoryTaskListSummaryTask[];
+};
+
+export type HistoryTaskListSummaryTask = {
+  commentCount: number;
+  date: string;
+  description: string;
+  displayIndex: number;
+  doneAt?: string;
+  frequency?: string;
+  id: string;
+  name: string;
+  recurringId?: number;
 };
 
 export type HistoryTeamDetail = {
@@ -114,6 +130,7 @@ export type HistoryTeamDetail = {
 
 export type HistoryTaskListTask = {
   commentCount: number;
+  date: string;
   description: string;
   displayIndex: number;
   doneAt?: string;
@@ -121,6 +138,7 @@ export type HistoryTaskListTask = {
   frequency?: string;
   id: string;
   name: string;
+  recurringId?: number;
 };
 
 export type HistoryTaskListDetailSource = {
@@ -136,9 +154,11 @@ export type HistoryTaskListDetailSource = {
 export type HistoryTaskMeta = {
   commentCount: number;
   taskDisplayIndex: number;
+  taskIdentityKey: string;
   taskListDisplayIndex: number;
   taskListId: string;
   taskListName: string;
+  taskName: string;
   teamId: string;
   teamName: string;
 };
@@ -170,7 +190,9 @@ export type UseHistoryBoardDataParams = {
   activeFilterId: string | null;
   completedTasks: readonly MyHistoryCompletedTaskRecord[];
   isAllRange: boolean;
+  selectedRange: MyHistoryDateRange;
   shouldLimitTeamQueries: boolean;
+  viewMode: MyHistoryViewMode;
 };
 
 export type UseDragScrollReturn = {
@@ -199,6 +221,8 @@ export type UseHistoryMonthNavigatorParams = {
 export type HistoryBoardProps = {
   activeFilterId: string | null;
   datedHistorySections: readonly MyHistoryDisplayDateSection[];
+  emptyDescription: string;
+  emptyTitle: string;
   filters: readonly MyHistoryFilter[];
   hasTasks: boolean;
   isError: boolean;
@@ -243,6 +267,7 @@ export type MyHistorySummaryProps = {
   activeItemId: string | null;
   items: readonly MyHistorySummaryItem[];
   onSelectItem: (itemId: string) => void;
+  title: string;
 };
 
 export type UseHistoryTaskCardParams = {

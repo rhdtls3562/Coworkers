@@ -8,7 +8,7 @@ import Image from 'next/image';
 
 import { useBoardDetailCommentComposer } from '@/app/(service)/boards/[articleId]/hooks/useBoardDetailCommentComposer';
 import type { UserProfileResponse } from '@/app/(service)/boards/[articleId]/types';
-import { IcArrowUpCircle, IcUserXlarge } from '@/assets';
+import { IcArrowUpCircle, IcArrowUpCircleActive, IcUserXlarge } from '@/assets';
 
 type BoardDetailCommentComposerProps = {
   articleId: number;
@@ -32,6 +32,9 @@ export default function BoardDetailCommentComposer({
       onCreateSuccess,
       onRequireAuth,
     });
+  const hasDraft = draft.trim().length > 0;
+  const isSubmitEnabled = isAuthenticated && hasDraft && !isCreatePending;
+  const isButtonDisabled = isAuthenticated && !isSubmitEnabled;
 
   return (
     <div className="flex items-center gap-3 mt-3 md:mt-4 md:gap-4">
@@ -78,15 +81,24 @@ export default function BoardDetailCommentComposer({
           type="button"
           aria-label="댓글 등록"
           className="flex size-6 shrink-0 items-center justify-center disabled:opacity-50"
-          disabled={Boolean(isAuthenticated && isCreatePending)}
+          disabled={isButtonDisabled}
           onClick={!isAuthenticated ? onRequireAuth : handleSubmit}
         >
-          <IcArrowUpCircle
-            width={24}
-            height={24}
-            className="size-6"
-            aria-hidden
-          />
+          {isSubmitEnabled ? (
+            <IcArrowUpCircleActive
+              width={24}
+              height={24}
+              className="size-6"
+              aria-hidden
+            />
+          ) : (
+            <IcArrowUpCircle
+              width={24}
+              height={24}
+              className="size-6"
+              aria-hidden
+            />
+          )}
         </button>
       </div>
     </div>

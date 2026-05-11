@@ -5,12 +5,41 @@
 import type {
   HistoryMembershipTeam,
   HistoryTaskListSummary,
+  HistoryTaskListSummaryTask,
   HistoryTeamDetail,
 } from '@/app/(service)/myhistory/types';
 import {
   isRecord,
   toNumber,
 } from '@/app/(service)/myhistory/utils/myHistoryShared';
+
+function toHistoryTaskListSummaryTask(task: unknown) {
+  if (!isRecord(task)) {
+    return undefined;
+  }
+
+  const taskId =
+    typeof task.id === 'number' || typeof task.id === 'string'
+      ? String(task.id)
+      : null;
+  const taskName = typeof task.name === 'string' ? task.name : null;
+
+  if (!taskId || !taskName) {
+    return undefined;
+  }
+
+  return {
+    commentCount: toNumber(task.commentCount) ?? 0,
+    date: typeof task.date === 'string' ? task.date : '',
+    description: typeof task.description === 'string' ? task.description : '',
+    displayIndex: toNumber(task.displayIndex) ?? 0,
+    doneAt: typeof task.doneAt === 'string' ? task.doneAt : undefined,
+    frequency: typeof task.frequency === 'string' ? task.frequency : undefined,
+    id: taskId,
+    name: taskName,
+    recurringId: toNumber(task.recurringId),
+  } satisfies HistoryTaskListSummaryTask;
+}
 
 export function toHistoryTeams(data: unknown) {
   if (!Array.isArray(data)) {
@@ -89,10 +118,26 @@ export function toHistoryTeamDetail(data: unknown) {
           return list;
         }
 
+        const tasks = Array.isArray(taskList.tasks)
+          ? taskList.tasks.reduce<HistoryTaskListSummaryTask[]>(
+              (taskListTasks, task) => {
+                const historyTask = toHistoryTaskListSummaryTask(task);
+
+                if (historyTask) {
+                  taskListTasks.push(historyTask);
+                }
+
+                return taskListTasks;
+              },
+              [],
+            )
+          : [];
+
         list.push({
           displayIndex: toNumber(taskList.displayIndex) ?? 0,
           id: taskListId,
           name: taskListName,
+          tasks,
         });
 
         return list;

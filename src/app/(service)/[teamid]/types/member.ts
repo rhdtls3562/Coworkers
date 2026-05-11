@@ -33,6 +33,7 @@ export type MemberChipsProps = {
 export type ModalMemberProps = {
   onClose: () => void;
   onPrimaryButtonClick?: () => void;
+  canDeleteMember?: boolean;
   member: MemberChipsProps | null;
   onMemberClick?: (member: MemberChipsProps) => void;
   role?: string;

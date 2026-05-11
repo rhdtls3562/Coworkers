@@ -1,42 +1,53 @@
 'use client';
 
-import { useCallback, useMemo, useRef, useState } from 'react'; // useRef 추가
+import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { useQueryClient } from '@tanstack/react-query';
 
 import { queryKeys } from '@/api/queryKeys';
 import { createTaskList, deleteTaskList, updateTaskList } from '@/api/taskApi';
+import useTeamRouteGuard from '@/app/(service)/[teamid]/hooks/useTeamRouteGuard';
+import useTaskListSidebarColumns from '@/app/(service)/[teamid]/tasklist/hooks/useTaskListSidebarColumns';
 import type { TaskListColumnItem } from '@/app/(service)/[teamid]/tasklist/types';
+import { toTaskListDateString } from '@/app/(service)/[teamid]/tasklist/utils/taskListDate';
+import { removeTaskListFromGroupDetail } from '@/app/(service)/[teamid]/tasklist/utils/taskListQueryCache';
+import { resolveTeamExitRoute } from '@/app/(service)/[teamid]/utils/teamRouteAccess';
 import { useToast } from '@/components/common/toast';
 import { useTeamDetailQuery } from '@/hooks/useTeam';
+import type { GroupDetail } from '@/types/group';
 
 type UseTaskListPageShellParams = {
+  selectedDate: Date;
   teamId: string;
   taskId: string;
 };
 
 export default function useTaskListPageShell({
+  selectedDate,
   teamId,
   taskId,
 }: UseTaskListPageShellParams) {
   const { showToast } = useToast();
   const queryClient = useQueryClient();
-  const { data: groupDetail } = useTeamDetailQuery({ teamId });
-  const isCreatingColumnRef = useRef(false); // 추가
-  const columns = useMemo<TaskListColumnItem[]>(
-    () =>
-      (groupDetail?.taskLists ?? [])
-        .slice()
-        .sort((a, b) => a.displayIndex - b.displayIndex)
-        .map((taskList) => ({
-          completed: taskList.tasks.filter((task) => task.doneAt !== null)
-            .length,
-          id: String(taskList.id),
-          title: taskList.name,
-          total: taskList.tasks.length,
-        })),
-    [groupDetail?.taskLists],
-  );
+  const {
+    hasMemberships,
+    isAccessible,
+    isLoading: isTeamRouteLoading,
+    meData,
+  } = useTeamRouteGuard({ teamId });
+  const { data: groupDetail } = useTeamDetailQuery({
+    teamId,
+    options: {
+      enabled: hasMemberships && isAccessible,
+    },
+  });
+  const isCreatingColumnRef = useRef(false);
+  const dateString = toTaskListDateString(selectedDate);
+  const columns = useTaskListSidebarColumns({
+    selectedDate,
+    taskLists: groupDetail?.taskLists ?? [],
+    teamId,
+  });
   const [columnPendingDelete, setColumnPendingDelete] =
     useState<TaskListColumnItem | null>(null);
   const [columnPendingRename, setColumnPendingRename] =
@@ -66,11 +77,13 @@ export default function useTaskListPageShell({
       }),
       effectiveActiveId
         ? queryClient.invalidateQueries({
-            queryKey: queryKeys.taskList.detail(teamId, effectiveActiveId),
+            queryKey: queryKeys.taskList.detail(teamId, effectiveActiveId, {
+              date: dateString,
+            }),
           })
         : Promise.resolve(),
     ]);
-  }, [effectiveActiveId, queryClient, teamId]);
+  }, [dateString, effectiveActiveId, queryClient, teamId]);
 
   const handleConfirmDeleteColumn = useCallback(async () => {
     if (!columnPendingDelete) return;
@@ -78,6 +91,12 @@ export default function useTaskListPageShell({
     const deletedColumnId = columnPendingDelete.id;
 
     await deleteTaskList(teamId, deletedColumnId);
+
+    queryClient.setQueryData<GroupDetail | undefined>(
+      queryKeys.team.detail(teamId),
+      (previousGroupDetail) =>
+        removeTaskListFromGroupDetail(previousGroupDetail, deletedColumnId),
+    );
 
     queryClient.removeQueries({
       queryKey: queryKeys.taskList.detail(teamId, deletedColumnId),
@@ -140,12 +159,15 @@ export default function useTaskListPageShell({
     columns,
     effectiveActiveId,
     groupDetail,
+    hasAccessibleTeamRoute: isAccessible,
     handleConfirmDeleteColumn,
     handleCreateColumn,
     handleCreateTask,
     handleRenameColumn,
+    isTeamRouteLoading,
     isCreateColumnOpen,
     isCreateTaskOpen,
+    leaveFallbackRoute: resolveTeamExitRoute(teamId, meData?.memberships),
     setColumnPendingDelete,
     setColumnPendingRename,
     setIsCreateColumnOpen,

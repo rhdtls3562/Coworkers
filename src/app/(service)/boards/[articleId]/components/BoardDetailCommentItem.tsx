@@ -17,14 +17,11 @@ export default function BoardDetailCommentItem({
   const {
     isOwnComment,
     isEditing,
-    isDeleteModalOpen,
     menuItems,
     handleSubmitEdit,
     handleCancelEdit,
     editedContent,
     handleEditedContentChange,
-    handleDeleteConfirm,
-    setIsDeleteModalOpen,
   } = useBoardDetailCommentItem({
     articleId,
     comment,
@@ -43,13 +40,7 @@ export default function BoardDetailCommentItem({
           onEdit={handleSubmitEdit}
         />
       ) : (
-        <CommentReadonlyContent
-          comment={comment}
-          menuItems={menuItems}
-          isDeleteModalOpen={isDeleteModalOpen}
-          onCloseDeleteModal={() => setIsDeleteModalOpen(false)}
-          onDeleteConfirm={handleDeleteConfirm}
-        />
+        <CommentReadonlyContent comment={comment} menuItems={menuItems} />
       )}
     </>
   );

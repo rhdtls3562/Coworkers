@@ -4,9 +4,10 @@
 
 'use client';
 
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
 import TaskListBoardEmptyTaskRow from '@/app/(service)/[teamid]/tasklist/components/TaskListBoardEmptyTaskRow';
+import TaskListCreateTaskModal from '@/app/(service)/[teamid]/tasklist/components/TaskListCreateTaskModal';
 import TaskListMonthNavigator from '@/app/(service)/[teamid]/tasklist/components/TaskListMonthNavigator';
 import TaskListTaskDeleteModal from '@/app/(service)/[teamid]/tasklist/components/TaskListTaskDeleteModal';
 import TaskListTaskDetailPanel from '@/app/(service)/[teamid]/tasklist/components/TaskListTaskDetailPanel';
@@ -28,6 +29,8 @@ export default function TaskListBoard({
   className,
   columnTitle,
   groupId,
+  onSelectDate,
+  selectedDate,
   taskListId,
   teamId,
 }: TaskListBoardProps) {
@@ -38,11 +41,11 @@ export default function TaskListBoard({
     handleRequestDelete,
     handleToggleChecked,
     isTaskListEmpty,
-    selectedDate,
-    setSelectedDate,
     sortedTasks,
     taskPendingDelete,
-  } = useTaskListBoard(groupId, taskListId);
+  } = useTaskListBoard(groupId, taskListId, selectedDate);
+
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const handleOpenTaskDetail = useCallback(
     (task: (typeof sortedTasks)[number], mode: TaskListTaskDetailOpenMode) => {
@@ -60,6 +63,18 @@ export default function TaskListBoard({
     [openRightPanel, teamId],
   );
 
+  const handleOpenCreateModal = useCallback(() => {
+    setIsCreateModalOpen(true);
+  }, []);
+
+  const handleCloseCreateModal = useCallback(() => {
+    setIsCreateModalOpen(false);
+  }, []);
+
+  const handleCreateTaskSubmit = useCallback(() => {
+    handleCloseCreateModal();
+  }, [handleCloseCreateModal]);
+
   return (
     <section
       className={cn(TASK_LIST_BOARD_CARD_SHELL_CLASS, className)}
@@ -70,7 +85,7 @@ export default function TaskListBoard({
         <div className="shrink-0">
           <TaskListMonthNavigator
             selectedDate={selectedDate}
-            onSelectDate={setSelectedDate}
+            onSelectDate={onSelectDate}
           />
         </div>
       </header>
@@ -78,13 +93,16 @@ export default function TaskListBoard({
       <TaskListWeekStrip
         className="mt-6 md:mt-8"
         selectedDate={selectedDate}
-        onSelectDate={setSelectedDate}
+        onSelectDate={onSelectDate}
       />
 
       <ul className="mt-6 flex list-none flex-col gap-3 p-0 md:mt-8 md:gap-4">
         {isTaskListEmpty ? (
           <li className="list-none">
-            <TaskListBoardEmptyTaskRow selectedDate={selectedDate} />
+            <TaskListBoardEmptyTaskRow
+              selectedDate={selectedDate}
+              onClick={handleOpenCreateModal}
+            />
           </li>
         ) : (
           sortedTasks.map((task) => (
@@ -99,6 +117,16 @@ export default function TaskListBoard({
           ))
         )}
       </ul>
+
+      {isCreateModalOpen && (
+        <TaskListCreateTaskModal
+          onClose={handleCloseCreateModal}
+          onSubmit={handleCreateTaskSubmit}
+          groupId={Number(groupId)}
+          taskListId={taskListId}
+          initialDate={selectedDate}
+        />
+      )}
 
       {taskPendingDelete && (
         <TaskListTaskDeleteModal

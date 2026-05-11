@@ -7,7 +7,6 @@
 import { type KeyboardEvent, useState } from 'react';
 
 import { TEAM_ID } from '@/app/(service)/boards/[articleId]/constants';
-import { useToast } from '@/components/common/toast';
 import { useCreateArticleCommentMutation } from '@/hooks/useArticleComment';
 import { getStoredAccessToken } from '@/utils/authSession';
 
@@ -24,7 +23,6 @@ export function useBoardDetailCommentComposer({
   onCreateSuccess,
   onRequireAuth,
 }: UseBoardDetailCommentComposerParams) {
-  const { showToast } = useToast();
   const [draft, setDraft] = useState('');
   const createMutation = useCreateArticleCommentMutation();
 
@@ -35,7 +33,6 @@ export function useBoardDetailCommentComposer({
     }
 
     if (!TEAM_ID) {
-      showToast('팀 정보가 설정되지 않았습니다.', 'error');
       return;
     }
 
@@ -46,7 +43,6 @@ export function useBoardDetailCommentComposer({
     const token = getStoredAccessToken();
 
     if (!token) {
-      showToast('로그인이 필요합니다.', 'error');
       onRequireAuth();
       return;
     }
@@ -54,7 +50,6 @@ export function useBoardDetailCommentComposer({
     const trimmed = draft.trim();
 
     if (!trimmed) {
-      showToast('댓글 내용을 입력해주세요.', 'error');
       return;
     }
 
@@ -64,9 +59,6 @@ export function useBoardDetailCommentComposer({
         onSuccess: () => {
           setDraft('');
           onCreateSuccess();
-        },
-        onError: () => {
-          showToast('댓글 등록에 실패했습니다. 다시 시도해주세요.', 'error');
         },
       },
     );

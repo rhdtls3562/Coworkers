@@ -4,6 +4,7 @@ import { use, useEffect } from 'react';
 
 import { useRouter } from 'next/navigation';
 
+import useTeamRouteGuard from '@/app/(service)/[teamid]/hooks/useTeamRouteGuard';
 import { ROUTES } from '@/constants/ROUTES';
 import { useTeamDetailQuery } from '@/hooks/useTeam';
 
@@ -14,7 +15,15 @@ export default function TaskListPage({
 }) {
   const { teamid } = use(params);
   const router = useRouter();
-  const { data: groupDetail } = useTeamDetailQuery({ teamId: teamid });
+  const { hasMemberships, isAccessible, isLoading } = useTeamRouteGuard({
+    teamId: teamid,
+  });
+  const { data: groupDetail } = useTeamDetailQuery({
+    teamId: teamid,
+    options: {
+      enabled: hasMemberships && isAccessible,
+    },
+  });
 
   const firstTaskList = (groupDetail?.taskLists ?? [])
     .slice()
@@ -23,8 +32,17 @@ export default function TaskListPage({
   useEffect(() => {
     if (firstTaskList) {
       router.replace(ROUTES.TASK_LIST_ITEM(teamid, String(firstTaskList.id)));
+      return;
     }
-  }, [firstTaskList, router, teamid]);
+
+    if (groupDetail && groupDetail.taskLists.length === 0) {
+      router.replace(ROUTES.TEAM(teamid));
+    }
+  }, [firstTaskList, groupDetail, router, teamid]);
+
+  if (isLoading || !isAccessible) {
+    return null;
+  }
 
   return null;
 }

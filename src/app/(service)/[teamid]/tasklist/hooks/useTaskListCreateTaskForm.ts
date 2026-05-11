@@ -11,14 +11,16 @@ export function clampMonthDay(n: number): number {
   return Math.floor(n);
 }
 
-export function useTaskListCreateTaskForm() {
+export function useTaskListCreateTaskForm(initialDate?: Date) {
   const formId = useId();
   const [title, setTitle] = useState('');
-  const [startDate, setStartDate] = useState<Date | null>(() => new Date());
+  const [startDate, setStartDate] = useState<Date | null>(
+    () => initialDate ?? new Date(),
+  );
   const [startTime, setStartTime] = useState('15:30');
   const [repeat, setRepeat] = useState<TaskListCreateTaskRepeatValue>('once');
   const [weekDays, setWeekDays] = useState<number[]>([1, 2, 3, 4, 5]);
-  const [monthDay, setMonthDay] = useState(() => new Date().getDate());
+  const [monthDay, setMonthDay] = useState(0);
   const [memo, setMemo] = useState('');
 
   const {
@@ -100,6 +102,7 @@ export function useTaskListCreateTaskForm() {
     setMemo,
     setMonthDay,
     setRepeat,
+    setStartDate,
     setStartTime,
     setTitle,
     startTime,

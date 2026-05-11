@@ -15,13 +15,24 @@ function toHistoryTaskId(task: MyHistoryCompletedTaskRecord) {
     : null;
 }
 
+function hasHistoryTaskMeta(
+  task: MyHistoryCompletedTaskRecord,
+  taskMetaMap: HistoryTaskMetaMap,
+) {
+  const taskId = toHistoryTaskId(task);
+
+  return taskId ? taskMetaMap.has(taskId) : false;
+}
+
 export function filterHistoryTasksByActiveTeam(
   completedTasks: readonly MyHistoryCompletedTaskRecord[],
   activeTeamId: string | null,
   taskMetaMap: HistoryTaskMetaMap,
 ) {
   if (!activeTeamId) {
-    return completedTasks;
+    return completedTasks.filter((task) =>
+      hasHistoryTaskMeta(task, taskMetaMap),
+    );
   }
 
   return completedTasks.filter((task) => {

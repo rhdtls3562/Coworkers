@@ -44,7 +44,8 @@ export const useBoardDetailCommentItem = ({
         ...item,
         onClick: () => {
           if (item.label === BOARD_DETAIL_MENU.EDIT) edit.handleStartEdit();
-          else if (item.label === BOARD_DETAIL_MENU.DELETE) del.handleDelete();
+          else if (item.label === BOARD_DETAIL_MENU.DELETE)
+            del.handleDeleteConfirm();
         },
       }))
     : [];
@@ -52,13 +53,10 @@ export const useBoardDetailCommentItem = ({
   return {
     isOwnComment,
     isEditing: edit.isEditing,
-    isDeleteModalOpen: del.isDeleteModalOpen,
     menuItems,
     handleSubmitEdit: edit.handleSubmitEdit,
     handleCancelEdit: edit.handleCancelEdit,
     editedContent: edit.editedContent,
     handleEditedContentChange: edit.handleEditedContentChange,
-    handleDeleteConfirm: del.handleDeleteConfirm,
-    setIsDeleteModalOpen: del.setIsDeleteModalOpen,
   };
 };

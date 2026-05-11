@@ -12,9 +12,10 @@ import { cn } from '@/utils/cn';
 export default function PageHeader({
   className,
   hasSettingsButton = false,
+  settingsItems,
   title,
 }: PageHeaderProps) {
-  const handleActionClick = () => undefined;
+  const hasSettingsMenu = hasSettingsButton && (settingsItems?.length ?? 0) > 0;
 
   return (
     <div
@@ -28,13 +29,10 @@ export default function PageHeader({
           {title}
         </h2>
 
-        {hasSettingsButton && (
+        {hasSettingsMenu && settingsItems ? (
           <ListDropdown
             className="relative"
-            items={[
-              { label: '수정하기', onClick: handleActionClick },
-              { label: '삭제하기', onClick: handleActionClick },
-            ]}
+            items={settingsItems}
             trigger={
               <>
                 <span className="sr-only">{`${title} 설정 메뉴 열기`}</span>
@@ -47,7 +45,7 @@ export default function PageHeader({
               </>
             }
           />
-        )}
+        ) : null}
       </div>
     </div>
   );

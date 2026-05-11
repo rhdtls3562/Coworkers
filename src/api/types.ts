@@ -87,6 +87,7 @@ export type RecurringBody = {
   startDate: string;
   frequencyType: 'ONCE' | 'DAILY' | 'WEEKLY' | 'MONTHLY';
   monthDay?: number;
+  weekDays?: number[];
 };
 
 export type UploadImageResponse = {

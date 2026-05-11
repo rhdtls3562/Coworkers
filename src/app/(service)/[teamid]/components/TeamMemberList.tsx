@@ -1,3 +1,5 @@
+import { useParams } from 'next/navigation';
+
 import MemberCard from '@/app/(service)/[teamid]/components/MemberCard';
 import { ConfirmModal } from '@/app/(service)/[teamid]/components/modals/ConfirmModal';
 import { ModalMemberDetail } from '@/app/(service)/[teamid]/components/modals/ModalMemberDetails';
@@ -9,12 +11,39 @@ import {
   TeamMemberProps,
 } from '@/app/(service)/[teamid]/types';
 import { useToast } from '@/components/common/toast';
+import { useRemoveMemberTeamMutation } from '@/hooks/useTeam';
 
 export default function TeamMemberList({ teamData, role }: TeamMemberProps) {
-  const { open, close, is, openMemberDetail, selectedMember } = useModalState();
+  const params = useParams();
+  const { open, close, is, openMemberDetail, reset, selectedMember } =
+    useModalState();
   const { showToast } = useToast();
+  const { mutate: removeMemberTeam } = useRemoveMemberTeamMutation();
 
   const members = teamData.members;
+  const canDeleteSelectedMember =
+    role === 'ADMIN' &&
+    selectedMember !== null &&
+    selectedMember.role !== 'ADMIN';
+
+  const handleRemoveMemberTeam = () => {
+    if (!selectedMember) {
+      return;
+    }
+
+    removeMemberTeam(
+      {
+        teamId: params.teamid as string,
+        memberUserId: selectedMember.userId,
+      },
+      {
+        onSuccess: () => {
+          reset();
+        },
+      },
+    );
+  };
+
   return (
     <section className="hidden xl:flex w-60 bg-background-inverse mt-11 px-5 py-6 rounded-2xl border border-border-secondary shrink-0 flex-col gap-4 h-fit min-h-28">
       <div className="flex justify-between items-center">
@@ -46,8 +75,13 @@ export default function TeamMemberList({ teamData, role }: TeamMemberProps) {
       {is('memberDetail') && (
         <ModalMemberDetail
           onClose={close}
+          canDeleteMember={canDeleteSelectedMember}
           member={selectedMember}
           onPrimaryButtonClick={() => {
+            if (!canDeleteSelectedMember) {
+              return;
+            }
+
             if (members.length <= 1) {
               showToast('멤버는 1명 이상 있어야 합니다.', 'error');
               return;
@@ -60,10 +94,11 @@ export default function TeamMemberList({ teamData, role }: TeamMemberProps) {
 
       {is('memberDelete') && (
         <ConfirmModal
-          onClose={close}
+          onClose={reset}
           title="해당 멤버를 삭제하시겠습니까?"
           confirmText="삭제"
           toastMessage="삭제 되었습니다."
+          onConfirm={handleRemoveMemberTeam}
         />
       )}
     </section>

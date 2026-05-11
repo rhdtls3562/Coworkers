@@ -25,6 +25,8 @@ export type TaskListBoardTask = {
   comments: TaskListTaskComment[];
   description: string;
   dueDateLabel: string;
+  frequency: 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'ONCE';
+  recurringId: string | null;
   repeatLabel: string;
   sortOrder: number;
   startedAtLabel: string;
@@ -49,6 +51,8 @@ export type TaskListBoardProps = {
   className?: string;
   columnTitle: string;
   groupId: string | null;
+  onSelectDate: (date: Date) => void;
+  selectedDate: Date;
   taskListId: string;
   teamId: string;
 };
@@ -58,6 +62,7 @@ export type TaskListCreateTaskModalProps = {
   onSubmit?: () => void;
   groupId: number;
   taskListId: string;
+  initialDate?: Date;
 };
 
 export type TaskListCalendarVariant =

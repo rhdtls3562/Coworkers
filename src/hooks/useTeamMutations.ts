@@ -163,6 +163,9 @@ export function useRemoveMemberTeamMutation(
       options: {
         ...options,
         onSuccess: async (data, variables, onMutateResult, context) => {
+          await queryClient.invalidateQueries({
+            queryKey: queryKeys.team.detail(String(variables.teamId)),
+          });
           await refetchUserQueries(queryClient);
           await handleSuccess?.(data, variables, onMutateResult, context);
         },

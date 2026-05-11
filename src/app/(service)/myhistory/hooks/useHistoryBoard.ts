@@ -6,9 +6,13 @@
 
 import { useMemo } from 'react';
 
+import { MY_HISTORY_VIEW_MODES } from '@/app/(service)/myhistory/constants';
 import useHistoryBoardData from '@/app/(service)/myhistory/hooks/useHistoryBoardData';
 import useHistorySelectedRange from '@/app/(service)/myhistory/hooks/useHistorySelectedRange';
-import type { MyHistoryCompletedTaskRecord } from '@/app/(service)/myhistory/types';
+import type {
+  MyHistoryCompletedTaskRecord,
+  MyHistoryViewMode,
+} from '@/app/(service)/myhistory/types';
 import {
   buildVisibleHistorySections,
   hasHistoryTasks,
@@ -20,7 +24,10 @@ import {
 } from '@/app/(service)/myhistory/utils/myHistoryData';
 import { useCompletedTasksQuery } from '@/hooks/useUser';
 
-export default function useHistoryBoard(activeFilterId: string | null) {
+export default function useHistoryBoard(
+  activeFilterId: string | null,
+  viewMode: MyHistoryViewMode,
+) {
   const { data, isError, isLoading } = useCompletedTasksQuery();
 
   const completedTasks = useMemo<readonly MyHistoryCompletedTaskRecord[]>(
@@ -59,7 +66,9 @@ export default function useHistoryBoard(activeFilterId: string | null) {
     activeFilterId,
     completedTasks: completedTasksInRange,
     isAllRange,
+    selectedRange,
     shouldLimitTeamQueries: activeFilterId !== null && isAllRange,
+    viewMode,
   });
   const datedHistorySections = useMemo(
     () => buildVisibleHistorySections(historySections, selectedRange),
@@ -73,6 +82,14 @@ export default function useHistoryBoard(activeFilterId: string | null) {
     handleMoveMonth,
     handleResetRange,
     hasTasks: hasHistoryTasks(datedHistorySections),
+    emptyDescription:
+      viewMode === MY_HISTORY_VIEW_MODES.PENDING
+        ? '일정을 확인하고 하나씩 완료해보세요!'
+        : '하나씩 완료해가며 히스토리를 만들어보세요!',
+    emptyTitle:
+      viewMode === MY_HISTORY_VIEW_MODES.PENDING
+        ? '아직 해야 할 작업이 없어요.'
+        : '아직 완료된 작업이 없어요.',
     isError: isError || isBoardDataError,
     isLoading: isLoading || isBoardDataLoading,
     isProgressivelyLoading,

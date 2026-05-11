@@ -29,35 +29,38 @@ export default function TaskListNavItem({
   return (
     <li className="list-none">
       <article
+        onClick={onSelect}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onSelect();
+          }
+        }}
         className={cn(
-          'flex h-13.75 w-full min-w-0 max-w-full items-center gap-3 rounded-xl border py-0 pl-4 pr-3 transition-colors md:pl-5 lg:max-w-67.5',
+          'flex h-13.75 w-full min-w-0 max-w-full cursor-pointer items-center gap-3 rounded-xl border py-0 pl-4 pr-3 transition-colors md:pl-5 lg:max-w-67.5',
           isActive
             ? 'border-transparent bg-brand-primary shadow-none'
-            : 'border-background-tertiary bg-background-primary',
+            : 'border-background-tertiary bg-background-primary hover:bg-background-secondary',
+          'focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2',
         )}
         aria-current={isActive ? 'true' : undefined}
+        aria-label={`${item.title} 목록 선택`}
       >
-        <button
-          type="button"
-          onClick={onSelect}
+        <h2
           className={cn(
-            'min-w-0 flex-1 text-left outline-none',
-            isActive
-              ? 'focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-primary'
-              : 'focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2',
+            'min-w-0 flex-1 truncate text-left text-sm font-medium',
+            isActive ? 'text-text-inverse' : 'text-text-primary',
           )}
-          aria-label={`${item.title} 목록 선택`}
         >
-          <h2
-            className={cn(
-              'truncate text-sm font-medium',
-              isActive ? 'text-text-inverse' : 'text-text-primary',
-            )}
-          >
-            {item.title}
-          </h2>
-        </button>
-        <div className="flex shrink-0 items-center gap-1.5">
+          {item.title}
+        </h2>
+
+        <div
+          className="flex shrink-0 items-center gap-1.5"
+          onClick={(e) => e.stopPropagation()}
+        >
           <div
             className={cn(
               'inline-flex items-center rounded-full px-2.5 py-1 leading-none transition-colors',

@@ -9,18 +9,18 @@ type ShowToast = (message: string, type: ToastType) => string;
 
 export function resolveBoardAuthenticatedContext(params: {
   teamId: string;
-  showToast: ShowToast;
+  showToast?: ShowToast;
 }): { teamId: string; token: string } | null {
-  const { teamId, showToast } = params;
+  const { showToast, teamId } = params;
 
   if (!teamId) {
-    showToast('팀 정보가 설정되지 않았습니다.', 'error');
+    showToast?.('팀 정보가 설정되지 않았습니다.', 'error');
     return null;
   }
 
   const token = getStoredAccessToken();
   if (!token) {
-    showToast('로그인이 필요합니다.', 'error');
+    showToast?.('로그인이 필요합니다.', 'error');
     return null;
   }
 

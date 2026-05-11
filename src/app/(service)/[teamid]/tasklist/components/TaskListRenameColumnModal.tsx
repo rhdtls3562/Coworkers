@@ -40,13 +40,6 @@ export default function TaskListRenameColumnModal({
     }
   };
 
-  const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key !== 'Enter') return;
-    if (e.nativeEvent.isComposing) return;
-    e.preventDefault();
-    handleRename();
-  };
-
   return (
     <Modal
       hasCloseButton
@@ -61,7 +54,6 @@ export default function TaskListRenameColumnModal({
           id="tasklist-column-rename"
           value={name}
           onChange={(event) => setName(event.target.value)}
-          onKeyUp={handleKeyUp}
           placeholder="목록 명을 입력해주세요."
           aria-label="목록 이름 변경"
           className="placeholder:text-interaction-inactive"

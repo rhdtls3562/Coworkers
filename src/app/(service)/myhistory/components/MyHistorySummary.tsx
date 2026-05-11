@@ -11,6 +11,7 @@ export default function MyHistorySummary({
   activeItemId,
   items,
   onSelectItem,
+  title,
 }: MyHistorySummaryProps) {
   if (items.length === 0) {
     return null;
@@ -18,7 +19,7 @@ export default function MyHistorySummary({
 
   return (
     <aside className="hidden w-76 shrink-0 2xl:block">
-      <h2 className="text-xl font-bold text-text-primary">내가 한 일</h2>
+      <h2 className="text-xl font-bold text-text-primary">{title}</h2>
 
       <div className="mt-4 max-h-[calc(100vh-6rem)] overflow-y-auto pr-5">
         <ul className="flex flex-col gap-2">

@@ -52,3 +52,11 @@ export function formatHistoryTaskFrequency(frequency?: HistoryTaskFrequency) {
       return '반복 없음';
   }
 }
+
+export function toHistoryTaskIdentityKey(taskId: string, recurringId?: number) {
+  if (typeof recurringId === 'number' && recurringId > 0) {
+    return `recurring:${recurringId}`;
+  }
+
+  return `task:${taskId}`;
+}

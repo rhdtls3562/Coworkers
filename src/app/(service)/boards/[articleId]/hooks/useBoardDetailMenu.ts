@@ -50,7 +50,7 @@ export const useBoardDetailMenu = (articleId: string, canManage: boolean) => {
       {
         onSuccess: () => {
           setIsDeleteModalOpen(false);
-          showToast('게시글이 삭제되었습니다.', 'success');
+          showToast('게시글이 삭제되었습니다.', 'error');
           router.push(ROUTES.BOARDS);
         },
         onError: () => {

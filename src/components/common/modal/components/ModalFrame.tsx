@@ -20,6 +20,8 @@
 
 'use client';
 
+import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
+
 import { IcAlertCircleLarge, IcCloseMedium } from '@/assets/index';
 
 import { ModalFrameProps } from '../types';
@@ -42,6 +44,51 @@ export default function ModalFrame({
   isButtonAlign,
   onClose,
 }: ModalFrameProps) {
+  const handleKeyDownCapture = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+    if (
+      event.key !== 'Enter' ||
+      event.shiftKey ||
+      event.altKey ||
+      event.ctrlKey ||
+      event.metaKey ||
+      event.nativeEvent.isComposing
+    ) {
+      return;
+    }
+
+    const target = event.target;
+
+    if (
+      !(target instanceof HTMLElement) ||
+      target instanceof HTMLButtonElement ||
+      target instanceof HTMLAnchorElement ||
+      target instanceof HTMLTextAreaElement
+    ) {
+      return;
+    }
+
+    if (onPrimaryButtonClick) {
+      if (isPrimaryButtonDisabled) {
+        return;
+      }
+
+      event.preventDefault();
+      onPrimaryButtonClick();
+      return;
+    }
+
+    if (onSubButtonClick) {
+      event.preventDefault();
+      onSubButtonClick();
+      return;
+    }
+
+    if (onLineButtonClick) {
+      event.preventDefault();
+      onLineButtonClick();
+    }
+  };
+
   return (
     <div
       className="fixed top-0 left-0 right-0 bottom-0 flex 
@@ -51,9 +98,14 @@ export default function ModalFrame({
       <div
         className="w-full bg-white rounded-tl-xl rounded-tr-xl p-10 pb-8 min-w-80 relative text-center md:max-w-sm md:rounded-3xl"
         onClick={(e) => e.stopPropagation()}
+        onKeyDownCapture={handleKeyDownCapture}
       >
         {hasCloseButton && (
-          <button className="absolute right-4 top-4" onClick={onClose}>
+          <button
+            type="button"
+            className="absolute right-4 top-4"
+            onClick={onClose}
+          >
             <IcCloseMedium
               width="24"
               height="24"

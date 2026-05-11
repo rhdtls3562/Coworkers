@@ -88,10 +88,13 @@ export default function TaskListCreateTaskModalRepeatSection({
               inputMode="numeric"
               min={1}
               max={31}
-              value={monthDay}
+              value={monthDay === 0 ? '' : monthDay}
               onChange={(e) => {
                 const t = e.target.value;
-                if (t === '') return;
+                if (t === '') {
+                  onMonthDayChange(0);
+                  return;
+                }
                 const v = Number(t);
                 if (Number.isNaN(v)) return;
                 onMonthDayChange(clampMonthDay(v));

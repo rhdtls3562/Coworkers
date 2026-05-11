@@ -1,5 +1,6 @@
 /**
  * 보드에 할 일이 없을 때 표시하는 단일 플레이스홀더 행입니다.
+ * 클릭하면 할 일 생성 모달을 열 수 있습니다.
  */
 
 'use client';
@@ -17,19 +18,31 @@ function formatBoardPlaceholderDate(d: Date) {
 type TaskListBoardEmptyTaskRowProps = {
   selectedDate: Date;
   className?: string;
+  onClick?: () => void;
 };
 
 export default function TaskListBoardEmptyTaskRow({
   selectedDate,
   className,
+  onClick,
 }: TaskListBoardEmptyTaskRowProps) {
   return (
     <article
       className={cn(
         'relative flex items-start rounded-xl border border-background-tertiary bg-background-primary px-3 py-3 sm:px-4',
+        onClick &&
+          'cursor-pointer transition-colors hover:bg-background-secondary',
         className,
       )}
-      aria-hidden
+      onClick={onClick}
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onKeyDown={(e) => {
+        if (onClick && (e.key === 'Enter' || e.key === ' ')) {
+          e.preventDefault();
+          onClick();
+        }
+      }}
     >
       <div className="min-w-0 flex-1">
         <div className="flex min-w-0 items-start gap-2 md:gap-2.5">
@@ -53,7 +66,7 @@ export default function TaskListBoardEmptyTaskRow({
             |
           </span>
           <span className="flex items-center gap-2">
-            <IcRepeatSmall width={22} height={22} aria-hidden="true" />
+            <IcRepeatSmall width={20} height={20} aria-hidden="true" />
             매일 반복
           </span>
         </div>

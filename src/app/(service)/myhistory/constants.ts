@@ -7,3 +7,8 @@ export const MY_HISTORY_DATE_RANGE_MODES = {
   MONTH: 'month',
   RANGE: 'range',
 } as const;
+
+export const MY_HISTORY_VIEW_MODES = {
+  COMPLETED: 'completed',
+  PENDING: 'pending',
+} as const;

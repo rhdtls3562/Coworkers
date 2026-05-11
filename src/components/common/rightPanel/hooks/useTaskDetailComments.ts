@@ -10,9 +10,7 @@ import type {
   RightPanelComment,
   UseTaskDetailCommentsParams,
 } from '@/components/common/rightPanel/types';
-import getRightPanelErrorMessage from '@/components/common/rightPanel/utils/getRightPanelErrorMessage';
 import { toRightPanelComments } from '@/components/common/rightPanel/utils/rightPanelCommentParsers';
-import { useToast } from '@/components/common/toast';
 import {
   useCreateTaskCommentMutation,
   useDeleteTaskCommentMutation,
@@ -26,7 +24,6 @@ export default function useTaskDetailComments({
   groupId,
   taskId,
 }: UseTaskDetailCommentsParams) {
-  const { showToast } = useToast();
   const { data: meData } = useMeQuery();
   const currentUserId =
     typeof meData === 'object' &&
@@ -67,18 +64,13 @@ export default function useTaskDetailComments({
         teamId: apiTeamId,
       });
       return true;
-    } catch (error) {
-      showToast(
-        getRightPanelErrorMessage(error, '댓글 등록에 실패했습니다.'),
-        'error',
-      );
+    } catch {
       return false;
     }
   };
 
   const handleUpdateComment = async (commentId: string, content: string) => {
     if (!content.trim()) {
-      showToast('댓글 내용을 입력해주세요.', 'error');
       return false;
     }
 
@@ -90,13 +82,8 @@ export default function useTaskDetailComments({
         taskId,
         teamId: apiTeamId,
       });
-      showToast('댓글이 수정되었습니다.', 'success');
       return true;
-    } catch (error) {
-      showToast(
-        getRightPanelErrorMessage(error, '댓글 수정에 실패했습니다.'),
-        'error',
-      );
+    } catch {
       return false;
     }
   };
@@ -110,11 +97,7 @@ export default function useTaskDetailComments({
         teamId: apiTeamId,
       });
       return true;
-    } catch (error) {
-      showToast(
-        getRightPanelErrorMessage(error, '댓글 삭제에 실패했습니다.'),
-        'error',
-      );
+    } catch {
       return false;
     }
   };
