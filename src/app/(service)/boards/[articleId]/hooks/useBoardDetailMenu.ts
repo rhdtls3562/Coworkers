@@ -9,10 +9,10 @@ import {
   BOARD_DETAIL_MENU,
   TEAM_ID,
 } from '@/app/(service)/boards/[articleId]/constants';
+import { resolveBoardAuthenticatedContext } from '@/app/(service)/boards/[articleId]/utils/resolveBoardAuthenticatedContext';
 import { useToast } from '@/components/common/toast';
 import { ROUTES } from '@/constants/ROUTES';
 import { useDeleteArticleMutation } from '@/hooks/useArticle';
-import { getStoredAccessToken } from '@/utils/authSession';
 
 export const useBoardDetailMenu = (articleId: string, canManage: boolean) => {
   const router = useRouter();
@@ -33,23 +33,20 @@ export const useBoardDetailMenu = (articleId: string, canManage: boolean) => {
   };
 
   const handleConfirmDelete = () => {
-    if (!TEAM_ID) {
-      showToast('팀 정보가 설정되지 않았습니다.', 'error');
-      return;
-    }
-
     if (deleteMutation.isPending) {
       return;
     }
 
-    const token = getStoredAccessToken() ?? undefined;
-    if (!token) {
-      showToast('로그인이 필요합니다.', 'error');
+    const auth = resolveBoardAuthenticatedContext({
+      showToast,
+      teamId: TEAM_ID,
+    });
+    if (!auth) {
       return;
     }
 
     deleteMutation.mutate(
-      { articleId: Number(articleId), teamId: TEAM_ID, token },
+      { articleId: Number(articleId), teamId: auth.teamId, token: auth.token },
       {
         onSuccess: () => {
           setIsDeleteModalOpen(false);
