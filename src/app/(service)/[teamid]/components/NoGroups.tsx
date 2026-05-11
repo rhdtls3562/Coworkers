@@ -15,6 +15,7 @@ export default function NoGroup() {
             width={404}
             height={264}
             alt=""
+            loading="eager"
             className="w-46 md:w-80 xl:w-101"
           />
         )}

@@ -20,12 +20,17 @@ export function ModalTaskAdd({ onClose }: ModalTaskProps) {
 
   const [taskListName, setTaskListName] = useState('');
 
+  const trimmed = taskListName.trim();
+  const isOver = trimmed.length > 15;
+  const isDisabled = trimmed.length === 0 || isOver;
+
   const handleTaskAdd = () => {
+    if (isDisabled) return;
     createTaskList(
       {
         groupId: params.teamid as string,
         teamId: params.teamid as string,
-        body: { name: taskListName },
+        body: { name: trimmed },
       },
       {
         onSuccess: () => {
@@ -44,12 +49,18 @@ export function ModalTaskAdd({ onClose }: ModalTaskProps) {
       title="할 일 목록 추가"
       onClose={onClose}
       primaryButtonText="만들기"
+      isPrimaryButtonDisabled={isDisabled}
       onPrimaryButtonClick={handleTaskAdd}
     >
       <Input
         placeholder="할 일 목록 명을 입력해주세요."
         onChange={(e) => setTaskListName(e.target.value)}
       />
+      {isOver && (
+        <p className="mt-2 text-sm font-medium text-status-danger">
+          15자 이내로 작성해주세요.
+        </p>
+      )}
     </Modal>
   );
 }
@@ -66,13 +77,18 @@ export function ModalTaskEdit({
 
   const [taskListName, setTaskListName] = useState(initialTitle ?? '');
 
+  const trimmed = taskListName.trim();
+  const isOver = trimmed.length > 15;
+  const isDisabled =
+    trimmed.length === 0 || trimmed === (initialTitle ?? '').trim() || isOver;
+
   const handleTaskEdit = () => {
-    if (!taskListId) return;
+    if (!taskListId || isDisabled) return;
     updateTaskList(
       {
         groupId: teamId,
         taskListId,
-        body: { name: taskListName.trim() },
+        body: { name: trimmed },
         teamId,
       },
       {
@@ -92,12 +108,18 @@ export function ModalTaskEdit({
       title="할 일 목록 수정"
       onClose={onClose}
       primaryButtonText="수정하기"
+      isPrimaryButtonDisabled={isDisabled}
       onPrimaryButtonClick={handleTaskEdit}
     >
       <Input
         value={taskListName}
         onChange={(e) => setTaskListName(e.target.value)}
       />
+      {isOver && (
+        <p className="mt-2 text-left text-sm font-medium text-status-danger">
+          15자 이내로 작성해주세요.
+        </p>
+      )}
     </Modal>
   );
 }

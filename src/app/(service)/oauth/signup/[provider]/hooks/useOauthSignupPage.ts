@@ -4,9 +4,11 @@ import { useEffect, useRef, useState } from 'react';
 
 import { useRouter } from 'next/navigation';
 
+import { getMyGroups } from '@/api/userApi';
 import { OAUTH_SIGNUP_TEXT } from '@/app/(service)/oauth/signup/[provider]/constants';
+import { ROUTES } from '@/constants/ROUTES';
 import { useSignInWithOauthMutation } from '@/hooks/useAuth';
-import { buildLoginPath, resolvePostAuthPath } from '@/utils/authRedirect';
+import { buildLoginPath, getSafeRedirectTo } from '@/utils/authRedirect';
 import { extractAuthSession, saveAuthSession } from '@/utils/authSession';
 
 const TEAM_ID = process.env.NEXT_PUBLIC_TEAM_ID;
@@ -43,7 +45,7 @@ export default function useOauthSignupPage({
         mutationError.message || OAUTH_SIGNUP_TEXT.defaultError,
       );
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       const session = extractAuthSession(data);
 
       if (!session) {
@@ -52,9 +54,28 @@ export default function useOauthSignupPage({
       }
 
       saveAuthSession(session);
-      router.replace(resolvePostAuthPath(TEAM_ID, state));
+
+      const safeRedirectTo = getSafeRedirectTo(state ?? null);
+      if (safeRedirectTo) {
+        router.replace(safeRedirectTo);
+        return;
+      }
+
+      try {
+        const groups = await getMyGroups();
+        const firstGroupId = groups[0]?.id;
+
+        router.replace(
+          firstGroupId
+            ? ROUTES.TEAM(String(firstGroupId))
+            : ROUTES.TEAM('nogroup'),
+        );
+      } catch {
+        router.replace(ROUTES.TEAM('nogroup'));
+      }
     },
   });
+
   const initialErrorMessage =
     provider !== SUPPORTED_OAUTH_PROVIDER
       ? OAUTH_SIGNUP_TEXT.unsupportedProvider

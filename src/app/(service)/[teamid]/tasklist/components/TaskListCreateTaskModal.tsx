@@ -23,6 +23,7 @@ import {
 import type { TaskListCreateTaskModalProps } from '@/app/(service)/[teamid]/tasklist/types';
 import Input from '@/components/common/form/components/Input';
 import Modal from '@/components/common/modal';
+import { useToast } from '@/components/common/toast';
 import { cn } from '@/utils/cn';
 
 export default function TaskListCreateTaskModal({
@@ -31,6 +32,8 @@ export default function TaskListCreateTaskModal({
   groupId,
   taskListId,
 }: TaskListCreateTaskModalProps) {
+  const { showToast } = useToast();
+
   const {
     calendarButtonRef,
     calendarRef,
@@ -56,10 +59,13 @@ export default function TaskListCreateTaskModal({
     weekDays,
   } = useTaskListCreateTaskForm();
 
+  const isDisabled = title.trim().length === 0;
+
   const handleCreate = async () => {
-    if (!title.trim()) return;
+    if (isDisabled) return;
 
     if (repeat === 'weekly' && weekDays.length === 0) {
+      showToast('반복 요일을 선택해주세요.', 'error');
       return;
     }
 
@@ -84,7 +90,12 @@ export default function TaskListCreateTaskModal({
       await onSubmit?.();
       onClose();
     } catch (error) {
-      console.log(error);
+      const message =
+        error instanceof Error
+          ? error.message
+          : '할 일 생성 중 오류가 발생했습니다.';
+
+      showToast(message, 'error');
     }
   };
 
@@ -96,6 +107,7 @@ export default function TaskListCreateTaskModal({
         '할 일은 실제로 행동 가능한 작업 중심으로\n작성해주시면 좋습니다.'
       }
       primaryButtonText="만들기"
+      isPrimaryButtonDisabled={isDisabled}
       onPrimaryButtonClick={handleCreate}
     >
       <div className="flex w-full min-w-0 flex-col gap-8 text-left">
@@ -108,6 +120,7 @@ export default function TaskListCreateTaskModal({
           >
             할 일 제목
           </label>
+
           <div className={CREATE_TASK_FIELD_SHELL_CLASS}>
             <Input
               id={`${formId}-title`}
@@ -154,6 +167,7 @@ export default function TaskListCreateTaskModal({
           >
             할 일 메모
           </label>
+
           <div className={CREATE_TASK_MEMO_SHELL_CLASS}>
             <div className={CREATE_TASK_MEMO_INNER_WRAPPER_CLASS}>
               <textarea

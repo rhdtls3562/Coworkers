@@ -10,6 +10,7 @@ import { useQueryClient } from '@tanstack/react-query';
 
 import { deleteGroup } from '@/api/groupApi';
 import { refetchUserQueries } from '@/api/queryRefetch';
+import { getMyGroups } from '@/api/userApi';
 import TaskListBoard from '@/app/(service)/[teamid]/tasklist/components/TaskListBoard';
 import TaskListColumnDeleteModal from '@/app/(service)/[teamid]/tasklist/components/TaskListColumnDeleteModal';
 import TaskListContentArea from '@/app/(service)/[teamid]/tasklist/components/TaskListContentArea';
@@ -66,10 +67,19 @@ export default function TaskListPageShell({
   const handleConfirmTeamPageDelete = async () => {
     await deleteGroup(teamId);
     await refetchUserQueries(queryClient);
-
     showToast('삭제되었습니다.', 'error');
 
-    router.push(ROUTES.HOME);
+    try {
+      const groups = await getMyGroups();
+      const firstGroupId = groups[0]?.id;
+      router.push(
+        firstGroupId
+          ? ROUTES.TEAM(String(firstGroupId))
+          : ROUTES.TEAM('nogroup'),
+      );
+    } catch {
+      router.push(ROUTES.TEAM('nogroup'));
+    }
   };
 
   return (

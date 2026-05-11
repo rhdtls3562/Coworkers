@@ -35,6 +35,8 @@ export default function AccountForm({
     onSubmitData,
   });
 
+  const isSocialUser = /^.+@(KAKAO|GOOGLE)\.com$/i.test(userInfo.email ?? '');
+
   return (
     <>
       <form
@@ -72,23 +74,24 @@ export default function AccountForm({
           <Input id="userEmail" value={email} disabled />
         </div>
 
-        <div className="flex flex-row items-center gap-4">
-          <label
-            htmlFor="userPassword"
-            className="w-fit text-sm font-medium text-text-primary"
-          >
-            비밀번호
-          </label>
-
-          <button
-            id="userPassword"
-            type="button"
-            onClick={() => setIsPasswordModalOpen(true)}
-            className="h-8 w-fit rounded-lg border border-brand-primary bg-text-inverse px-2 text-sm font-semibold text-brand-primary hover:bg-brand-secondary"
-          >
-            비밀번호 변경하기
-          </button>
-        </div>
+        {!isSocialUser && (
+          <div className="flex flex-row items-center gap-4">
+            <label
+              htmlFor="userPassword"
+              className="w-fit text-sm font-medium text-text-primary"
+            >
+              비밀번호
+            </label>
+            <button
+              id="userPassword"
+              type="button"
+              onClick={() => setIsPasswordModalOpen(true)}
+              className="h-8 w-fit rounded-lg border border-brand-primary bg-text-inverse px-2 text-sm font-semibold text-brand-primary hover:bg-brand-secondary"
+            >
+              비밀번호 변경하기
+            </button>
+          </div>
+        )}
       </form>
 
       {isPasswordModalOpen && (

@@ -45,6 +45,13 @@ export default function Header() {
   );
 
   const canShowAuthUi = isMounted && layoutAuthState.isAuthenticated;
+  const firstTeamId = layoutAuthState.teams[0]?.id;
+  const logoHref =
+    canShowAuthUi && firstTeamId
+      ? ROUTES.TEAM(String(firstTeamId))
+      : canShowAuthUi
+        ? ROUTES.TEAM('nogroup')
+        : ROUTES.HOME;
 
   return (
     <>
@@ -69,7 +76,7 @@ export default function Header() {
             </button>
           )}
 
-          <Link href={ROUTES.HOME} aria-label="랜딩 페이지로 이동">
+          <Link href={logoHref} aria-label="첫 번째 팀 페이지로 이동">
             <ImgLogoSymbolLarge
               width={35}
               height={24}

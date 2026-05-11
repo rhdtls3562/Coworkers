@@ -2,7 +2,10 @@
  * 사이드바 상단 로고와 접기/펼치기 버튼 영역입니다.
  */
 
+'use client';
+
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 import {
   IcIndentLeftLarge,
@@ -10,6 +13,7 @@ import {
   ImgLogoSymbolLarge,
 } from '@/assets';
 import FullLogo from '@/components/common/logo/FullLogo';
+import useLayoutAuthState from '@/components/layout/hooks/useLayoutAuthState';
 import type { SidebarHeaderProps } from '@/components/layout/sidebar/types';
 import { ROUTES } from '@/constants/ROUTES';
 import { cn } from '@/utils/cn';
@@ -18,6 +22,14 @@ export default function SidebarHeader({
   isExpanded,
   onToggle,
 }: SidebarHeaderProps) {
+  const pathname = usePathname();
+  const layoutAuthState = useLayoutAuthState(pathname);
+
+  const firstTeamId = layoutAuthState.teams[0]?.id;
+  const logoHref = firstTeamId
+    ? ROUTES.TEAM(String(firstTeamId))
+    : ROUTES.TEAM('nogroup');
+
   return (
     <div
       className={cn(
@@ -25,7 +37,7 @@ export default function SidebarHeader({
         isExpanded && 'justify-between px-3.75 pt-9',
       )}
     >
-      <Link href={ROUTES.HOME} aria-label="랜딩 페이지로 이동">
+      <Link href={logoHref} aria-label="첫 번째 팀 페이지로 이동">
         {isExpanded ? (
           <FullLogo size="sidebar" />
         ) : (

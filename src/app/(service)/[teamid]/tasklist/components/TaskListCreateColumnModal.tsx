@@ -1,18 +1,13 @@
-/**
- * 할 일 목록 추가 시 목록 이름을 입력하는 모달입니다.
- * 공용 Modal(ModalPortal + ModalFrame)을 사용합니다.
- */
-
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 
 import TitleInput from '@/components/common/form/components/TitleInput';
 import Modal from '@/components/common/modal';
 
 type TaskListCreateColumnModalProps = {
   onClose: () => void;
-  onSubmit: (name: string) => void;
+  onSubmit: (name: string) => void | Promise<void>;
 };
 
 export default function TaskListCreateColumnModal({
@@ -20,12 +15,31 @@ export default function TaskListCreateColumnModal({
   onSubmit,
 }: TaskListCreateColumnModalProps) {
   const [name, setName] = useState('');
+  const [isCreating, setIsCreating] = useState(false);
+  const isCreatingRef = useRef(false);
 
-  const handleCreate = () => {
-    const trimmed = name.trim();
-    if (!trimmed) return;
-    onSubmit(trimmed);
-    setName('');
+  const trimmedName = useMemo(() => name.trim(), [name]);
+  const isOver = trimmedName.length > 15;
+  const isDisabled = trimmedName.length === 0 || isOver || isCreating;
+
+  const handleCreate = async () => {
+    if (isCreatingRef.current || trimmedName.length === 0 || isOver) return;
+    isCreatingRef.current = true;
+    setIsCreating(true);
+    try {
+      await onSubmit(trimmedName);
+      setName('');
+    } finally {
+      isCreatingRef.current = false;
+      setIsCreating(false);
+    }
+  };
+
+  const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key !== 'Enter') return;
+    if (e.nativeEvent.isComposing) return;
+    e.preventDefault();
+    handleCreate();
   };
 
   return (
@@ -34,6 +48,7 @@ export default function TaskListCreateColumnModal({
       title="할 일 목록"
       onClose={onClose}
       primaryButtonText="만들기"
+      isPrimaryButtonDisabled={isDisabled}
       onPrimaryButtonClick={handleCreate}
     >
       <div className="w-full text-left">
@@ -41,9 +56,11 @@ export default function TaskListCreateColumnModal({
           id="tasklist-column-name"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          onKeyUp={handleKeyUp}
           placeholder="목록 명을 입력해주세요."
           aria-label="목록 이름"
           className="placeholder:text-interaction-inactive"
+          errorMessage={isOver ? '15자 이내로 작성해주세요.' : undefined}
         />
       </div>
     </Modal>

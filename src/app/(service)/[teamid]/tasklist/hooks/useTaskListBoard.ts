@@ -15,7 +15,11 @@ export function useTaskListBoard(groupId: string | null, taskListId: string) {
   const queryClient = useQueryClient();
   const [selectedDate, setSelectedDate] = useState(() => new Date());
 
-  const dateString = selectedDate.toISOString().slice(0, 10);
+  const dateString = [
+    selectedDate.getFullYear(),
+    String(selectedDate.getMonth() + 1).padStart(2, '0'),
+    String(selectedDate.getDate()).padStart(2, '0'),
+  ].join('-');
 
   const { data: taskListDetail } = useQuery({
     ...taskQueryOptions.taskListDetail(String(groupId), taskListId, {

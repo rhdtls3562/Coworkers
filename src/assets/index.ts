@@ -65,6 +65,7 @@ export { default as IcLogout } from '@/assets/icons/ic_logout.svg';
 export { default as IcMoreVerticalGray } from '@/assets/icons/ic_more_vertical_gray.svg';
 export { default as IcMoreVerticalLarge } from '@/assets/icons/ic_more_vertical_large.svg';
 export { default as IcMoreVerticalSmall } from '@/assets/icons/ic_more_vertical_small.svg';
+export { default as IcMoreArrow } from '@/assets/icons/ic_more_arrow.svg';
 export { default as IcPencil } from '@/assets/icons/ic_pencil.svg';
 export { default as IcPinSmall } from '@/assets/icons/ic_pin_small.svg';
 export { default as IcPlusLarge } from '@/assets/icons/ic_plus_large.svg';

@@ -7,10 +7,12 @@ import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch } from 'react-hook-form';
 
+import { getMyGroups } from '@/api/userApi';
 import { ERROR_MESSAGES } from '@/constants/ERROR_MESSAGES';
+import { ROUTES } from '@/constants/ROUTES';
 import { useSignInMutation } from '@/hooks/useAuth';
 import { loginFormSchema, type LoginFormValues } from '@/types/auth';
-import { resolvePostAuthPath } from '@/utils/authRedirect';
+import { getSafeRedirectTo } from '@/utils/authRedirect';
 import { extractAuthSession, saveAuthSession } from '@/utils/authSession';
 
 const TEAM_ID = process.env.NEXT_PUBLIC_TEAM_ID;
@@ -26,11 +28,12 @@ export default function useLoginForm({
 }: UseLoginFormParams) {
   const router = useRouter();
   const [serverError, setServerError] = useState('');
+
   const signInMutation = useSignInMutation({
     onError: () => {
       setServerError(ERROR_MESSAGES.LOGIN_FAILED);
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       const session = extractAuthSession(data);
 
       if (!session) {
@@ -39,7 +42,26 @@ export default function useLoginForm({
       }
 
       saveAuthSession(session);
-      router.push(resolvePostAuthPath(TEAM_ID, redirectTo));
+
+      const safeRedirectTo = getSafeRedirectTo(redirectTo);
+
+      if (safeRedirectTo) {
+        router.push(safeRedirectTo);
+        return;
+      }
+
+      try {
+        const groups = await getMyGroups();
+        const firstGroupId = groups[0]?.id;
+
+        router.push(
+          firstGroupId
+            ? ROUTES.TEAM(String(firstGroupId))
+            : ROUTES.TEAM('nogroup'),
+        );
+      } catch {
+        router.push(ROUTES.TEAM('nogroup'));
+      }
     },
   });
 
@@ -57,10 +79,12 @@ export default function useLoginForm({
     reValidateMode: 'onChange',
     resolver: zodResolver(loginFormSchema),
   });
+
   const [email, password] = useWatch({
     control,
     name: ['email', 'password'],
   });
+
   const isSubmittable = loginFormSchema.safeParse({
     email,
     password,

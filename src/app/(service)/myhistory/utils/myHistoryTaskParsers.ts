@@ -31,7 +31,7 @@ export function toCompletedTaskRecords(data: unknown) {
     frequency: typeof task.frequency === 'string' ? task.frequency : undefined,
     id:
       typeof task.id === 'number' || typeof task.id === 'string'
-        ? task.id
+        ? String(task.id)
         : undefined,
     name: typeof task.name === 'string' ? task.name : undefined,
   }));

@@ -97,6 +97,18 @@ export function getStoredAccessToken() {
   return getCookieValue(ACCESS_TOKEN_COOKIE_KEY);
 }
 
+export function getStoredRefreshToken() {
+  const session = getAuthSession();
+  return session?.refreshToken ?? null;
+}
+
+export function setStoredAccessToken(accessToken: string) {
+  const session = getAuthSession();
+  if (!session) return;
+
+  saveAuthSession({ ...session, accessToken });
+}
+
 export function hasAuthSession() {
   const accessToken = getStoredAccessToken();
 

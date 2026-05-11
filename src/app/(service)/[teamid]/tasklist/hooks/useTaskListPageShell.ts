@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react'; // useRef 추가
 
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -22,6 +22,7 @@ export default function useTaskListPageShell({
   const { showToast } = useToast();
   const queryClient = useQueryClient();
   const { data: groupDetail } = useTeamDetailQuery({ teamId });
+  const isCreatingColumnRef = useRef(false); // 추가
   const columns = useMemo<TaskListColumnItem[]>(
     () =>
       (groupDetail?.taskLists ?? [])
@@ -101,10 +102,16 @@ export default function useTaskListPageShell({
 
   const handleCreateColumn = useCallback(
     async (name: string) => {
-      await createTaskList(teamId, { name });
-      setIsCreateColumnOpen(false);
-      await refetchTaskListPage();
-      showToast('할일 목록이 생성되었습니다.', 'success');
+      if (isCreatingColumnRef.current) return;
+      isCreatingColumnRef.current = true;
+      try {
+        await createTaskList(teamId, { name });
+        setIsCreateColumnOpen(false);
+        await refetchTaskListPage();
+        showToast('할일 목록이 생성되었습니다.', 'success');
+      } finally {
+        isCreatingColumnRef.current = false;
+      }
     },
     [refetchTaskListPage, showToast, teamId],
   );

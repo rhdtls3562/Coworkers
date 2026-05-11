@@ -66,7 +66,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     <ToastContext.Provider value={contextValue}>
       {children}
       {hasToasts && (
-        <div className="fixed bottom-16 left-1/2 z-50 flex -translate-x-1/2 flex-col gap-2 md:bottom-28 lg:bottom-17.5 lg:left-auto lg:right-8 lg:translate-x-0 lg:items-end">
+        <div className="fixed bottom-16 left-1/2 z-1000 flex -translate-x-1/2 flex-col gap-2 md:bottom-28 lg:bottom-17.5 lg:left-auto lg:right-8 lg:translate-x-0 lg:items-end">
           {toasts.map((toast) => (
             <Toast key={toast.id} toast={toast} onRemove={removeToast} />
           ))}

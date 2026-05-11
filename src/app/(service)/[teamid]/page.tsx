@@ -14,11 +14,16 @@ import { useMeQuery } from '@/hooks/useUser';
 export default function TaskDetailPage({ params }: TeamPageProps) {
   const { teamid } = use(params);
 
-  const { data: meData } = useMeQuery<UserInfo>();
+  const { data: meData, isLoading: isMeLoading } = useMeQuery<UserInfo>();
   const { data: teamData, isLoading: isTeamLoading } =
-    useTeamDetailQuery<TeamDetailData>({ teamId: teamid });
+    useTeamDetailQuery<TeamDetailData>({
+      teamId: teamid,
+      options: {
+        enabled: !!meData?.memberships?.length,
+      },
+    });
 
-  if (isTeamLoading) return null;
+  if (isMeLoading || isTeamLoading) return null;
 
   if (!meData?.memberships?.length) {
     return <NoGroups />;

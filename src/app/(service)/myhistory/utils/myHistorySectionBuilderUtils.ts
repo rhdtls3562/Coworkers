@@ -51,7 +51,7 @@ export function buildHistoryDateSectionMap(
           id: groupId,
           tasks: [toHistoryTask(task, taskMeta)],
           teamName: taskMeta?.teamName ?? '',
-          title: taskMeta?.taskListName ?? '완료',
+          title: taskMeta?.taskListName ?? '',
         });
       }
 

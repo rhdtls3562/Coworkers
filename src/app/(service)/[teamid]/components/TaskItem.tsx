@@ -6,6 +6,7 @@ import { ModalTaskEdit } from '@/app/(service)/[teamid]/components/modals/ModalT
 import { DROPDOWN_BUTTON } from '@/app/(service)/[teamid]/constants';
 import { useModalState } from '@/app/(service)/[teamid]/hooks/useModalState';
 import { TaskItemPropsExtended } from '@/app/(service)/[teamid]/types';
+import { IcMoreArrow } from '@/assets/index';
 import { Badge } from '@/components/common/badge';
 import { ListDropdown } from '@/components/common/dropdown';
 import TodoCheckUncheck from '@/components/common/todo/TodoCheckUncheck';
@@ -56,11 +57,23 @@ export default function TaskItem({
           },
         )}
       >
-        <div className="flex gap-3 items-center justify-center">
-          <p className="flex-1 text-text-primary text-sm font-semibold whitespace-nowrap truncate ">
-            <Link href={`/${teamId}/tasklist/${taskListId}`}>{title}</Link>
+        <div className="flex gap-3 items-center w-full">
+          <p className="flex-1 min-w-0 whitespace-nowrap flex flex-row gap-1.5 items-center ">
+            <Link
+              href={`/${teamId}/tasklist/${taskListId}`}
+              className="truncate min-w-0 text-text-primary text-base font-semibold hover:text-brand-primary"
+            >
+              {title}
+            </Link>
+            <IcMoreArrow
+              width="14"
+              height="14"
+              role="img"
+              aria-label="할일 목록 이동 버튼"
+              className="shrink-0"
+            />
           </p>
-          <div>
+          <div className=" shrink-0">
             <Badge completed={completedCount} total={tasks.length} />
           </div>
           <div className="w-6 h-6 shrink-0">

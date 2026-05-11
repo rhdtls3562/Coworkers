@@ -3,7 +3,12 @@
  */
 
 import type { ApiError, FetchOptions } from '@/api/types';
-import { clearAuthSession, getStoredAccessToken } from '@/utils/authSession';
+import {
+  clearAuthSession,
+  getStoredAccessToken,
+  getStoredRefreshToken,
+  setStoredAccessToken,
+} from '@/utils/authSession';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 const TEAM_ID = process.env.NEXT_PUBLIC_TEAM_ID;
@@ -52,6 +57,27 @@ function createApiError(message: string, status?: number): ApiError {
   });
 }
 
+async function refreshAccessToken(): Promise<string | null> {
+  const refreshToken = getStoredRefreshToken();
+  if (!refreshToken) return null;
+
+  try {
+    const res = await fetch(buildApiUrl(teamEndpoint('/auth/refresh-token')), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refreshToken }),
+    });
+
+    if (!res.ok) return null;
+
+    const data = (await res.json()) as { accessToken: string };
+    setStoredAccessToken(data.accessToken);
+    return data.accessToken;
+  } catch {
+    return null;
+  }
+}
+
 export async function apiClient<T>(
   endpoint: string,
   options: FetchOptions = {},
@@ -76,6 +102,21 @@ export async function apiClient<T>(
   });
 
   if (res.status === 401) {
+    const newToken = await refreshAccessToken();
+
+    if (newToken) {
+      headers.set('Authorization', `Bearer ${newToken}`);
+      const retryRes = await fetch(buildApiUrl(endpoint), {
+        ...rest,
+        headers,
+      });
+
+      if (retryRes.ok) {
+        if (retryRes.status === 204) return undefined as T;
+        return retryRes.json() as Promise<T>;
+      }
+    }
+
     clearAuthSession('unauthorized');
     throw createApiError(
       '로그인이 만료되었습니다. 다시 로그인해주세요.',

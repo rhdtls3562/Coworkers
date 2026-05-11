@@ -73,7 +73,7 @@ export type MyHistoryCompletedTaskRecord = {
   displayIndex?: number;
   doneAt?: string;
   frequency?: string;
-  id?: number | string;
+  id?: string;
   name?: string;
 };
 

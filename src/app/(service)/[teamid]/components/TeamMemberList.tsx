@@ -8,9 +8,11 @@ import {
   TeamMemberListContentProps,
   TeamMemberProps,
 } from '@/app/(service)/[teamid]/types';
+import { useToast } from '@/components/common/toast';
 
 export default function TeamMemberList({ teamData, role }: TeamMemberProps) {
   const { open, close, is, openMemberDetail, selectedMember } = useModalState();
+  const { showToast } = useToast();
 
   const members = teamData.members;
   return (
@@ -45,7 +47,13 @@ export default function TeamMemberList({ teamData, role }: TeamMemberProps) {
         <ModalMemberDetail
           onClose={close}
           member={selectedMember}
-          onPrimaryButtonClick={() => open('memberDelete')}
+          onPrimaryButtonClick={() => {
+            if (members.length <= 1) {
+              showToast('멤버는 1명 이상 있어야 합니다.', 'error');
+              return;
+            }
+            open('memberDelete');
+          }}
           role={role}
         />
       )}
