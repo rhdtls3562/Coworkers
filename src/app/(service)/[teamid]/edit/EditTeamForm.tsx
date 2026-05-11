@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 
 import { TeamDetailData } from '@/app/(service)/[teamid]/types';
 import AddUserImg from '@/components/common/adduserimg/AddUserImg';
+import { PrimaryButton } from '@/components/common/button';
 import { Input } from '@/components/common/form';
 import { useToast } from '@/components/common/toast';
 import { useUploadImageMutation } from '@/hooks/useImage';
@@ -19,17 +20,24 @@ type EditTeamFormProps = {
 export default function EditTeamForm({ teamData, teamid }: EditTeamFormProps) {
   const { showToast } = useToast();
   const router = useRouter();
+
   const { mutate: updateTeam, isPending: isUpdating } = useUpdateTeamMutation();
+
   const { mutateAsync: uploadImage, isPending: isUploading } =
     useUploadImageMutation();
+
   const [teamName, setTeamName] = useState(teamData.name);
   const [imageFile, setImageFile] = useState<File | null>(null);
 
   const isPending = isUpdating || isUploading;
-  const isSubmittable = teamName.trim().length > 0;
+  const isChanged = teamName.trim() !== teamData.name || imageFile !== null;
+  const isDisabled = isPending || teamName.trim().length === 0 || !isChanged;
 
-  const handleEditTeam = async () => {
-    if (!isSubmittable) return;
+  const handleSubmit: React.SubmitEventHandler<HTMLFormElement> = async (e) => {
+    e.preventDefault();
+
+    if (isDisabled) return;
+
     let imageUrl = teamData.image;
 
     if (imageFile) {
@@ -40,7 +48,10 @@ export default function EditTeamForm({ teamData, teamid }: EditTeamFormProps) {
     updateTeam(
       {
         teamId: teamid,
-        body: { name: teamName, image: imageUrl },
+        body: {
+          name: teamName,
+          image: imageUrl,
+        },
       },
       {
         onSuccess: () => {
@@ -55,40 +66,47 @@ export default function EditTeamForm({ teamData, teamid }: EditTeamFormProps) {
   };
 
   return (
-    <section className="px-4 py-25 md:px-14 flex justify-around items-center h-full">
-      <div className="bg-background-primary px-6 pt-10 pb-15 rounded-[20px] w-full max-w-xl md:px-11">
-        <h2 className="text-text-primary font-bold text-xl mb-8">
+    <div className="flex h-full items-center justify-center px-4 py-24 md:px-14">
+      <div className="w-full max-w-xl rounded-[20px] bg-background-primary p-11">
+        <h2 className="mb-8 text-xl font-bold text-text-primary">
           팀 이름 변경하기
         </h2>
+
         <h2 className="sr-only">팀 정보 수정</h2>
-        <form className="flex flex-col gap-3">
-          <AddUserImg src={teamData.image} onChangeFile={setImageFile} />
-          <div className="flex flex-col gap-2 mb-10">
+
+        <form onSubmit={handleSubmit} className="flex flex-col">
+          <div className="mb-3">
+            <AddUserImg src={teamData.image} onChangeFile={setImageFile} />
+          </div>
+
+          <div className="mb-10 flex flex-col gap-3">
             <label
               htmlFor="teamName"
-              className="text-sm text-text-primary font-medium"
+              className="text-base font-medium text-text-primary"
             >
               팀 이름
             </label>
+
             <Input
               id="teamName"
               value={teamName}
               onChange={(e) => setTeamName(e.target.value)}
             />
           </div>
+
+          <PrimaryButton
+            type="submit"
+            disabled={isDisabled}
+            className="mb-5 max-w-none"
+          >
+            {isPending ? '수정 중...' : '수정하기'}
+          </PrimaryButton>
         </form>
-        <button
-          type="button"
-          className="text-base text-text-inverse bg-brand-primary w-full h-12 rounded-xl mb-5 hover:bg-interaction-hover disabled:opacity-50"
-          disabled={isPending || !isSubmittable}
-          onClick={handleEditTeam}
-        >
-          {isPending ? '수정 중...' : '수정하기'}
-        </button>
-        <p className="text-sm text-text-default font-normal text-center break-keep">
+
+        <p className="text-center text-sm font-normal text-text-default">
           팀 이름은 회사명이나 모임 이름 등으로 설정하면 좋아요.
         </p>
       </div>
-    </section>
+    </div>
   );
 }

@@ -40,7 +40,7 @@ export default function useHistoryTaskCard({ task }: UseHistoryTaskCardParams) {
           completionActionLabel="완료 취소하기"
           description={task.description}
           frequency={task.frequency}
-          initialMode="edit"
+          initialMode="view"
           startedAt={task.startedAt}
           taskId={task.id}
           taskListId={task.taskListId}

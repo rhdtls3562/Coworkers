@@ -58,21 +58,21 @@ export default function TaskItem({
         )}
       >
         <div className="flex gap-3 items-center w-full">
-          <p className="flex-1 min-w-0 whitespace-nowrap flex flex-row gap-1.5 items-center ">
+          <div className="flex-1 min-w-0 flex items-center">
             <Link
-              href={`/${teamId}/tasklist/${taskListId}`}
-              className="truncate min-w-0 text-text-primary text-base font-semibold hover:text-brand-primary"
+              href={'/' + teamId + '/tasklist/' + taskListId}
+              className="group flex items-center gap-1.5 min-w-0 text-text-primary text-base font-semibold hover:text-brand-primary"
             >
-              {title}
+              <span className="truncate">{title}</span>
+              <IcMoreArrow
+                width="14"
+                height="14"
+                role="img"
+                aria-label="할일 목록 이동 버튼"
+                className="shrink-0 text-text-default group-hover:text-brand-primary"
+              />
             </Link>
-            <IcMoreArrow
-              width="14"
-              height="14"
-              role="img"
-              aria-label="할일 목록 이동 버튼"
-              className="shrink-0"
-            />
-          </p>
+          </div>
           <div className=" shrink-0">
             <Badge completed={completedCount} total={tasks.length} />
           </div>
