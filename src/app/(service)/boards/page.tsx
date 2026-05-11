@@ -6,21 +6,21 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 import BoardBestList from '@/app/(service)/boards/components/BoardBestList';
+import BoardCreateForm from '@/app/(service)/boards/components/BoardCreateForm';
 import BoardHeader from '@/app/(service)/boards/components/BoardHeader';
 import BoardList from '@/app/(service)/boards/components/BoardList';
 import BoardWriteFloatingButton from '@/app/(service)/boards/components/BoardWriteFloatingButton';
-import PostCreateForm from '@/app/(service)/boards/components/PostCreateForm';
-import { isSearchMode } from '@/app/(service)/boards/utils/boardUtils';
+import { isSearchMode } from '@/app/(service)/boards/utils/boardListUtils';
 import { ROUTES } from '@/constants/ROUTES';
 import { buildLoginPath } from '@/utils/authRedirect';
 
 export default async function BoardsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ search?: string; write?: string }>;
+  searchParams: Promise<{ keyword?: string; write?: string }>;
 }) {
   const parsedParams = await searchParams;
-  const keyword = parsedParams.search;
+  const keyword = parsedParams.keyword;
   const isSearchModeValue = isSearchMode(keyword);
   const isWriteMode = parsedParams.write === 'true';
 
@@ -41,7 +41,7 @@ export default async function BoardsPage({
   return (
     <>
       {isWriteMode ? (
-        <PostCreateForm />
+        <BoardCreateForm />
       ) : (
         <>
           <div className="bg-white min-h-full w-full">

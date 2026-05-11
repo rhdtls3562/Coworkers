@@ -7,13 +7,13 @@ import {
   BOARD_DEVICE_TYPE,
   BOARD_DEVICE_TYPE_LIMIT,
 } from '@/app/(service)/boards/constants';
-import useBoardBestMemo from '@/app/(service)/boards/hooks/useBoardBestMemo';
-import { usePagination } from '@/app/(service)/boards/hooks/usePagination';
+import useBestPostsMemo from '@/app/(service)/boards/hooks/useBestPostsMemo';
+import { useBoardPagination } from '@/app/(service)/boards/hooks/useBoardPagination';
 import type { Post } from '@/app/(service)/boards/types';
 import {
   getBoardBestPosts,
   hasPosts,
-} from '@/app/(service)/boards/utils/boardUtils';
+} from '@/app/(service)/boards/utils/boardListUtils';
 import { useArticleListQuery } from '@/hooks/useArticle';
 import useDeviceType from '@/hooks/useDeviceType';
 
@@ -32,7 +32,7 @@ export default function BoardBestList() {
   const boardBestPosts = getBoardBestPosts(boardPosts);
   const hasBoardPosts = hasPosts(boardPosts);
 
-  const { emptyMessage } = useBoardBestMemo({ boardBestPosts, hasBoardPosts });
+  const { emptyMessage } = useBestPostsMemo({ boardBestPosts, hasBoardPosts });
   const {
     currentItems: currentPosts,
     currentPage,
@@ -40,7 +40,7 @@ export default function BoardBestList() {
     handlePageSelect,
     handlePrevPage,
     totalPages,
-  } = usePagination({
+  } = useBoardPagination({
     items: boardBestPosts,
     pageSize,
   });

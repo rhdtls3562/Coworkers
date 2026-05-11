@@ -1,5 +1,5 @@
 import type { ArticleListQueryParams } from '@/api/queryKeys';
-import type { ArticleSubmitAction } from '@/app/(service)/boards/utils/boardUtils';
+import type { ArticleSubmitAction } from '@/app/(service)/boards/utils/boardFormUtils';
 
 export const BOARD_ORDER_BY = {
   RECENT: 'recent',

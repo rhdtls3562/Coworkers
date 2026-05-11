@@ -61,7 +61,7 @@ export default function TaskItem({
           <div className="flex-1 min-w-0 flex items-center">
             <Link
               href={'/' + teamId + '/tasklist/' + taskListId}
-              className="group flex items-center gap-1.5 min-w-0 text-text-primary text-base font-semibold hover:text-brand-primary"
+              className="group flex items-center gap-1.5 min-w-0 text-text-primary text-base font-semibold transition-colors duration-200 ease-in-out hover:text-brand-primary"
             >
               <span className="truncate">{title}</span>
               <IcMoreArrow
@@ -69,7 +69,7 @@ export default function TaskItem({
                 height="10"
                 role="img"
                 aria-label="할일 목록 이동 버튼"
-                className="shrink-0 text-text-default group-hover:text-brand-primary"
+                className="shrink-0 text-text-default transition-colors duration-200 ease-in-out group-hover:text-brand-primary"
               />
             </Link>
           </div>

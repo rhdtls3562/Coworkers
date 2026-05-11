@@ -5,10 +5,11 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import useBoardFormFields from '@/app/(service)/boards/hooks/useBoardFormFields';
+import useBoardFormUnsavedChangesGuard from '@/app/(service)/boards/hooks/useBoardFormUnsavedChangesGuard';
 import {
+  buildArticleMutationBody,
   getArticleSubmitErrorMessage,
-  normalizeArticleImageUrl,
-} from '@/app/(service)/boards/utils/boardUtils';
+} from '@/app/(service)/boards/utils/boardFormUtils';
 import { useToast } from '@/components/common/toast';
 import { ROUTES } from '@/constants/ROUTES';
 import { useCreateArticleMutation } from '@/hooks/useArticle';
@@ -28,14 +29,22 @@ export default function useBoardCreateForm() {
     formData,
     handleContentBlur,
     handleContentChange,
+    handleDiscardChanges,
     handleImageChange,
     handleTitleBlur,
     handleTitleChange,
+    hasFormChanged,
     imageFile,
     isSubmittable,
     setIsSubmitted,
     titleErrorMessage,
   } = useBoardFormFields();
+
+  useBoardFormUnsavedChangesGuard({
+    hasUnsavedChanges: hasFormChanged,
+    intent: 'create',
+    onDiscardChanges: handleDiscardChanges,
+  });
 
   const isMutationPending =
     uploadImageMutation.isPending || createArticleMutation.isPending;
@@ -61,21 +70,21 @@ export default function useBoardCreateForm() {
 
     try {
       setIsLoading(true);
-      const token = getStoredAccessToken() ?? undefined;
+      const token = getStoredAccessToken();
+      if (!token) {
+        showToast('로그인이 필요합니다.', 'error');
+        return;
+      }
       const uploadedImage = imageFile
         ? await uploadImageMutation.mutateAsync({ file: imageFile })
         : null;
 
-      const imageForRequest = normalizeArticleImageUrl(
-        uploadedImage ? uploadedImage.url : formData.image,
-      );
-
       await createArticleMutation.mutateAsync({
-        body: {
-          content: formData.content.trim(),
-          image: imageForRequest,
-          title: formData.title.trim(),
-        },
+        body: buildArticleMutationBody({
+          content: formData.content,
+          image: uploadedImage ? uploadedImage.url : formData.image,
+          title: formData.title,
+        }),
         teamId: TEAM_ID,
         token,
       });

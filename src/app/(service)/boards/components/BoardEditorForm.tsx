@@ -9,7 +9,7 @@ import {
 } from '@/components/common/form';
 import { cn } from '@/utils/cn';
 
-type BoardPostFormProps = {
+type BoardEditorFormProps = {
   contentErrorMessage?: string;
   formClassName?: string;
   formData: { content: string; image: string | null; title: string };
@@ -31,7 +31,7 @@ type BoardPostFormProps = {
 const LABEL_ROW = 'flex items-center gap-1 md:gap-1.5';
 const FIELD_LABEL = 'block text-text-primary text-sm font-bold md:text-base';
 
-export default function BoardPostForm({
+export default function BoardEditorForm({
   contentErrorMessage,
   formClassName,
   formData,
@@ -49,7 +49,7 @@ export default function BoardPostForm({
   outerClassName,
   submitLabel,
   titleErrorMessage,
-}: BoardPostFormProps) {
+}: BoardEditorFormProps) {
   const main = (
     <>
       <h2 className="text-text-primary text-xl font-bold leading-6">
@@ -95,6 +95,7 @@ export default function BoardPostForm({
             이미지
           </label>
           <ImageUploadField
+            id="image"
             variant="post"
             src={formData.image || null}
             previewAlt="게시글 이미지"

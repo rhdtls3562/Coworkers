@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 import { useRouter } from 'next/navigation';
 
-export default function useSearch() {
+export default function useBoardSearch() {
   const [keyword, setKeyword] = useState('');
   const router = useRouter();
 
@@ -20,7 +20,7 @@ export default function useSearch() {
       return;
     }
 
-    router.push(`/boards?search=${encodeURIComponent(keyword)}`);
+    router.push(`/boards?keyword=${encodeURIComponent(keyword)}`);
   };
 
   return {

@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo, useState } from 'react';
 
-import { isRequiredTextValid } from '@/app/(service)/boards/utils/boardUtils';
+import { isRequiredTextValid } from '@/app/(service)/boards/utils/boardFormUtils';
 
 type BoardFormData = {
   content: string;
@@ -15,7 +15,6 @@ type UseBoardFormFieldsParams = {
   requiresChange?: boolean;
 };
 
-/** 수정 화면은 부모에서 `key={articleId}` 등으로 리마운트해 초기값을 동기화합니다. */
 export default function useBoardFormFields({
   initialFormData,
   requiresChange = false,

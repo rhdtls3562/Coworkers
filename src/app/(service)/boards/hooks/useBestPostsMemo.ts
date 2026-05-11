@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 
 import type { Post } from '@/app/(service)/boards/types';
 
-export default function useBoardBestMemo({
+export default function useBestPostsMemo({
   boardBestPosts,
   hasBoardPosts,
 }: {

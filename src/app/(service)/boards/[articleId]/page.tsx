@@ -92,7 +92,10 @@ export default async function BoardDetailPage({
               />
               <BoardDetailContent boardDetail={boardDetail} />
 
-              <BoardDetailComments userProfile={userProfile} />
+              <BoardDetailComments
+                commentCount={boardDetail.commentCount}
+                userProfile={userProfile}
+              />
             </div>
           )}
         </div>

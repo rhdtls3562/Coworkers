@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { usePathname, useRouter } from 'next/navigation';
 
+import { buildApiUrl, teamEndpoint } from '@/api/apiClient';
 import { useToast } from '@/components/common/toast/hooks/useToast';
 import { isGuestLayoutPath } from '@/components/layout/constants';
 import { ROUTES } from '@/constants/ROUTES';
@@ -11,6 +12,8 @@ import {
   clearAuthSession,
   getAccessTokenExpirationTime,
   getStoredAccessToken,
+  getStoredRefreshToken,
+  setStoredAccessToken,
   subscribeAuthSessionChange,
 } from '@/utils/authSession';
 
@@ -48,7 +51,30 @@ export default function useAuthSessionGuard() {
       return;
     }
 
-    const timeoutId = window.setTimeout(() => {
+    const timeoutId = window.setTimeout(async () => {
+      const refreshToken = getStoredRefreshToken();
+
+      if (refreshToken) {
+        try {
+          const res = await fetch(
+            buildApiUrl(teamEndpoint('/auth/refresh-token')),
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ refreshToken }),
+            },
+          );
+
+          if (res.ok) {
+            const data = (await res.json()) as { accessToken?: string };
+            if (data.accessToken) {
+              setStoredAccessToken(data.accessToken);
+              return; // 갱신 성공 시 로그아웃 안 함
+            }
+          }
+        } catch {}
+      }
+
       clearAuthSession('expired');
     }, remainingTime);
 

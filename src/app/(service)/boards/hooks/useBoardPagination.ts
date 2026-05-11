@@ -2,17 +2,17 @@
 
 import { useMemo, useState } from 'react';
 
-type UsePaginationParams<TItem> = {
+type UseBoardPaginationParams<TItem> = {
   initialPage?: number;
   items: TItem[];
   pageSize: number;
 };
 
-export function usePagination<TItem>({
+export function useBoardPagination<TItem>({
   initialPage = 1,
   items,
   pageSize,
-}: UsePaginationParams<TItem>) {
+}: UseBoardPaginationParams<TItem>) {
   const [currentPage, setCurrentPage] = useState(initialPage);
 
   const totalPages = useMemo(() => {

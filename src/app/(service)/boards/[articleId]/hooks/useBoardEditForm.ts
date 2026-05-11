@@ -5,12 +5,10 @@ import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import type { QueryKeyId } from '@/api/queryKeys';
-import useBoardEditUnsavedChangesGuard from '@/app/(service)/boards/[articleId]/hooks/useBoardEditUnsavedChangesGuard';
+import { executeBoardArticleEdit } from '@/app/(service)/boards/[articleId]/utils/executeBoardArticleEdit';
 import useBoardFormFields from '@/app/(service)/boards/hooks/useBoardFormFields';
-import {
-  getArticleSubmitErrorMessage,
-  normalizeArticleImageUrl,
-} from '@/app/(service)/boards/utils/boardUtils';
+import useBoardFormUnsavedChangesGuard from '@/app/(service)/boards/hooks/useBoardFormUnsavedChangesGuard';
+import { getArticleSubmitErrorMessage } from '@/app/(service)/boards/utils/boardFormUtils';
 import { useToast } from '@/components/common/toast';
 import { ROUTES } from '@/constants/ROUTES';
 import { useUpdateArticleMutation } from '@/hooks/useArticle';
@@ -56,8 +54,9 @@ export default function useBoardEditForm({
     requiresChange: true,
   });
 
-  useBoardEditUnsavedChangesGuard({
+  useBoardFormUnsavedChangesGuard({
     hasUnsavedChanges: hasFormChanged,
+    intent: 'edit',
     onDiscardChanges: handleDiscardChanges,
   });
 
@@ -87,24 +86,20 @@ export default function useBoardEditForm({
 
     try {
       setIsLoading(true);
-      const token = getStoredAccessToken() ?? undefined;
-      const uploadedImage = imageFile
-        ? await uploadImageMutation.mutateAsync({ file: imageFile })
-        : null;
+      const token = getStoredAccessToken();
+      if (!token) {
+        showToast('로그인이 필요합니다.', 'error');
+        return;
+      }
 
-      const imageForRequest = normalizeArticleImageUrl(
-        uploadedImage ? uploadedImage.url : formData.image,
-      );
-
-      await updateArticleMutation.mutateAsync({
+      await executeBoardArticleEdit({
         articleId,
-        body: {
-          content: formData.content.trim(),
-          image: imageForRequest,
-          title: formData.title.trim(),
-        },
+        formData,
+        imageFile,
         teamId: TEAM_ID,
         token,
+        updateArticleMutateAsync: updateArticleMutation.mutateAsync,
+        uploadImageMutateAsync: uploadImageMutation.mutateAsync,
       });
 
       savedSuccessfullyRef.current = true;

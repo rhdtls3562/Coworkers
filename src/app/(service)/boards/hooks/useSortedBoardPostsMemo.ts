@@ -5,7 +5,11 @@ import { useMemo, useState } from 'react';
 import { BOARD_SORT_OPTIONS } from '@/app/(service)/boards/constants';
 import type { Post } from '@/app/(service)/boards/types';
 
-export default function useBoardMemo({ boardPosts }: { boardPosts: Post[] }) {
+export default function useSortedBoardPostsMemo({
+  boardPosts,
+}: {
+  boardPosts: Post[];
+}) {
   const [sort, setSort] = useState(BOARD_SORT_OPTIONS[0].value);
 
   const sortedPosts = useMemo(() => {

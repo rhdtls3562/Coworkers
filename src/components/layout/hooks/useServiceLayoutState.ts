@@ -16,7 +16,13 @@ const OVERLAY_ANIMATION_DURATION = 300;
 
 export default function useServiceLayoutState(): ServiceLayoutContextValue {
   const pathname = usePathname();
-  const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
+  const [isSidebarExpanded, setIsSidebarExpanded] = useState(() => {
+    if (typeof window === 'undefined') {
+      return true;
+    }
+
+    return window.innerWidth >= 1024;
+  });
   const [rightPanelContent, setRightPanelContent] =
     useState<RightPanelContent | null>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);

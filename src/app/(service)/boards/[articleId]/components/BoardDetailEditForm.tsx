@@ -1,7 +1,7 @@
 'use client';
 
 import useBoardEditForm from '@/app/(service)/boards/[articleId]/hooks/useBoardEditForm';
-import BoardPostForm from '@/app/(service)/boards/components/BoardPostForm';
+import BoardEditorForm from '@/app/(service)/boards/components/BoardEditorForm';
 import type { Post } from '@/app/(service)/boards/types';
 
 export default function BoardDetailEditForm({
@@ -29,7 +29,7 @@ export default function BoardDetailEditForm({
   });
 
   return (
-    <BoardPostForm
+    <BoardEditorForm
       heading="게시글 수정"
       submitLabel="수정하기"
       imageButtonAriaLabel="게시글 이미지 수정"

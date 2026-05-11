@@ -1,10 +1,10 @@
 'use client';
 
-import useSearch from '@/app/(service)/boards/hooks/useSearch';
+import useBoardSearch from '@/app/(service)/boards/hooks/useBoardSearch';
 import { IcSearchXlarge } from '@/assets';
 
 export default function BoardSearch() {
-  const { keyword, handleChange, handleSubmit } = useSearch();
+  const { keyword, handleChange, handleSubmit } = useBoardSearch();
 
   return (
     <form onSubmit={handleSubmit} className="relative w-full md:max-w-105">

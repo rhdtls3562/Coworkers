@@ -76,7 +76,7 @@ export default function LoginForm({
         />
 
         {serverError && (
-          <p className="text-center text-sm font-medium text-status-danger">
+          <p className="w-full text-left text-sm font-medium text-status-danger">
             {serverError}
           </p>
         )}

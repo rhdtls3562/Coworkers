@@ -7,7 +7,8 @@ import type {
   BoardDetailProps,
   UserProfileResponse,
 } from '@/app/(service)/boards/[articleId]/types';
-import { formatDateToYmd } from '@/app/(service)/boards/utils/boardUtils';
+import { getBoardHeaderAvatarImage } from '@/app/(service)/boards/[articleId]/utils/getBoardHeaderAvatarImage';
+import { formatDateToYmd } from '@/app/(service)/boards/utils/boardDisplayUtils';
 import { IcHeartFilledRed, IcHeartSmall, IcMoreVerticalLarge } from '@/assets';
 import { ListDropdown } from '@/components/common/dropdown';
 import Modal from '@/components/common/modal';
@@ -19,11 +20,18 @@ export default function BoardDetailHeader({
   boardDetail: BoardDetailProps['boardDetail'];
   userProfile: UserProfileResponse | null;
 }) {
-  const { menuItems, isDeleteModalOpen, handleDeleteConfirm } =
-    useBoardDetailMenu(
-      boardDetail.id.toString(),
-      boardDetail.writer.id === userProfile?.id,
-    );
+  const { isOwner, headerAvatarImage } = getBoardHeaderAvatarImage({
+    currentUserId: userProfile?.id,
+    currentUserImage: userProfile?.image,
+    writerId: boardDetail.writer.id,
+    writerImage: boardDetail.writer.image,
+  });
+  const {
+    menuItems,
+    isDeleteModalOpen,
+    handleCloseDeleteModal,
+    handleConfirmDelete,
+  } = useBoardDetailMenu(boardDetail.id.toString(), isOwner);
   const { isLiked, likeCount, handleLikeClick } = useLike(boardDetail);
 
   return (
@@ -48,20 +56,20 @@ export default function BoardDetailHeader({
         ) : null}
         {isDeleteModalOpen && (
           <Modal
-            onClose={handleDeleteConfirm}
+            onClose={handleCloseDeleteModal}
             title="게시글을 삭제하시겠습니까?"
             description="게시글 정보가 삭제됩니다."
             lineButtonText="닫기"
-            onLineButtonClick={handleDeleteConfirm}
+            onLineButtonClick={handleCloseDeleteModal}
             subButtonText="삭제"
-            onSubButtonClick={handleDeleteConfirm}
+            onSubButtonClick={handleConfirmDelete}
           />
         )}
       </div>
       <div className="flex items-center justify-between gap-2 mt-2 pb-3 border-b border-border-secondary md:mt-4">
         <div className="flex min-w-0 flex-1 items-center">
           <CommentWriterAvatar
-            image={userProfile?.image ?? null}
+            image={headerAvatarImage}
             nickname={boardDetail.writer.nickname}
             width={24}
             height={24}

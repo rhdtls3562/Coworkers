@@ -1,77 +1,64 @@
 'use client';
 
-import { useState } from 'react';
+/**
+ * 댓글 편집·삭제 훅을 합치고, 본인 댓글용 드롭다운 메뉴 항목을 만드는 상세 댓글 행 훅입니다.
+ */
 
 import {
   BOARD_DETAIL_DROPDOWN_ITEMS,
   BOARD_DETAIL_MENU,
 } from '@/app/(service)/boards/[articleId]/constants';
+import { useBoardDetailCommentItemDelete } from '@/app/(service)/boards/[articleId]/hooks/useBoardDetailCommentItemDelete';
+import { useBoardDetailCommentItemEdit } from '@/app/(service)/boards/[articleId]/hooks/useBoardDetailCommentItemEdit';
 import type { Comment } from '@/app/(service)/boards/[articleId]/types';
-import { useToast } from '@/components/common/toast';
 
 type UseBoardDetailCommentItemParams = {
+  articleId: number;
   comment: Comment;
   currentUserId?: number | null;
+  onDeleteSuccess: () => void;
 };
 
 export const useBoardDetailCommentItem = ({
+  articleId,
   comment,
   currentUserId,
+  onDeleteSuccess,
 }: UseBoardDetailCommentItemParams) => {
-  const { showToast } = useToast();
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedContent, setEditedContent] = useState(comment.content);
-
   const isOwnComment = comment.writer.id === currentUserId;
 
-  const handleEdit = () => {
-    // TODO: 수정 기능 구현 로직
-    setIsEditing(false);
-  };
+  const edit = useBoardDetailCommentItemEdit({
+    articleId,
+    comment,
+    isOwnComment,
+  });
 
-  const handleStartEdit = () => {
-    if (!isOwnComment) return;
-    setEditedContent(comment.content);
-    setIsEditing(true);
-  };
+  const del = useBoardDetailCommentItemDelete({
+    articleId,
+    comment,
+    onDeleteSuccess,
+  });
 
-  const handleCancelEdit = () => {
-    setEditedContent(comment.content);
-    setIsEditing(false);
-  };
-
-  const handleEditedContentChange = (content: string) => {
-    setEditedContent(content);
-  };
-
-  const handleDelete = () => {
-    setIsDeleteModalOpen(true);
-  };
-
-  const handleDeleteConfirm = async () => {
-    setIsDeleteModalOpen(false);
-    showToast('댓글이 삭제되었습니다.', 'error');
-  };
-
-  const menuItems = BOARD_DETAIL_DROPDOWN_ITEMS.map((item) => ({
-    ...item,
-    onClick: () => {
-      if (item.label === BOARD_DETAIL_MENU.EDIT) handleStartEdit();
-      else if (item.label === BOARD_DETAIL_MENU.DELETE) handleDelete();
-    },
-  }));
+  const menuItems = isOwnComment
+    ? BOARD_DETAIL_DROPDOWN_ITEMS.map((item) => ({
+        ...item,
+        onClick: () => {
+          if (item.label === BOARD_DETAIL_MENU.EDIT) edit.handleStartEdit();
+          else if (item.label === BOARD_DETAIL_MENU.DELETE) del.handleDelete();
+        },
+      }))
+    : [];
 
   return {
     isOwnComment,
-    isEditing,
-    isDeleteModalOpen,
+    isEditing: edit.isEditing,
+    isDeleteModalOpen: del.isDeleteModalOpen,
     menuItems,
-    handleEdit,
-    handleCancelEdit,
-    editedContent,
-    handleEditedContentChange,
-    handleDeleteConfirm,
-    setIsDeleteModalOpen,
+    handleSubmitEdit: edit.handleSubmitEdit,
+    handleCancelEdit: edit.handleCancelEdit,
+    editedContent: edit.editedContent,
+    handleEditedContentChange: edit.handleEditedContentChange,
+    handleDeleteConfirm: del.handleDeleteConfirm,
+    setIsDeleteModalOpen: del.setIsDeleteModalOpen,
   };
 };

@@ -47,6 +47,7 @@ export type ImageUploadFieldVariant = 'post' | 'profile';
 export type ImageUploadFieldProps = {
   buttonAriaLabel: string;
   disabled?: boolean;
+  id?: string;
   onChangeFile?: (file: File | null) => void;
   previewAlt: string;
   src?: string | null;

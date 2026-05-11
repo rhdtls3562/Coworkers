@@ -5,6 +5,7 @@ import {
 
 export type Writer = {
   id: number;
+  image?: string | null;
   nickname: string;
 };
 
@@ -15,6 +16,7 @@ export type Post = {
   image: string | null;
   writer: Writer;
   likeCount: number;
+  isLiked?: boolean;
   commentCount: number;
   createdAt: string;
   updatedAt: string;

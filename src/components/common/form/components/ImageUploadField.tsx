@@ -23,6 +23,7 @@ function revokeObjectUrl(src: string | null) {
 export default function ImageUploadField({
   buttonAriaLabel,
   disabled = false,
+  id,
   onChangeFile,
   previewAlt,
   src,
@@ -77,6 +78,7 @@ export default function ImageUploadField({
     return (
       <div className="mx-auto w-fit">
         <input
+          id={id}
           ref={fileInputRef}
           type="file"
           accept="image/*"
@@ -123,6 +125,7 @@ export default function ImageUploadField({
   return (
     <div className="flex gap-3">
       <input
+        id={id}
         ref={fileInputRef}
         type="file"
         accept="image/*"

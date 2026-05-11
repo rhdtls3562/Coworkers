@@ -1,9 +1,9 @@
 'use client';
 
-import BoardPostForm from '@/app/(service)/boards/components/BoardPostForm';
+import BoardEditorForm from '@/app/(service)/boards/components/BoardEditorForm';
 import useBoardCreateForm from '@/app/(service)/boards/hooks/useBoardCreateForm';
 
-export default function PostCreateForm() {
+export default function BoardCreateForm() {
   const {
     formData,
     isLoading,
@@ -19,7 +19,7 @@ export default function PostCreateForm() {
   } = useBoardCreateForm();
 
   return (
-    <BoardPostForm
+    <BoardEditorForm
       heading="게시글 쓰기"
       submitLabel="등록하기"
       imageButtonAriaLabel="게시글 이미지 추가"

@@ -5,7 +5,7 @@ import type { Post } from '@/app/(service)/boards/types';
 import {
   formatDateToYmd,
   getLikeCount,
-} from '@/app/(service)/boards/utils/boardUtils';
+} from '@/app/(service)/boards/utils/boardDisplayUtils';
 import { IcBoardBest, IcHeartSmall } from '@/assets';
 import { ROUTES } from '@/constants/ROUTES';
 
@@ -29,16 +29,18 @@ export default function BoardBestCard({ post }: { post: Post }) {
           인기
         </p>
       </div>
-      <div className="min-h-12 flex flex-row items-center justify-between gap-3 mt-3 md:min-h-14.75 lg:mt-4 lg:min-h-17.25">
-        <div>
+      <div className="min-h-12 flex flex-row items-start justify-between gap-3 mt-3 md:min-h-14.75 lg:mt-4 lg:min-h-17.25">
+        <div className="min-h-0 min-w-0 flex-1 overflow-hidden">
           <p className="text-text-primary text-base font-bold line-clamp-1 leading-4.75 lg:text-lg lg:leading-5.25">
             {post.title}
           </p>
-          <p className="text-text-default text-sm font-normal leading-4.25 mt-1.5 line-clamp-2 h-10.5 lg:text-base lg:leading-5 lg:mt-2">
-            {post.content}
-          </p>
+          <div className="mt-1.5 min-h-10.5 overflow-hidden lg:mt-2">
+            <p className="text-text-default text-sm font-normal leading-4.25 line-clamp-2 lg:text-base lg:leading-5">
+              {post.content}
+            </p>
+          </div>
         </div>
-        <div>
+        <div className="shrink-0 self-center">
           {post.image && (
             <div className="rounded-lg overflow-hidden w-12 h-12 lg:w-15 lg:h-15">
               <Image

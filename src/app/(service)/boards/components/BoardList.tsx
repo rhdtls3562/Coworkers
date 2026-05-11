@@ -7,11 +7,11 @@ import {
   BOARD_MAIN_LIST_PARAMS,
   BOARD_SORT_OPTIONS,
 } from '@/app/(service)/boards/constants';
-import useBoardMemo from '@/app/(service)/boards/hooks/useBoardMemo';
 import { useInfinitePages } from '@/app/(service)/boards/hooks/useInfinitePages';
 import { useInfiniteScrollObserver } from '@/app/(service)/boards/hooks/useInfiniteScrollObserver';
+import useSortedBoardPostsMemo from '@/app/(service)/boards/hooks/useSortedBoardPostsMemo';
 import type { BoardListProps, Post } from '@/app/(service)/boards/types';
-import { hasPosts } from '@/app/(service)/boards/utils/boardUtils';
+import { hasPosts } from '@/app/(service)/boards/utils/boardListUtils';
 import SelectDropdown from '@/components/common/dropdown/components/SelectDropdown';
 import { useArticleInfiniteListQuery } from '@/hooks/useArticle';
 
@@ -35,7 +35,9 @@ export default function BoardList({ isSearchMode, keyword }: BoardListProps) {
     isFetchingNextPage,
     rootMargin: BOARD_LIST_LOAD_MORE_ROOT_MARGIN,
   });
-  const { sortedPosts, sort, setSort } = useBoardMemo({ boardPosts });
+  const { sortedPosts, sort, setSort } = useSortedBoardPostsMemo({
+    boardPosts,
+  });
   const hasPostsValue = hasPosts(sortedPosts);
 
   return (

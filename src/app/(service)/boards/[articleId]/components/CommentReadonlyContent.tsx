@@ -1,6 +1,6 @@
 import CommentWriterAvatar from '@/app/(service)/boards/[articleId]/components/CommentWriterAvatar';
 import type { Comment } from '@/app/(service)/boards/[articleId]/types';
-import { formatDateToYmd } from '@/app/(service)/boards/utils/boardUtils';
+import { formatDateToYmd } from '@/app/(service)/boards/utils/boardDisplayUtils';
 import { IcMoreVerticalLarge } from '@/assets';
 import ListDropdown from '@/components/common/dropdown/components/ListDropdown';
 import Modal from '@/components/common/modal';
@@ -44,18 +44,20 @@ export default function CommentReadonlyContent({
           </p>
         </div>
         <div className="shrink-0">
-          <ListDropdown
-            trigger={
-              <IcMoreVerticalLarge
-                width={20}
-                height={20}
-                className="cursor-pointer shrink-0"
-                role="img"
-                aria-label="더보기 메뉴"
-              />
-            }
-            items={menuItems}
-          />
+          {menuItems.length > 0 ? (
+            <ListDropdown
+              trigger={
+                <IcMoreVerticalLarge
+                  width={20}
+                  height={20}
+                  className="cursor-pointer shrink-0"
+                  role="img"
+                  aria-label="더보기 메뉴"
+                />
+              }
+              items={menuItems}
+            />
+          ) : null}
           {isDeleteModalOpen && (
             <Modal
               onClose={onCloseDeleteModal}

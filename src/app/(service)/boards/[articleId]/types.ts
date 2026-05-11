@@ -17,8 +17,7 @@ type Group = {
   name: string;
 };
 
-/** * 멤버십(그룹 가입 정보) 타입
- */
+/** 멤버십(그룹 가입 정보) 타입 */
 type Membership = {
   group: Group;
   role: 'ADMIN' | 'MEMBER';
@@ -29,8 +28,7 @@ type Membership = {
   userId: number;
 };
 
-/** * 최종 프로필 조회 응답 타입
- */
+/** 최종 프로필 조회 응답 타입 */
 export type UserProfileResponse = {
   teamId: string;
   image: string | null; // 프로필 이미지

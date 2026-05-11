@@ -4,24 +4,33 @@ import { useBoardDetailCommentItem } from '@/app/(service)/boards/[articleId]/ho
 import type { Comment } from '@/app/(service)/boards/[articleId]/types';
 
 export default function BoardDetailCommentItem({
+  articleId,
   comment,
   currentUserId,
+  onDeleteSuccess,
 }: {
+  articleId: number;
   comment: Comment;
   currentUserId?: number | null;
+  onDeleteSuccess: () => void;
 }) {
   const {
     isOwnComment,
     isEditing,
     isDeleteModalOpen,
     menuItems,
-    handleEdit,
+    handleSubmitEdit,
     handleCancelEdit,
     editedContent,
     handleEditedContentChange,
     handleDeleteConfirm,
     setIsDeleteModalOpen,
-  } = useBoardDetailCommentItem({ comment, currentUserId });
+  } = useBoardDetailCommentItem({
+    articleId,
+    comment,
+    currentUserId,
+    onDeleteSuccess,
+  });
 
   return (
     <>
@@ -31,7 +40,7 @@ export default function BoardDetailCommentItem({
           editedContent={editedContent}
           onChangeEditedContent={handleEditedContentChange}
           onCancelEdit={handleCancelEdit}
-          onEdit={handleEdit}
+          onEdit={handleSubmitEdit}
         />
       ) : (
         <CommentReadonlyContent

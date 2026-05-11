@@ -4,6 +4,7 @@ import { useParams, usePathname, useRouter } from 'next/navigation';
 
 import BoardDetailCommentComposer from '@/app/(service)/boards/[articleId]/components/BoardDetailCommentComposer';
 import BoardDetailCommentItem from '@/app/(service)/boards/[articleId]/components/BoardDetailCommentItem';
+import { TEAM_ID } from '@/app/(service)/boards/[articleId]/constants';
 import { useSortedComments } from '@/app/(service)/boards/[articleId]/hooks/useSortedComments';
 import type {
   Comment,
@@ -14,11 +15,11 @@ import { useInfiniteScrollObserver } from '@/app/(service)/boards/hooks/useInfin
 import { useArticleCommentsInfiniteQuery } from '@/hooks/useArticleComment';
 import { buildLoginPath } from '@/utils/authRedirect';
 
-const TEAM_ID = process.env.NEXT_PUBLIC_TEAM_ID ?? '';
-
 export default function BoardDetailComments({
+  commentCount,
   userProfile,
 }: {
+  commentCount: number;
   userProfile: UserProfileResponse | null;
 }) {
   const router = useRouter();
@@ -39,12 +40,16 @@ export default function BoardDetailComments({
     comments,
     userId: userProfile?.id,
   });
+  const hasVisibleComments = sortedComments.length > 0;
   const sentinelRef = useInfiniteScrollObserver({
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
   });
   const isAuthenticated = Boolean(userProfile);
+  const handleCommentMutated = () => {
+    router.refresh();
+  };
 
   const handleRequireAuth = () => {
     if (isAuthenticated) {
@@ -67,24 +72,28 @@ export default function BoardDetailComments({
             댓글
           </p>
           <p className="text-base font-bold text-brand-primary md:text-lg">
-            {comments.length}
+            {commentCount}
           </p>
         </div>
         <BoardDetailCommentComposer
+          articleId={articleId}
           isAuthenticated={isAuthenticated}
+          onCreateSuccess={handleCommentMutated}
           onRequireAuth={handleRequireAuth}
           userProfile={userProfile}
         />
       </div>
       <div>
-        {comments.length > 0 ? (
+        {hasVisibleComments ? (
           <div className="mt-7 md:mt-9">
             <ul>
               {sortedComments.map((comment) => (
                 <BoardDetailCommentItem
                   key={comment.id}
+                  articleId={articleId}
                   comment={comment}
                   currentUserId={userProfile?.id}
+                  onDeleteSuccess={handleCommentMutated}
                 />
               ))}
             </ul>

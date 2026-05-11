@@ -26,9 +26,14 @@ export default function SidebarHeader({
   const layoutAuthState = useLayoutAuthState(pathname);
 
   const firstTeamId = layoutAuthState.teams[0]?.id;
-  const logoHref = firstTeamId
-    ? ROUTES.TEAM(String(firstTeamId))
-    : ROUTES.TEAM('nogroup');
+
+  const isAuthPage = pathname === ROUTES.LOGIN || pathname === ROUTES.SIGNUP;
+
+  const logoHref = isAuthPage
+    ? ROUTES.HOME
+    : firstTeamId
+      ? ROUTES.TEAM(String(firstTeamId))
+      : ROUTES.TEAM('nogroup');
 
   return (
     <div

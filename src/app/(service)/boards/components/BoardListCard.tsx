@@ -5,7 +5,7 @@ import type { Post } from '@/app/(service)/boards/types';
 import {
   formatDateToYmd,
   getLikeCount,
-} from '@/app/(service)/boards/utils/boardUtils';
+} from '@/app/(service)/boards/utils/boardDisplayUtils';
 import { IcHeartSmall } from '@/assets';
 import { ROUTES } from '@/constants/ROUTES';
 
