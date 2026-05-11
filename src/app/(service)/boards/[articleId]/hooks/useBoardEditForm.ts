@@ -35,6 +35,7 @@ export default function useBoardEditForm({
   const updateArticleMutation = useUpdateArticleMutation();
   const uploadImageMutation = useUploadImageMutation();
   const [isLoading, setIsLoading] = useState(false);
+
   const {
     contentErrorMessage,
     formData,
@@ -57,7 +58,10 @@ export default function useBoardEditForm({
   useBoardFormUnsavedChangesGuard({
     hasUnsavedChanges: hasFormChanged,
     intent: 'edit',
-    onDiscardChanges: handleDiscardChanges,
+    onDiscardChanges: () => {
+      handleDiscardChanges();
+      router.push(ROUTES.BOARDS);
+    },
   });
 
   const savedSuccessfullyRef = useRef(false);
@@ -67,7 +71,12 @@ export default function useBoardEditForm({
   const isSubmitBusy = isLoading || isMutationPending;
   const isSubmitDisabled = isSubmitBusy || !isSubmittable;
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleCancel = () => {
+    handleDiscardChanges();
+    router.push(ROUTES.BOARDS);
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitted(true);
 
@@ -86,7 +95,9 @@ export default function useBoardEditForm({
 
     try {
       setIsLoading(true);
+
       const token = getStoredAccessToken();
+
       if (!token) {
         showToast('로그인이 필요합니다.', 'error');
         return;
@@ -124,5 +135,6 @@ export default function useBoardEditForm({
     handleContentBlur,
     handleImageChange,
     handleSubmit,
+    handleCancel,
   };
 }

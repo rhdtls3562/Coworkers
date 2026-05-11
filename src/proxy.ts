@@ -8,6 +8,7 @@ const PUBLIC_PATH_PREFIXES = [
   ROUTES.LOGIN,
   ROUTES.SIGNUP,
   ROUTES.BOARDS,
+  '/api/oauth',
   '/oauth',
   '/reset-password',
   '/password-reset',

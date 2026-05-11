@@ -1,6 +1,10 @@
+/**
+ * 인증 세션 상태를 감시하고, 토큰 만료 시 세션을 정리하는 훅입니다.
+ */
+
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect } from 'react';
 
 import { usePathname, useRouter } from 'next/navigation';
 
@@ -17,30 +21,29 @@ import {
   subscribeAuthSessionChange,
 } from '@/utils/authSession';
 
-const SESSION_EXPIRED_MESSAGE = '로그인이 만료되었습니다. 다시 로그인해주세요.';
-
 export default function useAuthSessionGuard() {
   const pathname = usePathname();
   const router = useRouter();
   const { showToast } = useToast();
-  const [sessionVersion, setSessionVersion] = useState(0);
-  const hasHandledUnauthorizedRef = useRef(false);
 
   useEffect(() => {
-    return subscribeAuthSessionChange((reason) => {
-      if (reason === 'saved') {
-        hasHandledUnauthorizedRef.current = false;
-      }
+    if (isGuestLayoutPath(pathname)) {
+      return;
+    }
 
-      setSessionVersion((prev) => prev + 1);
-    });
-  }, []);
-
-  useEffect(() => {
     const accessToken = getStoredAccessToken();
+
+    if (!accessToken) {
+      clearAuthSession('expired');
+      router.replace(ROUTES.LOGIN);
+      return;
+    }
+
     const expirationTime = getAccessTokenExpirationTime(accessToken);
 
-    if (!accessToken || !expirationTime) {
+    if (!expirationTime) {
+      clearAuthSession('expired');
+      router.replace(ROUTES.LOGIN);
       return;
     }
 
@@ -48,6 +51,7 @@ export default function useAuthSessionGuard() {
 
     if (remainingTime <= 0) {
       clearAuthSession('expired');
+      router.replace(ROUTES.LOGIN);
       return;
     }
 
@@ -67,37 +71,32 @@ export default function useAuthSessionGuard() {
 
           if (res.ok) {
             const data = (await res.json()) as { accessToken?: string };
+
             if (data.accessToken) {
               setStoredAccessToken(data.accessToken);
-              return; // 갱신 성공 시 로그아웃 안 함
+              return;
             }
           }
-        } catch {}
+        } catch (error) {
+          console.error('Failed to refresh access token:', error);
+        }
       }
 
       clearAuthSession('expired');
+      showToast('로그인 시간이 만료되었습니다. 다시 로그인해 주세요.', 'error');
+      router.replace(ROUTES.LOGIN);
     }, remainingTime);
 
     return () => {
       window.clearTimeout(timeoutId);
     };
-  }, [sessionVersion]);
+  }, [pathname, router, showToast]);
 
   useEffect(() => {
-    return subscribeAuthSessionChange((reason) => {
-      if (
-        (reason !== 'expired' && reason !== 'unauthorized') ||
-        isGuestLayoutPath(pathname)
-      ) {
-        return;
-      }
-
-      if (!hasHandledUnauthorizedRef.current) {
-        hasHandledUnauthorizedRef.current = true;
-        showToast(SESSION_EXPIRED_MESSAGE, 'error');
-      }
-
-      router.replace(ROUTES.LOGIN);
+    const unsubscribe = subscribeAuthSessionChange(() => {
+      router.refresh();
     });
-  }, [pathname, router, showToast]);
+
+    return unsubscribe;
+  }, [router]);
 }

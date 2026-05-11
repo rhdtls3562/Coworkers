@@ -44,6 +44,7 @@ export function useBoardDetailCommentComposer({
     }
 
     const token = getStoredAccessToken();
+
     if (!token) {
       showToast('로그인이 필요합니다.', 'error');
       onRequireAuth();
@@ -51,6 +52,7 @@ export function useBoardDetailCommentComposer({
     }
 
     const trimmed = draft.trim();
+
     if (!trimmed) {
       showToast('댓글 내용을 입력해주세요.', 'error');
       return;
@@ -61,7 +63,6 @@ export function useBoardDetailCommentComposer({
       {
         onSuccess: () => {
           setDraft('');
-          showToast('댓글이 등록되었습니다.', 'success');
           onCreateSuccess();
         },
         onError: () => {
@@ -75,6 +76,7 @@ export function useBoardDetailCommentComposer({
     if (event.key !== 'Enter' || event.nativeEvent.isComposing) {
       return;
     }
+
     event.preventDefault();
     handleSubmit();
   };

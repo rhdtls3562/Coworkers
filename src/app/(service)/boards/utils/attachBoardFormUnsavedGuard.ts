@@ -2,10 +2,9 @@
  * 게시글 작성·수정 화면에서 미저장 변경이 있을 때 document·window 이벤트를 붙였다 떼는 유틸리티 함수입니다.
  */
 
-import type { MutableRefObject } from 'react';
-
 import shouldBlockBoardFormInteraction from '@/app/(service)/boards/utils/boardFormShouldBlockInteraction';
 import type { ToastAction } from '@/components/common/toast/types';
+import { ROUTES } from '@/constants/ROUTES';
 
 const BOARD_FORM_UNSAVED_TOAST_DURATION = 3000;
 
@@ -33,12 +32,12 @@ type ShowToastFn = (
 
 type AttachBoardFormUnsavedGuardParams = {
   intent: BoardFormUnsavedIntent;
-  isBlockedPointerDownRef: MutableRefObject<boolean>;
-  isToastVisibleRef: MutableRefObject<boolean>;
+  isBlockedPointerDownRef: React.MutableRefObject<boolean>;
+  isToastVisibleRef: React.MutableRefObject<boolean>;
   onDiscardChanges: () => void;
   removeToast: (id: string) => void;
   showToast: ShowToastFn;
-  toastTimeoutRef: MutableRefObject<number | null>;
+  toastTimeoutRef: React.MutableRefObject<number | null>;
 };
 
 export function attachBoardFormUnsavedGuard({
@@ -52,16 +51,30 @@ export function attachBoardFormUnsavedGuard({
 }: AttachBoardFormUnsavedGuardParams): () => void {
   const { discardLabel, message } = UNSAVED_TOAST_COPY[intent];
 
+  const moveToBoardsMain = () => {
+    onDiscardChanges();
+    window.location.assign(ROUTES.BOARDS);
+  };
+
+  const isDiscardToastButton = (target: EventTarget | null) => {
+    if (!(target instanceof HTMLElement)) {
+      return false;
+    }
+
+    return target.textContent?.trim() === discardLabel;
+  };
+
   const showUnsavedChangesToast = () => {
     if (isToastVisibleRef.current) {
       return;
     }
 
     isToastVisibleRef.current = true;
+
     const toastId = showToast(message, 'error', {
       hideCloseButton: true,
       label: discardLabel,
-      onClick: onDiscardChanges,
+      onClick: moveToBoardsMain,
       textClassName: 'text-status-danger',
     });
 
@@ -80,6 +93,14 @@ export function attachBoardFormUnsavedGuard({
   };
 
   const handlePointerDownCapture = (event: PointerEvent) => {
+    if (isDiscardToastButton(event.target)) {
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+      moveToBoardsMain();
+      return;
+    }
+
     if (!shouldBlockBoardFormInteraction(event.target)) {
       return;
     }
@@ -89,6 +110,14 @@ export function attachBoardFormUnsavedGuard({
   };
 
   const handleClickCapture = (event: MouseEvent) => {
+    if (isDiscardToastButton(event.target)) {
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+      moveToBoardsMain();
+      return;
+    }
+
     if (isBlockedPointerDownRef.current) {
       isBlockedPointerDownRef.current = false;
       event.preventDefault();
@@ -118,7 +147,9 @@ export function attachBoardFormUnsavedGuard({
       window.clearTimeout(toastTimeoutRef.current);
       toastTimeoutRef.current = null;
     }
+
     isToastVisibleRef.current = false;
+
     document.removeEventListener('pointerdown', handlePointerDownCapture, true);
     document.removeEventListener('click', handleClickCapture, true);
     window.removeEventListener('beforeunload', handleBeforeUnload);
