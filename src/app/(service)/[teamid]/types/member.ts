@@ -36,7 +36,7 @@ export type ModalMemberProps = {
   canDeleteMember?: boolean;
   member: MemberChipsProps | null;
   onMemberClick?: (member: MemberChipsProps) => void;
-  role?: string;
+  role?: RoleProps;
 };
 
 /** 멤버 목록 모달 Props */

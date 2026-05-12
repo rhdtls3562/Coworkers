@@ -1,5 +1,9 @@
 import { STATUS } from '@/app/(service)/[teamid]/constants';
-import { TaskItemDetailProps, TaskList } from '@/app/(service)/[teamid]/types';
+import {
+  TaskItemDetailProps,
+  TaskList,
+  TeamDetailDataProps,
+} from '@/app/(service)/[teamid]/types';
 
 export const getTaskListStatus = (
   tasks: TaskItemDetailProps[],
@@ -21,4 +25,19 @@ export const classifyTaskLists = (taskLists: TaskList[]) => {
     result[getTaskListStatus(taskList.tasks)].push(taskList);
   });
   return result;
+};
+
+export const totalTasks = (teamData: TeamDetailDataProps) =>
+  teamData.taskLists.reduce((acc, taskList) => acc + taskList.tasks.length, 0);
+
+export const doneTasks = (teamData: TeamDetailDataProps) =>
+  teamData.taskLists.reduce(
+    (acc, taskList) =>
+      acc + taskList.tasks.filter((task) => task.doneAt !== null).length,
+    0,
+  );
+
+export const donePercent = (teamData: TeamDetailDataProps) => {
+  const total = totalTasks(teamData);
+  return total === 0 ? 0 : Math.round((doneTasks(teamData) / total) * 100);
 };

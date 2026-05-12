@@ -4,23 +4,16 @@
 
 import type { ReactNode } from 'react';
 
+import { MODAL_TYPE, ROLE } from '@/app/(service)/[teamid]/constants';
+
 /** 모달 키 식별자 - 열려있는 모달 종류를 구분 */
-export type ModalKey =
-  | 'memberList'
-  | 'memberInvite'
-  | 'memberDetail'
-  | 'memberDelete'
-  | 'taskAdd'
-  | 'taskEdit'
-  | 'taskDelete'
-  | 'teamDelete'
-  | 'teamLeave';
+export type ModalKey = (typeof MODAL_TYPE)[number];
 
 /** 모달 열기 함수 타입 */
 export type OpenModal = (modal: ModalKey) => void;
 
 /** 사용자 역할 - 관리자 또는 일반 멤버 */
-export type RoleProps = 'ADMIN' | 'MEMBER';
+export type RoleProps = (typeof ROLE)[number];
 
 /** 태스크 반복 주기 */
 export type Frequency = 'ONCE' | 'DAILY' | 'WEEKLY' | 'MONTHLY';

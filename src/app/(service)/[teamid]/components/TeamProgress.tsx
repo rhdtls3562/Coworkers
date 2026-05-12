@@ -11,6 +11,11 @@ import {
 } from '@/app/(service)/[teamid]/constants';
 import { useModalState } from '@/app/(service)/[teamid]/hooks/useModalState';
 import { TeamProgressProps } from '@/app/(service)/[teamid]/types';
+import {
+  donePercent,
+  doneTasks,
+  totalTasks,
+} from '@/app/(service)/[teamid]/utils/task';
 import { ListDropdown } from '@/components/common/dropdown';
 
 export default function TeamProgress({ role, teamData }: TeamProgressProps) {
@@ -27,19 +32,6 @@ export default function TeamProgress({ role, teamData }: TeamProgressProps) {
     open,
   );
   const memberItems = CREATE_MEMBER_ITEMS(open);
-
-  const totalTasks = teamData.taskLists.reduce(
-    (acc, taskList) => acc + taskList.tasks.length,
-    0,
-  );
-
-  const doneTasks = teamData.taskLists.reduce(
-    (acc, taskList) =>
-      acc + taskList.tasks.filter((task) => task.doneAt !== null).length,
-    0,
-  );
-  const donePercent =
-    totalTasks === 0 ? 0 : Math.round((doneTasks / totalTasks) * 100);
 
   return (
     <section className="w-full bg-background-inverse p-6 shadow-[0_4px_10px_rgba(49,84,153,0.06)] md:rounded-[20px] xl:shadow-[0_8px_20px_rgba(49,84,153,0.12)]">
@@ -67,15 +59,18 @@ export default function TeamProgress({ role, teamData }: TeamProgressProps) {
               오늘의 진행 상황
             </p>
             <p className="text-[32px] font-bold text-brand-primary md:text-[40px]">
-              {donePercent}%
+              {doneTasks(teamData)}%
             </p>
           </div>
-          <TeamProgressStats today={totalTasks} done={doneTasks} />
+          <TeamProgressStats
+            today={totalTasks(teamData)}
+            done={doneTasks(teamData)}
+          />
         </div>
 
         <div className="flex gap-4">
           <div className="w-full h-5 md:h-7">
-            <TeamProgressBar completed={donePercent} />
+            <TeamProgressBar completed={donePercent(teamData)} />
           </div>
           <div className="hidden xl:block">
             <ListDropdown

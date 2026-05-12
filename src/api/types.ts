@@ -2,6 +2,7 @@
  * API 레이어 전반에서 공통으로 사용하는 요청, 응답, 클라이언트 타입 모음입니다.
  */
 
+import { RoleProps } from '@/app/(service)/[teamid]/types';
 import type { LoginFormValues, SignUpFormValues } from '@/types/auth';
 
 import type { QueryClient, QueryKey } from '@tanstack/react-query';
@@ -116,7 +117,7 @@ export type MembershipInfo = {
   userName: string;
   userEmail: string;
   userImage: string | null;
-  role: 'ADMIN' | 'MEMBER';
+  role: RoleProps;
   group: {
     id: number;
     name: string;

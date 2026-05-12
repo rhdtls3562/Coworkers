@@ -8,7 +8,21 @@ export const TEAM_MEMBERS: MemberChipsProps[] = [];
 
 export const STATUS = ['시작 전', '진행 중', '완료'] as const;
 
-export const EMPTY_MESSAGE = {
+export const ROLE = ['ADMIN', 'MEMBER'] as const;
+
+export const MODAL_TYPE = [
+  'memberList',
+  'memberInvite',
+  'memberDetail',
+  'memberDelete',
+  'taskAdd',
+  'taskEdit',
+  'taskDelete',
+  'teamDelete',
+  'teamLeave',
+] as const;
+
+export const EMPTY_MESSAGE: Record<(typeof STATUS)[number], string> = {
   '시작 전': '아직 등록된 할 일이 없어요.',
   '진행 중': '아직 진행 중인 할 일이 없어요.',
   완료: '아직 완료된 할 일이 없습니다.',

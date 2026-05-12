@@ -1,10 +1,9 @@
 import { ModalTaskAdd } from '@/app/(service)/[teamid]/components/modals/ModalTaskAddEdit';
 import TaskItem from '@/app/(service)/[teamid]/components/TaskItem';
+import { EMPTY_MESSAGE, STATUS } from '@/app/(service)/[teamid]/constants';
 import { useModalState } from '@/app/(service)/[teamid]/hooks/useModalState';
 import { TaskProps } from '@/app/(service)/[teamid]/types';
 import { IcPlusSub } from '@/assets/index';
-
-import { EMPTY_MESSAGE } from '../constants';
 
 export default function TaskGroup({ status, taskLists }: TaskProps) {
   const { open, close, is } = useModalState();
@@ -12,7 +11,7 @@ export default function TaskGroup({ status, taskLists }: TaskProps) {
     <div className="flex flex-col gap-3 min-w-0 xl:flex-1 xl:gap:5">
       <div className="flex justify-between items-center bg-background-tertiary rounded-xl pl-5 pr-2 h-9.5 w-full">
         <h3 className="text-text-primary text-sm font-medium">{status}</h3>
-        {status === '시작 전' && (
+        {status === STATUS[0] && (
           <button
             className="border border-border-secondary rounded-lg bg-background-inverse w-6 h-6 flex justify-center items-center"
             onClick={() => open('taskAdd')}

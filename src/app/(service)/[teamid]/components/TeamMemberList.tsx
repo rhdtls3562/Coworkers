@@ -1,48 +1,24 @@
-import { useParams } from 'next/navigation';
-
 import MemberCard from '@/app/(service)/[teamid]/components/MemberCard';
 import { ConfirmModal } from '@/app/(service)/[teamid]/components/modals/ConfirmModal';
 import { ModalMemberDetail } from '@/app/(service)/[teamid]/components/modals/ModalMemberDetails';
 import { ModalMembersInvite } from '@/app/(service)/[teamid]/components/modals/ModalMemberInvite';
 import { useModalState } from '@/app/(service)/[teamid]/hooks/useModalState';
+import { useTeamProgressHandlers } from '@/app/(service)/[teamid]/hooks/useTeamProgressHandlers';
 import {
   MemberChipsProps,
   TeamMemberListContentProps,
   TeamMemberProps,
 } from '@/app/(service)/[teamid]/types';
 import { useToast } from '@/components/common/toast';
-import { useRemoveMemberTeamMutation } from '@/hooks/useTeam';
 
 export default function TeamMemberList({ teamData, role }: TeamMemberProps) {
-  const params = useParams();
   const { open, close, is, openMemberDetail, reset, selectedMember } =
     useModalState();
   const { showToast } = useToast();
-  const { mutate: removeMemberTeam } = useRemoveMemberTeamMutation();
+  const { canDeleteSelectedMember, handleRemoveMemberFromTeam } =
+    useTeamProgressHandlers({ selectedMember, reset, role });
 
   const members = teamData.members;
-  const canDeleteSelectedMember =
-    role === 'ADMIN' &&
-    selectedMember !== null &&
-    selectedMember.role !== 'ADMIN';
-
-  const handleRemoveMemberTeam = () => {
-    if (!selectedMember) {
-      return;
-    }
-
-    removeMemberTeam(
-      {
-        teamId: params.teamid as string,
-        memberUserId: selectedMember.userId,
-      },
-      {
-        onSuccess: () => {
-          reset();
-        },
-      },
-    );
-  };
 
   return (
     <section className="hidden xl:flex w-60 bg-background-inverse mt-11 px-5 py-6 rounded-2xl border border-border-secondary shrink-0 flex-col gap-4 h-fit min-h-28">
@@ -98,7 +74,7 @@ export default function TeamMemberList({ teamData, role }: TeamMemberProps) {
           title="해당 멤버를 삭제하시겠습니까?"
           confirmText="삭제하기"
           toastMessage="삭제 되었습니다."
-          onConfirm={handleRemoveMemberTeam}
+          onConfirm={handleRemoveMemberFromTeam}
         />
       )}
     </section>

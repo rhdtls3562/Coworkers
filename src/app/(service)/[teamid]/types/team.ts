@@ -42,7 +42,7 @@ export type TeamProgressProps = {
 /** 팀 멤버 섹션 Props */
 export type TeamMemberProps = {
   teamData: TeamDetailData;
-  role?: string;
+  role?: RoleProps;
 };
 
 /** 팀 멤버 목록 컨텐츠 Props */
@@ -60,5 +60,16 @@ export type TeamProgressModalProps = {
   selectedMember: MemberChipsProps | null;
   openMemberDetail: (member: MemberChipsProps) => void;
   members: MemberChipsProps[];
-  role?: string;
+  role?: RoleProps;
+};
+
+export type UseTeamProgressHandlersProps = {
+  selectedMember: MemberChipsProps | null;
+  reset: () => void;
+  role?: RoleProps;
+};
+
+export type TeamDetailDataProps = GroupType & {
+  members: MemberChipsProps[];
+  taskLists: TaskList[];
 };

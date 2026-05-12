@@ -2,6 +2,7 @@
 // 태스크 관련 타입
 // ========================
 
+import { STATUS } from '@/app/(service)/[teamid]/constants';
 import type { Frequency } from '@/app/(service)/[teamid]/types/common';
 import type { Writer } from '@/app/(service)/[teamid]/types/member';
 
@@ -32,7 +33,7 @@ export type TaskList = {
 
 /** 태스크 컴포넌트 Props - 상태 필터 + 태스크 리스트 목록 */
 export type TaskProps = {
-  status: '시작 전' | '진행 중' | '완료';
+  status: (typeof STATUS)[number];
   taskLists: TaskList[];
 };
 

@@ -1,16 +1,9 @@
-import { useParams, useRouter } from 'next/navigation';
-
 import { ConfirmModal } from '@/app/(service)/[teamid]/components/modals/ConfirmModal';
 import { ModalMemberDetail } from '@/app/(service)/[teamid]/components/modals/ModalMemberDetails';
 import { ModalMembersInvite } from '@/app/(service)/[teamid]/components/modals/ModalMemberInvite';
 import { ModalMembers } from '@/app/(service)/[teamid]/components/modals/ModalMembers';
+import { useTeamProgressHandlers } from '@/app/(service)/[teamid]/hooks/useTeamProgressHandlers';
 import { TeamProgressModalProps } from '@/app/(service)/[teamid]/types';
-import { resolveTeamExitRoute } from '@/app/(service)/[teamid]/utils/teamRouteAccess';
-import {
-  useDeleteTeamMutation,
-  useRemoveMemberTeamMutation,
-} from '@/hooks/useTeam';
-import { useMeQuery } from '@/hooks/useUser';
 
 export function TeamProgressModals({
   is,
@@ -22,70 +15,15 @@ export function TeamProgressModals({
   openMemberDetail,
   members,
 }: TeamProgressModalProps) {
-  const params = useParams();
-  const router = useRouter();
-  const { data: meData } = useMeQuery();
+  const {
+    canDeleteSelectedMember,
+    handleDeleteTeam,
+    handleLeaveTeam,
+    handleRemoveMemberFromTeam,
+  } = useTeamProgressHandlers({ selectedMember, reset, role });
 
-  const { mutate: deleteTeam } = useDeleteTeamMutation();
-  const { mutate: removeMemberTeam } = useRemoveMemberTeamMutation();
-  const canDeleteSelectedMember =
-    role === 'ADMIN' &&
-    selectedMember !== null &&
-    selectedMember.userId !== meData?.id;
-
-  const handleDeleteTeam = () => {
-    const fallbackRoute = resolveTeamExitRoute(
-      String(params.teamid),
-      meData?.memberships,
-    );
-
-    deleteTeam(
-      { teamId: params.teamid as string },
-      {
-        onSuccess: () => {
-          router.replace(fallbackRoute);
-        },
-      },
-    );
-  };
-  const handleRemoveMemberTeam = () => {
-    if (!selectedMember) return;
-
-    removeMemberTeam(
-      {
-        teamId: params.teamid as string,
-        memberUserId: selectedMember.userId,
-      },
-      {
-        onSuccess: () => {
-          reset();
-        },
-      },
-    );
-  };
-  const handleLeaveTeam = () => {
-    if (!meData?.id) return;
-
-    const fallbackRoute = resolveTeamExitRoute(
-      String(params.teamid),
-      meData.memberships,
-    );
-
-    removeMemberTeam(
-      {
-        teamId: params.teamid as string,
-        memberUserId: meData.id,
-      },
-      {
-        onSuccess: () => {
-          router.replace(fallbackRoute);
-        },
-      },
-    );
-  };
   return (
     <>
-      {/* 각 레이어 불러오기 */}
       {is('memberList') && (
         <ModalMembers
           onClose={close}
@@ -106,10 +44,7 @@ export function TeamProgressModals({
           canDeleteMember={canDeleteSelectedMember}
           member={selectedMember}
           onPrimaryButtonClick={() => {
-            if (!canDeleteSelectedMember) {
-              return;
-            }
-
+            if (!canDeleteSelectedMember) return;
             open('memberDelete');
           }}
           role={role}
@@ -135,14 +70,13 @@ export function TeamProgressModals({
           onConfirm={handleLeaveTeam}
         />
       )}
-
       {is('memberDelete') && (
         <ConfirmModal
           onClose={reset}
           title="해당 멤버를 삭제하시겠습니까?"
           confirmText="삭제하기"
           toastMessage="삭제 되었습니다."
-          onConfirm={handleRemoveMemberTeam}
+          onConfirm={handleRemoveMemberFromTeam}
         />
       )}
     </>

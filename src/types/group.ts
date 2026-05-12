@@ -2,6 +2,7 @@
  * 팀, 그룹, 멤버 관련 TypeScript 타입을 정의하는 파일입니다.
  */
 
+import { RoleProps } from '@/app/(service)/[teamid]/types';
 import type { TaskListSummary } from '@/types/task';
 
 /** 사용자 간략 정보 */
@@ -13,7 +14,7 @@ export type UserSummary = {
 
 /** 그룹 멤버 */
 export type GroupMember = {
-  role: 'ADMIN' | 'MEMBER';
+  role: RoleProps;
   userImage: string | null;
   userEmail: string;
   userName: string;
