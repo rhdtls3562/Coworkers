@@ -111,7 +111,7 @@ export default function TaskListTaskRow({
           </span>
 
           <span className="flex items-center gap-2">
-            <IcRepeatSmall width={22} height={22} aria-hidden="true" />
+            <IcRepeatSmall width={20} height={20} aria-hidden="true" />
             {task.repeatLabel}
           </span>
         </div>

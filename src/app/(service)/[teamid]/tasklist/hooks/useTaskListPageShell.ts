@@ -44,7 +44,6 @@ export default function useTaskListPageShell({
     },
   });
   const isCreatingColumnRef = useRef(false);
-  const dateString = toTaskListDateString(selectedDate);
   const columns = useTaskListSidebarColumns({
     selectedDate,
     taskLists: groupDetail?.taskLists ?? [],
