@@ -1,5 +1,9 @@
 'use client';
 
+/**
+ * OAuth 회원가입 콜백에서 로그인 완료와 실패 처리를 관리하는 훅입니다.
+ */
+
 import { useEffect, useRef, useState } from 'react';
 
 import { useRouter } from 'next/navigation';
@@ -10,6 +14,7 @@ import { ROUTES } from '@/constants/ROUTES';
 import { useSignInWithOauthMutation } from '@/hooks/useAuth';
 import { buildLoginPath, getSafeRedirectTo } from '@/utils/authRedirect';
 import { extractAuthSession, saveAuthSession } from '@/utils/authSession';
+import { buildOauthCallbackUrl } from '@/utils/oauthRedirect';
 
 const TEAM_ID = process.env.NEXT_PUBLIC_TEAM_ID;
 const SUPPORTED_OAUTH_PROVIDER = 'kakao';
@@ -38,9 +43,21 @@ export default function useOauthSignupPage({
 }: UseOauthSignupPageParams) {
   const router = useRouter();
   const hasStartedRef = useRef(false);
+  const processedCodeKeyRef = useRef<string | null>(null);
   const [mutationErrorMessage, setMutationErrorMessage] = useState('');
+  const redirectUri = buildOauthCallbackUrl(
+    provider,
+    typeof window !== 'undefined' ? window.location.origin : undefined,
+  );
   const signInWithOauthMutation = useSignInWithOauthMutation({
     onError: (mutationError) => {
+      const processedCodeKey = processedCodeKeyRef.current;
+
+      if (processedCodeKey) {
+        window.sessionStorage.removeItem(processedCodeKey);
+      }
+
+      hasStartedRef.current = false;
       setMutationErrorMessage(
         mutationError.message || OAUTH_SIGNUP_TEXT.defaultError,
       );
@@ -85,7 +102,9 @@ export default function useOauthSignupPage({
           ? OAUTH_SIGNUP_TEXT.missingTeam
           : !code
             ? OAUTH_SIGNUP_TEXT.missingCode
-            : '';
+            : typeof window !== 'undefined' && !redirectUri
+              ? OAUTH_SIGNUP_TEXT.defaultError
+              : '';
 
   useEffect(() => {
     if (hasStartedRef.current) {
@@ -113,19 +132,31 @@ export default function useOauthSignupPage({
       return;
     }
 
+    if (!redirectUri) {
+      return;
+    }
+
     window.sessionStorage.setItem(processedCodeKey, 'true');
+    processedCodeKeyRef.current = processedCodeKey;
     hasStartedRef.current = true;
 
     signInWithOauthMutation.mutate({
       body: {
-        redirectUri: `${window.location.origin}${window.location.pathname}`,
+        redirectUri,
         state,
         token: oauthCode,
       },
       provider: toOauthProvider(provider),
       teamId,
     });
-  }, [code, initialErrorMessage, provider, signInWithOauthMutation, state]);
+  }, [
+    code,
+    initialErrorMessage,
+    provider,
+    redirectUri,
+    signInWithOauthMutation,
+    state,
+  ]);
 
   return {
     errorMessage: mutationErrorMessage || initialErrorMessage,

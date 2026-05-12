@@ -1,3 +1,7 @@
+/**
+ * 비밀번호 재설정 이메일 전송 폼의 입력, 검증, 제출 상태를 관리하는 훅입니다.
+ */
+
 'use client';
 
 import { useState } from 'react';
@@ -77,6 +81,7 @@ export default function useForgotPasswordForm({
     sendResetPasswordEmailMutation.mutate({
       body: {
         email: values.email,
+        // 백엔드가 재설정 경로와 토큰을 조합하므로 origin만 전달합니다.
         redirectUrl: window.location.origin,
       },
       teamId: TEAM_ID,

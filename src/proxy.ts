@@ -1,7 +1,12 @@
+/**
+ * 요청 진입 시 공개 경로, 인증 리다이렉트, 홈 이동을 제어하는 Next.js Proxy 파일입니다.
+ */
+
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 import { ROUTES } from '@/constants/ROUTES';
+import { buildLoginPath } from '@/utils/authRedirect';
 
 const TEAM_ID = process.env.NEXT_PUBLIC_TEAM_ID;
 const PUBLIC_PATH_PREFIXES = [
@@ -23,6 +28,10 @@ function isPublicPath(pathname: string) {
     pathname === ROUTES.HOME ||
     PUBLIC_PATH_PREFIXES.some((path) => pathname.startsWith(path))
   );
+}
+
+function getRedirectPath(request: NextRequest) {
+  return `${request.nextUrl.pathname}${request.nextUrl.search}`;
 }
 
 export function proxy(request: NextRequest) {
@@ -51,7 +60,15 @@ export function proxy(request: NextRequest) {
   }
 
   if (!accessToken) {
-    return NextResponse.redirect(new URL(ROUTES.LOGIN, request.url));
+    return NextResponse.redirect(
+      new URL(
+        buildLoginPath({
+          notice: 'auth-required',
+          redirectTo: getRedirectPath(request),
+        }),
+        request.url,
+      ),
+    );
   }
 
   return NextResponse.next();

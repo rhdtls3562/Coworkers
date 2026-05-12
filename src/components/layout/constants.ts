@@ -22,6 +22,8 @@ export function isGuestLayoutPath(pathname: string | null) {
   return (
     pathname === ROUTES.LOGIN ||
     pathname === ROUTES.SIGNUP ||
+    pathname?.startsWith(ROUTES.RESET_PASSWORD) === true ||
+    pathname?.startsWith('/password-reset') === true ||
     pathname?.startsWith('/oauth/') === true
   );
 }

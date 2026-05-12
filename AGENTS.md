@@ -62,7 +62,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - 이벤트 핸들러는 `handle + 동사`, prop 이벤트는 `on + 동사`로 작성한다.
 - Boolean 변수는 `is`, `has` 접두사를 사용한다.
 - 상수는 `UPPER_SNAKE_CASE`를 사용한다.
-- 컴포넌트나 모듈 파일이 100줄을 초과하면 역할 단위로 파일을 분리한다.
+- 컴포넌트나 모듈 파일이 130줄을 초과하면 역할 단위로 파일을 분리한다.
 - import 구문과 타입 선언은 줄 수 계산에서 제외한다.
 
 ## 스타일 규칙

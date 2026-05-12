@@ -3,6 +3,7 @@ import type { NextRequest } from 'next/server';
 
 import { ROUTES } from '@/constants/ROUTES';
 import { getSafeRedirectTo } from '@/utils/authRedirect';
+import { buildOauthCallbackUrl } from '@/utils/oauthRedirect';
 
 const SUPPORTED_OAUTH_PROVIDER = 'kakao';
 const KAKAO_PROFILE_SCOPES = ['profile_nickname', 'profile_image'];
@@ -25,14 +26,20 @@ export async function GET(
     );
   }
 
-  const redirectUri = new URL(ROUTES.OAUTH_CALLBACK(provider), request.url);
+  const redirectUri = buildOauthCallbackUrl(provider, request.nextUrl.origin);
   const authorizeUrl = new URL('https://kauth.kakao.com/oauth/authorize');
   const redirectTo = getSafeRedirectTo(
     request.nextUrl.searchParams.get('redirectTo'),
   );
 
+  if (!redirectUri) {
+    return NextResponse.redirect(
+      new URL(`${ROUTES.LOGIN}?error=oauth_not_configured`, request.url),
+    );
+  }
+
   authorizeUrl.searchParams.set('client_id', clientId);
-  authorizeUrl.searchParams.set('redirect_uri', redirectUri.toString());
+  authorizeUrl.searchParams.set('redirect_uri', redirectUri);
   authorizeUrl.searchParams.set('response_type', 'code');
   authorizeUrl.searchParams.set('scope', KAKAO_PROFILE_SCOPES.join(','));
 
