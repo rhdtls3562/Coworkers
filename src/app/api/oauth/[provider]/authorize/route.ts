@@ -7,6 +7,7 @@ import { buildOauthCallbackUrl } from '@/utils/oauthRedirect';
 
 const SUPPORTED_OAUTH_PROVIDER = 'kakao';
 const KAKAO_PROFILE_SCOPES = ['profile_nickname', 'profile_image'];
+const OAUTH_NOT_CONFIGURED_ERROR = 'oauth_not_configured';
 
 export async function GET(
   request: NextRequest,
@@ -18,11 +19,15 @@ export async function GET(
     return NextResponse.redirect(new URL(ROUTES.LOGIN, request.url));
   }
 
-  const clientId = process.env.KAKAO_CLIENT_ID;
+  const clientId =
+    process.env.KAKAO_CLIENT_ID ?? process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID;
 
   if (!clientId) {
     return NextResponse.redirect(
-      new URL(`${ROUTES.LOGIN}?error=oauth_not_configured`, request.url),
+      new URL(
+        `${ROUTES.LOGIN}?error=${OAUTH_NOT_CONFIGURED_ERROR}`,
+        request.url,
+      ),
     );
   }
 
@@ -34,7 +39,10 @@ export async function GET(
 
   if (!redirectUri) {
     return NextResponse.redirect(
-      new URL(`${ROUTES.LOGIN}?error=oauth_not_configured`, request.url),
+      new URL(
+        `${ROUTES.LOGIN}?error=${OAUTH_NOT_CONFIGURED_ERROR}`,
+        request.url,
+      ),
     );
   }
 

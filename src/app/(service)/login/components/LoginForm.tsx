@@ -18,19 +18,30 @@ import { buildSignupPath } from '@/utils/authRedirect';
 
 type LoginFormProps = {
   loginNotice?: 'auth-required';
+  oauthError?: string;
   prefilledEmail?: string;
   redirectTo?: string;
 };
 
+function getOauthErrorMessage(oauthError?: string) {
+  if (oauthError === 'oauth_not_configured') {
+    return '카카오 로그인 설정을 확인할 수 없습니다. 배포 환경 변수를 확인해주세요.';
+  }
+
+  return null;
+}
+
 export default function LoginForm({
   loginNotice,
+  oauthError,
   prefilledEmail,
   redirectTo,
 }: LoginFormProps) {
   const { showToast } = useToast();
   const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] =
     useState(false);
-  const hasShownNoticeRef = useRef(false);
+  const hasShownAuthNoticeRef = useRef(false);
+  const hasShownOauthErrorRef = useRef(false);
 
   const {
     emailError,
@@ -44,15 +55,25 @@ export default function LoginForm({
     prefilledEmail,
     redirectTo,
   });
+  const oauthErrorMessage = getOauthErrorMessage(oauthError);
 
   useEffect(() => {
-    if (loginNotice !== 'auth-required' || hasShownNoticeRef.current) {
+    if (loginNotice !== 'auth-required' || hasShownAuthNoticeRef.current) {
       return;
     }
 
-    hasShownNoticeRef.current = true;
+    hasShownAuthNoticeRef.current = true;
     showToast('로그인 후 이용해 주세요.', 'error');
   }, [loginNotice, showToast]);
+
+  useEffect(() => {
+    if (!oauthErrorMessage || hasShownOauthErrorRef.current) {
+      return;
+    }
+
+    hasShownOauthErrorRef.current = true;
+    showToast(oauthErrorMessage, 'error');
+  }, [oauthErrorMessage, showToast]);
 
   return (
     <section className="mx-auto w-full max-w-lg rounded-[20px] bg-background-inverse px-5.25 py-9.25 md:px-8 md:py-12.5">
@@ -108,6 +129,12 @@ export default function LoginForm({
       </p>
 
       <AuthSocialSection mode="login" redirectTo={redirectTo} />
+
+      {oauthErrorMessage && (
+        <p className="mt-4 text-center text-sm font-medium text-status-danger">
+          {oauthErrorMessage}
+        </p>
+      )}
 
       {isForgotPasswordModalOpen && (
         <ForgotPasswordModal

@@ -6,12 +6,14 @@ import LoginForm from '@/app/(service)/login/components/LoginForm';
 
 type LoginPageContentProps = {
   loginNotice?: 'auth-required';
+  oauthError?: string;
   prefilledEmail?: string;
   redirectTo?: string;
 };
 
 export default function LoginPageContent({
   loginNotice,
+  oauthError,
   prefilledEmail,
   redirectTo,
 }: LoginPageContentProps) {
@@ -19,6 +21,7 @@ export default function LoginPageContent({
     <div className="flex min-h-screen items-center justify-center bg-background-secondary px-4 py-10">
       <LoginForm
         loginNotice={loginNotice}
+        oauthError={oauthError}
         prefilledEmail={prefilledEmail}
         redirectTo={redirectTo}
       />
