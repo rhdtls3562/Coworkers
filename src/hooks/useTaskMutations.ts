@@ -7,16 +7,17 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import type { QueryKeyId } from '@/api/queryKeys';
+import { queryKeys } from '@/api/queryKeys';
 import {
   createMutationOptions,
   type MutationOptionsOverrides,
 } from '@/api/queryOptions/factory';
-import {
-  refetchHistoryTaskQueries,
-  refetchTaskQueries,
-} from '@/api/queryRefetch';
 import { deleteTask, updateTask } from '@/api/taskApi';
 import type { TaskUpdateBody } from '@/api/types';
+import {
+  invalidateTaskCheckedFollowups,
+  syncTaskCheckedCaches,
+} from '@/hooks/taskMutationCache';
 
 type UpdateTaskData = Awaited<ReturnType<typeof updateTask>>;
 type DeleteTaskData = Awaited<ReturnType<typeof deleteTask>>;
@@ -55,17 +56,36 @@ export function useUpdateTaskMutation(
       options: {
         ...options,
         onSuccess: async (data, variables, onMutateResult, context) => {
-          await refetchTaskQueries(
-            queryClient,
-            variables.teamId,
-            variables.taskId,
-            variables.taskListId,
-          );
-          await refetchHistoryTaskQueries(
-            queryClient,
-            variables.teamId,
-            variables.taskId,
-          );
+          if (typeof variables.body.done === 'boolean') {
+            syncTaskCheckedCaches({
+              checked: variables.body.done,
+              queryClient,
+              taskId: variables.taskId,
+              taskListId: variables.taskListId,
+              teamId: variables.teamId,
+            });
+            await invalidateTaskCheckedFollowups({
+              queryClient,
+              taskId: variables.taskId,
+              taskListId: variables.taskListId,
+              teamId: variables.teamId,
+            });
+          }
+          await Promise.all([
+            queryClient.invalidateQueries({
+              queryKey: queryKeys.task.detail(
+                variables.teamId,
+                variables.taskId,
+                variables.taskListId,
+              ),
+            }),
+            queryClient.invalidateQueries({
+              queryKey: queryKeys.taskList.detail(
+                variables.teamId,
+                variables.taskListId,
+              ),
+            }),
+          ]);
           await handleSuccess?.(data, variables, onMutateResult, context);
         },
       },
@@ -90,17 +110,27 @@ export function useDeleteTaskMutation(
       options: {
         ...options,
         onSuccess: async (data, variables, onMutateResult, context) => {
-          await refetchTaskQueries(
-            queryClient,
-            variables.teamId,
-            variables.taskId,
-            variables.taskListId,
-          );
-          await refetchHistoryTaskQueries(
-            queryClient,
-            variables.teamId,
-            variables.taskId,
-          );
+          await Promise.all([
+            queryClient.invalidateQueries({
+              queryKey: queryKeys.task.detail(
+                variables.teamId,
+                variables.taskId,
+                variables.taskListId,
+              ),
+            }),
+            queryClient.invalidateQueries({
+              queryKey: queryKeys.taskList.detail(
+                variables.teamId,
+                variables.taskListId,
+              ),
+            }),
+            queryClient.invalidateQueries({
+              queryKey: queryKeys.user.completedTasks(),
+            }),
+            queryClient.invalidateQueries({
+              queryKey: queryKeys.user.completedTaskSummary(),
+            }),
+          ]);
           await handleSuccess?.(data, variables, onMutateResult, context);
         },
       },

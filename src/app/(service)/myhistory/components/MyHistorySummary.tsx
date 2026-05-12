@@ -2,8 +2,6 @@
  * 큰 화면에서 노출되는 내가 한 일 요약 목록을 렌더링하는 컴포넌트입니다.
  */
 
-'use client';
-
 import type { MyHistorySummaryProps } from '@/app/(service)/myhistory/types';
 import { cn } from '@/utils/cn';
 

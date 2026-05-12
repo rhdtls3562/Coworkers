@@ -9,35 +9,14 @@ import type {
   UseHistoryMonthNavigatorParams,
 } from '@/app/(service)/myhistory/types';
 import {
-  getMonthEndDate,
-  getMonthStartDate,
+  getHistoryRangeTitleParts,
   normalizeHistoryDateRange,
 } from '@/app/(service)/myhistory/utils/formatHistoryDate';
+import {
+  createHistoryDraftRange,
+  getHistoryRangeMonthLimit,
+} from '@/app/(service)/myhistory/utils/historyMonthNavigatorUtils';
 import type { DatePickerRangeValue } from '@/components/common/form/types';
-
-function createDraftRange(
-  endDate: Date | null,
-  startDate: Date | null,
-): MyHistoryDraftDateRange {
-  return {
-    endDate,
-    startDate,
-  };
-}
-
-function getRangeMonthLimit(
-  draftRange: MyHistoryDraftDateRange,
-  isSelectingEndDate: boolean,
-) {
-  if (!draftRange.startDate || !isSelectingEndDate) {
-    return {};
-  }
-
-  return {
-    maxDate: getMonthEndDate(draftRange.startDate),
-    minDate: getMonthStartDate(draftRange.startDate),
-  };
-}
 
 export default function useHistoryMonthNavigator({
   closeCalendar,
@@ -54,8 +33,12 @@ export default function useHistoryMonthNavigator({
   const isSelectingEndDate = Boolean(
     draftRange.startDate && !draftRange.endDate,
   );
+  const titleParts = useMemo(
+    () => getHistoryRangeTitleParts(selectedRange),
+    [selectedRange],
+  );
   const rangeMonthLimit = useMemo(
-    () => getRangeMonthLimit(draftRange, isSelectingEndDate),
+    () => getHistoryRangeMonthLimit(draftRange, isSelectingEndDate),
     [draftRange, isSelectingEndDate],
   );
 
@@ -63,12 +46,12 @@ export default function useHistoryMonthNavigator({
     const [nextStartDate, nextEndDate] = nextRange;
 
     if (!nextStartDate) {
-      setDraftRange(createDraftRange(null, null));
+      setDraftRange(createHistoryDraftRange(null, null));
       return;
     }
 
     if (!nextEndDate) {
-      setDraftRange(createDraftRange(null, nextStartDate));
+      setDraftRange(createHistoryDraftRange(null, nextStartDate));
       return;
     }
 
@@ -89,7 +72,7 @@ export default function useHistoryMonthNavigator({
 
   const syncDraftRangeWithSelectedRange = () => {
     setDraftRange(
-      createDraftRange(selectedRange.endDate, selectedRange.startDate),
+      createHistoryDraftRange(selectedRange.endDate, selectedRange.startDate),
     );
   };
 
@@ -106,6 +89,8 @@ export default function useHistoryMonthNavigator({
     handleMoveMonth,
     handleRangeChange,
     handleToggleCalendar,
+    isRangeTitle: titleParts.length === 2,
     rangeMonthLimit,
+    titleParts,
   } as const;
 }

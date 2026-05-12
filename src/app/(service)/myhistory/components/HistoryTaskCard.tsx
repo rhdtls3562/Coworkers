@@ -2,9 +2,7 @@
  * 완료된 히스토리 할 일 카드 한 개를 렌더링하는 컴포넌트입니다.
  */
 
-'use client';
-
-import useHistoryTaskCard from '@/app/(service)/myhistory/hooks/useHistoryTaskCard';
+import useHistoryTaskCardMutation from '@/app/(service)/myhistory/hooks/useHistoryTaskCardMutation';
 import type { HistoryTaskCardProps } from '@/app/(service)/myhistory/types';
 import {
   IcCalendarSmall,
@@ -19,12 +17,11 @@ import { cn } from '@/utils/cn';
 
 export default function HistoryTaskCard({ task }: HistoryTaskCardProps) {
   const {
+    dropdownItems,
     handleCloseDeleteModal,
     handleConfirmDelete,
-    handleEdit,
-    handleOpenDeleteModal,
     isDeleteModalOpen,
-  } = useHistoryTaskCard({ task });
+  } = useHistoryTaskCardMutation({ task });
 
   return (
     <article
@@ -62,10 +59,7 @@ export default function HistoryTaskCard({ task }: HistoryTaskCardProps) {
 
       <ListDropdown
         className="ml-3 shrink-0"
-        items={[
-          { label: '수정하기', onClick: handleEdit },
-          { label: '삭제하기', onClick: handleOpenDeleteModal },
-        ]}
+        items={dropdownItems}
         trigger={
           <>
             <span className="sr-only">{`${task.title} 더보기`}</span>

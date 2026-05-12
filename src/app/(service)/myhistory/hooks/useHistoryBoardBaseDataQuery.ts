@@ -1,5 +1,3 @@
-'use client';
-
 /**
  * 내 히스토리 보드에 필요한 사용자와 팀 기본 데이터를 조회하고 정리하는 훅입니다.
  */
@@ -15,7 +13,7 @@ import {
 } from '@/app/(service)/myhistory/utils/myHistoryData';
 import { useMeQuery, useMyMembershipsQuery } from '@/hooks/useUser';
 
-export default function useHistoryBoardBaseData(
+export default function useHistoryBoardBaseDataQuery(
   completedTasks: readonly MyHistoryCompletedTaskRecord[],
 ) {
   const {

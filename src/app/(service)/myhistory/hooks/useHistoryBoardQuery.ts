@@ -1,12 +1,10 @@
-'use client';
-
 /**
  * 내 히스토리 화면의 완료 이력 조회와 보드 표시 상태를 조합하는 훅입니다.
  */
 
 import { useMemo } from 'react';
 
-import { MY_HISTORY_VIEW_MODES } from '@/app/(service)/myhistory/constants';
+import { MY_HISTORY_EMPTY_STATE_BY_VIEW_MODE } from '@/app/(service)/myhistory/constants';
 import useHistoryBoardData from '@/app/(service)/myhistory/hooks/useHistoryBoardData';
 import useHistorySelectedRange from '@/app/(service)/myhistory/hooks/useHistorySelectedRange';
 import type {
@@ -24,7 +22,7 @@ import {
 } from '@/app/(service)/myhistory/utils/myHistoryData';
 import { useCompletedTasksQuery } from '@/hooks/useUser';
 
-export default function useHistoryBoard(
+export default function useHistoryBoardQuery(
   activeFilterId: string | null,
   viewMode: MyHistoryViewMode,
 ) {
@@ -74,22 +72,17 @@ export default function useHistoryBoard(
     () => buildVisibleHistorySections(historySections, selectedRange),
     [historySections, selectedRange],
   );
+  const emptyState = MY_HISTORY_EMPTY_STATE_BY_VIEW_MODE[viewMode];
 
   return {
     datedHistorySections,
+    emptyDescription: emptyState.description,
+    emptyTitle: emptyState.title,
     filters,
     handleApplyRange,
     handleMoveMonth,
     handleResetRange,
     hasTasks: hasHistoryTasks(datedHistorySections),
-    emptyDescription:
-      viewMode === MY_HISTORY_VIEW_MODES.PENDING
-        ? '일정을 확인하고 하나씩 완료해보세요!'
-        : '하나씩 완료해가며 히스토리를 만들어보세요!',
-    emptyTitle:
-      viewMode === MY_HISTORY_VIEW_MODES.PENDING
-        ? '아직 해야 할 작업이 없어요.'
-        : '아직 완료된 작업이 없어요.',
     isError: isError || isBoardDataError,
     isLoading: isLoading || isBoardDataLoading,
     isProgressivelyLoading,

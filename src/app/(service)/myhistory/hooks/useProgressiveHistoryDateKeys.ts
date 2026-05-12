@@ -1,5 +1,3 @@
-'use client';
-
 /**
  * 전체 보기에서 완료 날짜 키를 최근순으로 일부만 먼저 노출하고,
  * 나머지는 짧은 간격으로 점진적으로 확장하는 훅입니다.
@@ -7,11 +5,8 @@
 
 import { useEffect, useMemo, useState } from 'react';
 
+import { HISTORY_PROGRESSIVE_DATE_KEY_SETTINGS } from '@/app/(service)/myhistory/constants';
 import { sortHistoryDateKeysByRecency } from '@/app/(service)/myhistory/utils/historyBoardDataUtils';
-
-const INITIAL_VISIBLE_DATE_COUNT = 2;
-const VISIBLE_DATE_CHUNK_SIZE = 2;
-const VISIBLE_DATE_EXPAND_DELAY = 120;
 
 export default function useProgressiveHistoryDateKeys(
   completedDateKeys: readonly string[],
@@ -22,7 +17,10 @@ export default function useProgressiveHistoryDateKeys(
     [completedDateKeys],
   );
   const initialVisibleCount = isAllMode
-    ? Math.min(INITIAL_VISIBLE_DATE_COUNT, sortedDateKeys.length)
+    ? Math.min(
+        HISTORY_PROGRESSIVE_DATE_KEY_SETTINGS.initialVisibleDateCount,
+        sortedDateKeys.length,
+      )
     : sortedDateKeys.length;
   const sourceKey = `${isAllMode}:${sortedDateKeys.join(',')}`;
   const [progressState, setProgressState] = useState({
@@ -64,11 +62,12 @@ export default function useProgressiveHistoryDateKeys(
       setProgressState((previousState) => ({
         ...previousState,
         visibleCount: Math.min(
-          previousState.visibleCount + VISIBLE_DATE_CHUNK_SIZE,
+          previousState.visibleCount +
+            HISTORY_PROGRESSIVE_DATE_KEY_SETTINGS.visibleDateChunkSize,
           sortedDateKeys.length,
         ),
       }));
-    }, VISIBLE_DATE_EXPAND_DELAY);
+    }, HISTORY_PROGRESSIVE_DATE_KEY_SETTINGS.visibleDateExpandDelay);
 
     return () => {
       window.clearTimeout(timeoutId);

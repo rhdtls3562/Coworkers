@@ -1,5 +1,3 @@
-'use client';
-
 /**
  * 히스토리 보드 표시에 필요한 할 일 목록 상세 데이터 소스를 조회하는 훅입니다.
  */
@@ -25,7 +23,7 @@ type UseHistoryTaskListSourcesParams = {
   visibleDateKeys: readonly string[];
 };
 
-export default function useHistoryTaskListSources({
+export default function useHistoryTaskListSourcesQuery({
   activeFilterId,
   shouldLimitTeamQueries,
   teamDetails,

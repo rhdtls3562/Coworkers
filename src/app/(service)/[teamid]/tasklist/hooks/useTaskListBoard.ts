@@ -6,19 +6,13 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { queryKeys } from '@/api/queryKeys';
 import { taskQueryOptions } from '@/api/queryOptions';
-import { updateTask } from '@/api/taskApi';
 import useTaskListRecurringWeekDays from '@/app/(service)/[teamid]/tasklist/hooks/useTaskListRecurringWeekDays';
 import type { TaskListBoardTask } from '@/app/(service)/[teamid]/tasklist/types';
 import { deleteTaskListBoardTask } from '@/app/(service)/[teamid]/tasklist/utils/deleteTaskListBoardTask';
 import { toTaskListDateString } from '@/app/(service)/[teamid]/tasklist/utils/taskListDate';
-import {
-  syncCheckedTaskToGroupDetail,
-  syncCheckedTaskToTaskListDetail,
-} from '@/app/(service)/[teamid]/tasklist/utils/taskListQueryCache';
 import { formatTaskListRepeatLabel } from '@/app/(service)/[teamid]/tasklist/utils/taskListRepeatLabel';
 import { useToast } from '@/components/common/toast';
-import type { GroupDetail } from '@/types/group';
-import type { TaskListDetail } from '@/types/task';
+import { useUpdateTaskMutation } from '@/hooks/useTask';
 
 export function useTaskListBoard(
   groupId: string | null,
@@ -27,6 +21,7 @@ export function useTaskListBoard(
 ) {
   const { showToast } = useToast();
   const queryClient = useQueryClient();
+  const updateTaskMutation = useUpdateTaskMutation();
   const dateString = toTaskListDateString(selectedDate);
 
   const { data: taskListDetail } = useQuery({
@@ -89,46 +84,17 @@ export function useTaskListBoard(
     async (id: string, checked: boolean) => {
       if (!groupId) return;
       try {
-        await updateTask(groupId, taskListId, id, { done: checked });
-        queryClient.setQueryData<GroupDetail | undefined>(
-          queryKeys.team.detail(groupId),
-          (previousGroupDetail) =>
-            syncCheckedTaskToGroupDetail(
-              previousGroupDetail,
-              taskListId,
-              id,
-              checked,
-            ),
-        );
-        queryClient.setQueryData<TaskListDetail | undefined>(
-          queryKeys.taskList.detail(groupId, taskListId, {
-            date: dateString,
-          }),
-          (previousTaskListDetail) =>
-            syncCheckedTaskToTaskListDetail(
-              previousTaskListDetail,
-              id,
-              checked,
-            ),
-        );
-        await Promise.all([
-          queryClient.invalidateQueries({
-            queryKey: queryKeys.taskList.detail(groupId, taskListId, {
-              date: dateString,
-            }),
-          }),
-          queryClient.invalidateQueries({
-            queryKey: queryKeys.taskList.all(groupId),
-          }),
-          queryClient.invalidateQueries({
-            queryKey: queryKeys.team.detail(groupId),
-          }),
-        ]);
+        await updateTaskMutation.mutateAsync({
+          body: { done: checked },
+          taskId: id,
+          taskListId,
+          teamId: groupId,
+        });
       } catch {
         // TODO: 에러 처리
       }
     },
-    [dateString, groupId, taskListId, queryClient],
+    [groupId, taskListId, updateTaskMutation],
   );
 
   const handleRequestDelete = useCallback((task: TaskListBoardTask) => {

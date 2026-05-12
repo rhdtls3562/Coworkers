@@ -2,8 +2,6 @@
  * 내 히스토리 화면의 선택된 날짜 범위 상태와 범위 변경 액션을 관리하는 훅입니다.
  */
 
-'use client';
-
 import { useMemo, useState } from 'react';
 
 import { MY_HISTORY_DATE_RANGE_MODES } from '@/app/(service)/myhistory/constants';

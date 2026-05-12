@@ -2,13 +2,11 @@
  * 마이 히스토리의 월 이동 헤더를 렌더링하는 컴포넌트입니다.
  */
 
-'use client';
-
 import HistoryCalendarPopover from '@/app/(service)/myhistory/components/HistoryCalendarPopover';
+import { HISTORY_MONTH_NAVIGATOR_ARIA_LABELS } from '@/app/(service)/myhistory/constants';
 import useHistoryCalendarPopover from '@/app/(service)/myhistory/hooks/useHistoryCalendarPopover';
 import useHistoryMonthNavigator from '@/app/(service)/myhistory/hooks/useHistoryMonthNavigator';
 import type { HistoryMonthNavigatorProps } from '@/app/(service)/myhistory/types';
-import { getHistoryRangeTitleParts } from '@/app/(service)/myhistory/utils/formatHistoryDate';
 import {
   IcCalendarCircleLarge,
   IcChevronLeftCircle,
@@ -21,8 +19,6 @@ export default function HistoryMonthNavigator({
   selectedRange,
   title,
 }: HistoryMonthNavigatorProps) {
-  const titleParts = getHistoryRangeTitleParts(selectedRange);
-  const isRangeTitle = titleParts.length === 2;
   const {
     calendarButtonRef,
     calendarRef,
@@ -35,7 +31,9 @@ export default function HistoryMonthNavigator({
     handleMoveMonth,
     handleRangeChange,
     handleToggleCalendar,
+    isRangeTitle,
     rangeMonthLimit,
+    titleParts,
   } = useHistoryMonthNavigator({
     closeCalendar,
     isCalendarOpen,
@@ -50,7 +48,7 @@ export default function HistoryMonthNavigator({
       <div className="flex items-center gap-4">
         <button
           type="button"
-          aria-label="이전 달 보기"
+          aria-label={HISTORY_MONTH_NAVIGATOR_ARIA_LABELS.previousMonth}
           className="flex size-7 items-center justify-center rounded-lg"
           onClick={() => handleMoveMonth(-1)}
         >
@@ -72,7 +70,7 @@ export default function HistoryMonthNavigator({
 
         <button
           type="button"
-          aria-label="다음 달 보기"
+          aria-label={HISTORY_MONTH_NAVIGATOR_ARIA_LABELS.nextMonth}
           className="flex size-7 items-center justify-center rounded-lg"
           onClick={() => handleMoveMonth(1)}
         >
@@ -83,7 +81,7 @@ export default function HistoryMonthNavigator({
       <button
         ref={calendarButtonRef}
         type="button"
-        aria-label="날짜 선택"
+        aria-label={HISTORY_MONTH_NAVIGATOR_ARIA_LABELS.selectDate}
         aria-haspopup="dialog"
         aria-expanded={isCalendarOpen}
         className="absolute right-0 flex size-10 items-center justify-center rounded-lg"

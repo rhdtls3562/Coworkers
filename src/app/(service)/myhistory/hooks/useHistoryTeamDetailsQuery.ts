@@ -1,5 +1,3 @@
-'use client';
-
 /**
  * 히스토리 보드에서 사용할 팀 상세 데이터를 조회하고 정규화하는 훅입니다.
  */
@@ -19,7 +17,7 @@ import {
 } from '@/app/(service)/myhistory/utils/historyBoardQueryUtils';
 import { toHistoryTeamDetail } from '@/app/(service)/myhistory/utils/myHistoryData';
 
-export default function useHistoryTeamDetails(
+export default function useHistoryTeamDetailsQuery(
   teams: readonly HistoryMembershipTeam[],
 ) {
   const teamDetailQueries = useQueries({

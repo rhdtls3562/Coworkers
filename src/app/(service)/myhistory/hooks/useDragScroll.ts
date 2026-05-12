@@ -1,14 +1,11 @@
-'use client';
-
 /**
  * 가로 스크롤 영역을 마우스로 드래그할 수 있게 하는 훅입니다.
  */
 
 import { useEffect, useRef } from 'react';
 
+import { HISTORY_FILTER_TABS_DRAG_THRESHOLD } from '@/app/(service)/myhistory/constants';
 import type { UseDragScrollReturn } from '@/app/(service)/myhistory/types';
-
-const DRAG_THRESHOLD = 8;
 
 export default function useDragScroll(): UseDragScrollReturn {
   const containerRef = useRef<HTMLUListElement>(null);
@@ -40,7 +37,7 @@ export default function useDragScroll(): UseDragScrollReturn {
 
     const movedX = event.clientX - startXRef.current;
 
-    if (Math.abs(movedX) <= DRAG_THRESHOLD) {
+    if (Math.abs(movedX) <= HISTORY_FILTER_TABS_DRAG_THRESHOLD) {
       return;
     }
 

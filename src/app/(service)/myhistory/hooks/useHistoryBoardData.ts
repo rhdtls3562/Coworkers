@@ -1,5 +1,3 @@
-'use client';
-
 /**
  * 완료 이력과 팀/할 일 목록 상세 데이터를 조합해 보드 표시 데이터를 만드는 훅입니다.
  */
@@ -7,9 +5,9 @@
 import { useMemo } from 'react';
 
 import { MY_HISTORY_VIEW_MODES } from '@/app/(service)/myhistory/constants';
-import useHistoryBoardBaseData from '@/app/(service)/myhistory/hooks/useHistoryBoardBaseData';
-import useHistoryTaskListSources from '@/app/(service)/myhistory/hooks/useHistoryTaskListSources';
-import useHistoryTeamDetails from '@/app/(service)/myhistory/hooks/useHistoryTeamDetails';
+import useHistoryBoardBaseDataQuery from '@/app/(service)/myhistory/hooks/useHistoryBoardBaseDataQuery';
+import useHistoryTaskListSourcesQuery from '@/app/(service)/myhistory/hooks/useHistoryTaskListSourcesQuery';
+import useHistoryTeamDetailsQuery from '@/app/(service)/myhistory/hooks/useHistoryTeamDetailsQuery';
 import useProgressiveHistoryDateKeys from '@/app/(service)/myhistory/hooks/useProgressiveHistoryDateKeys';
 import type { UseHistoryBoardDataParams } from '@/app/(service)/myhistory/types';
 import {
@@ -36,12 +34,12 @@ export default function useHistoryBoardData({
     isMeError,
     isMeLoading,
     uniqueTeams,
-  } = useHistoryBoardBaseData(completedTasks);
+  } = useHistoryBoardBaseDataQuery(completedTasks);
   const {
     isError: isTeamDetailsError,
     isLoading: isTeamDetailsLoading,
     teamDetails,
-  } = useHistoryTeamDetails(uniqueTeams);
+  } = useHistoryTeamDetailsQuery(uniqueTeams);
   const historyDateKeys = useMemo(() => {
     if (viewMode !== MY_HISTORY_VIEW_MODES.PENDING) {
       return completedDateKeys;
@@ -66,7 +64,7 @@ export default function useHistoryBoardData({
     isError: isTaskListSourcesError,
     isLoading: isTaskListSourcesLoading,
     taskListSources,
-  } = useHistoryTaskListSources({
+  } = useHistoryTaskListSourcesQuery({
     activeFilterId,
     shouldLimitTeamQueries,
     teamDetails,
@@ -76,7 +74,7 @@ export default function useHistoryBoardData({
     isError: isSummaryTaskListSourcesError,
     isLoading: isSummaryTaskListSourcesLoading,
     taskListSources: summaryTaskListSources,
-  } = useHistoryTaskListSources({
+  } = useHistoryTaskListSourcesQuery({
     activeFilterId,
     shouldLimitTeamQueries,
     teamDetails,

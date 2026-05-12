@@ -9,6 +9,7 @@ import {
   buildTaskListRecurringBody,
   resolveTaskListRecurringStartDate,
 } from '@/app/(service)/[teamid]/tasklist/utils/taskListCreateTaskPayload';
+import { isPastTaskListStartDate } from '@/app/(service)/[teamid]/tasklist/utils/taskListStartDateValidation';
 import { useToast } from '@/components/common/toast';
 
 type UseTaskListCreateTaskSubmitParams = {
@@ -52,6 +53,12 @@ export default function useTaskListCreateTaskSubmit({
       title: title.trim(),
       weekDays,
     });
+
+    if (isPastTaskListStartDate(body.startDate)) {
+      showToast('현재 시간보다 이전으로는 할 일을 만들 수 없어요.', 'error');
+      return;
+    }
+
     const createdStartDate = resolveTaskListRecurringStartDate(
       repeat,
       selectedDate,
