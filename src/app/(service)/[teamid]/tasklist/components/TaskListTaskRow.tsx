@@ -4,6 +4,8 @@
 
 'use client';
 
+import type { KeyboardEvent, MouseEvent } from 'react';
+
 import TaskListTaskRowOptionsMenu from '@/app/(service)/[teamid]/tasklist/components/TaskListTaskRowOptionsMenu';
 import type {
   TaskListBoardTask,
@@ -34,23 +36,46 @@ export default function TaskListTaskRow({
   onToggleChecked,
   onRequestDelete,
 }: TaskListTaskRowProps) {
-  const handleCardClick = (e: React.MouseEvent) => {
-    const target = e.target as HTMLElement;
-    if (target.closest('[data-task-detail-ignore]')) return;
+  const handleOpenDetail = () => {
     onOpenDetail(task, 'view');
+  };
+
+  const handleCardClick = (event: MouseEvent<HTMLElement>) => {
+    if ((event.target as HTMLElement).closest('[data-task-detail-ignore]')) {
+      return;
+    }
+
+    handleOpenDetail();
+  };
+
+  const handleCardKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+    if (event.key !== 'Enter' && event.key !== ' ') {
+      return;
+    }
+
+    if ((event.target as HTMLElement).closest('[data-task-detail-ignore]')) {
+      return;
+    }
+
+    event.preventDefault();
+    handleOpenDetail();
   };
 
   return (
     <article
-      onClick={handleCardClick}
       className={cn(
-        'relative flex cursor-pointer items-start rounded-xl border border-background-tertiary bg-background-primary px-3 py-3 sm:px-4',
+        'relative flex items-start rounded-xl border border-background-tertiary bg-background-primary px-3 py-3 transition-colors hover:bg-background-secondary focus-visible:bg-background-secondary sm:px-4',
         task.checked && 'bg-background-secondary',
       )}
+      role="button"
+      tabIndex={0}
+      aria-label={`${task.title} 상세 열기`}
+      onClick={handleCardClick}
+      onKeyDown={handleCardKeyDown}
     >
       <div className="min-w-0 flex-1 pr-10 sm:pr-11">
         <div className="flex min-w-0 items-center gap-2">
-          <span className="flex items-center" data-task-detail-ignore>
+          <span data-task-detail-ignore>
             <TodoCheckUncheck
               label={task.title}
               checked={task.checked}
@@ -58,23 +83,24 @@ export default function TaskListTaskRow({
             />
           </span>
 
-          <span
-            className="relative flex shrink-0 items-center gap-1 text-sm font-medium text-text-default md:text-base cursor-pointer"
-            onClick={() => onOpenDetail(task, 'view')}
+          <button
+            type="button"
+            data-task-detail-ignore
+            className="flex shrink-0 items-center gap-1 text-sm font-medium text-text-default md:text-base mb-1.5"
+            aria-label={`${task.title} 댓글 ${task.commentCount}개 보기`}
+            onClick={handleOpenDetail}
           >
-            <span className="flex items-center justify-center w-4 h-4">
-              <IcComment
-                width={22}
-                height={22}
-                className="size-5.5 absolute"
-                aria-hidden="true"
-              />
-            </span>
+            <IcComment
+              width={22}
+              height={22}
+              className="size-5.5"
+              aria-hidden="true"
+            />
             {task.commentCount}
-          </span>
+          </button>
         </div>
 
-        <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-normal text-text-default md:mt-2.5 md:text-base">
+        <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-normal text-text-default md:mt-2 md:text-base">
           <span className="flex items-center gap-2">
             <IcCalendarSmall width={16} height={16} aria-hidden="true" />
             {task.dueDateLabel}
@@ -85,7 +111,7 @@ export default function TaskListTaskRow({
           </span>
 
           <span className="flex items-center gap-2">
-            <IcRepeatSmall width={20} height={20} aria-hidden="true" />
+            <IcRepeatSmall width={22} height={22} aria-hidden="true" />
             {task.repeatLabel}
           </span>
         </div>
@@ -102,7 +128,7 @@ export default function TaskListTaskRow({
             {
               label: '수정하기',
               onClick: () => {
-                onOpenDetail(task, 'view');
+                handleOpenDetail();
               },
             },
             {

@@ -54,19 +54,22 @@ function buildTaskListBaseMap(
 export function buildTeamSummaryCards(
   teamDetails: readonly HistoryTeamDetail[],
   completedTaskCountMap: ReadonlyMap<string, Set<string>>,
-  sources: readonly HistoryTaskListDetailSource[],
+  countSources: readonly HistoryTaskListDetailSource[],
+  totalCountSources: readonly HistoryTaskListDetailSource[],
   viewMode: MyHistoryViewMode,
 ) {
   const taskListTotalIdentityMap = buildTaskListTotalIdentityMap(
     teamDetails,
-    sources,
+    totalCountSources,
   );
-  const pendingTaskIdentityMap = buildSourceTaskIdentityMap(sources, 'pending');
-  const sourceTaskIdentityMap = buildSourceTaskIdentityMap(sources, 'all');
+  const pendingTaskIdentityMap = buildSourceTaskIdentityMap(
+    countSources,
+    'pending',
+  );
 
   return teamDetails.map((teamDetail) => {
     const details = Array.from(
-      buildTaskListBaseMap(teamDetail, sources).values(),
+      buildTaskListBaseMap(teamDetail, totalCountSources).values(),
     )
       .sort(
         (firstTaskList, secondTaskList) =>
@@ -78,10 +81,7 @@ export function buildTeamSummaryCards(
           taskList.id,
         );
         const doneCount = completedTaskCountMap.get(taskListKey)?.size ?? 0;
-        const totalCount =
-          viewMode === 'pending'
-            ? (sourceTaskIdentityMap.get(taskListKey)?.size ?? 0)
-            : (taskListTotalIdentityMap.get(taskListKey)?.size ?? 0);
+        const totalCount = taskListTotalIdentityMap.get(taskListKey)?.size ?? 0;
         const count =
           viewMode === 'pending'
             ? (pendingTaskIdentityMap.get(taskListKey)?.size ?? 0)

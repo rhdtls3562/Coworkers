@@ -113,7 +113,7 @@ export default function TaskItem({
         <ConfirmModal
           onClose={close}
           title="해당 할 일 목록을 삭제하시겠습니까?"
-          confirmText="삭제"
+          confirmText="삭제하기"
           toastMessage="삭제 되었습니다."
           onConfirm={() => handleDelete()}
         />

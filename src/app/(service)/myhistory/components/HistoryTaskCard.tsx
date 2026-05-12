@@ -15,6 +15,7 @@ import {
 import { ListDropdown } from '@/components/common/dropdown';
 import { TaskDeleteConfirmModal } from '@/components/common/modal';
 import TodoCheckUncheck from '@/components/common/todo/TodoCheckUncheck';
+import { cn } from '@/utils/cn';
 
 export default function HistoryTaskCard({ task }: HistoryTaskCardProps) {
   const {
@@ -26,7 +27,12 @@ export default function HistoryTaskCard({ task }: HistoryTaskCardProps) {
   } = useHistoryTaskCard({ task });
 
   return (
-    <article className="relative flex items-start rounded-lg bg-background-secondary px-3.5 py-3">
+    <article
+      className={cn(
+        'relative flex items-start rounded-xl border border-background-tertiary px-3.5 py-3',
+        task.isCompleted ? 'bg-background-secondary' : 'bg-background-primary',
+      )}
+    >
       <div className="min-w-0 flex-1">
         <div className="flex min-w-0 items-center gap-2">
           <TodoCheckUncheck label={task.title} checked={task.isCompleted} />
@@ -77,6 +83,7 @@ export default function HistoryTaskCard({ task }: HistoryTaskCardProps) {
         <TaskDeleteConfirmModal
           onClose={handleCloseDeleteModal}
           onConfirm={handleConfirmDelete}
+          taskTitle={task.title}
         />
       )}
     </article>

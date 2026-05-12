@@ -5,7 +5,7 @@
 
 'use client';
 
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 
 import { createPortal } from 'react-dom';
 
@@ -32,8 +32,10 @@ export default function ListDropdown({
     left: 0,
   });
 
-  useLayoutEffect(() => {
-    if (!isOpen || !triggerRef.current || !menuRef.current) return;
+  const updateMenuPosition = useCallback(() => {
+    if (!triggerRef.current || !menuRef.current) {
+      return;
+    }
 
     const triggerRect = triggerRef.current.getBoundingClientRect();
     const menuRect = menuRef.current.getBoundingClientRect();
@@ -61,7 +63,25 @@ export default function ListDropdown({
         Math.max(8, viewportWidth - menuWidth - 8),
       ),
     });
-  }, [horizontalAlign, isOpen, verticalPosition]);
+  }, [horizontalAlign, verticalPosition]);
+
+  useLayoutEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    updateMenuPosition();
+    const rafId = window.requestAnimationFrame(updateMenuPosition);
+
+    window.addEventListener('scroll', updateMenuPosition, true);
+    window.addEventListener('resize', updateMenuPosition);
+
+    return () => {
+      window.cancelAnimationFrame(rafId);
+      window.removeEventListener('scroll', updateMenuPosition, true);
+      window.removeEventListener('resize', updateMenuPosition);
+    };
+  }, [isOpen, updateMenuPosition]);
 
   return (
     <div

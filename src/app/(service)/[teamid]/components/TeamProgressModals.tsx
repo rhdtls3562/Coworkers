@@ -121,7 +121,7 @@ export function TeamProgressModals({
           onClose={close}
           title="해당 팀을 삭제하시겠습니까?"
           description="팀 관련 모든 정보가 삭제됩니다."
-          confirmText="삭제"
+          confirmText="삭제하기"
           toastMessage="삭제 되었습니다."
           onConfirm={handleDeleteTeam}
         />
@@ -140,7 +140,7 @@ export function TeamProgressModals({
         <ConfirmModal
           onClose={reset}
           title="해당 멤버를 삭제하시겠습니까?"
-          confirmText="삭제"
+          confirmText="삭제하기"
           toastMessage="삭제 되었습니다."
           onConfirm={handleRemoveMemberTeam}
         />

@@ -59,7 +59,12 @@ export default function TaskListPageShell({
     setColumnPendingRename,
     setIsCreateColumnOpen,
     setIsCreateTaskOpen,
-  } = useTaskListPageShell({ selectedDate, teamId, taskId });
+  } = useTaskListPageShell({
+    onSelectDate: setSelectedDate,
+    selectedDate,
+    teamId,
+    taskId,
+  });
 
   const handleConfirmDeleteColumnWithNav = async () => {
     if (!columnPendingDelete) {
@@ -121,6 +126,7 @@ export default function TaskListPageShell({
           className="lg:col-start-2 lg:row-start-2"
           columnTitle={columnTitle}
           groupId={teamId}
+          onOpenCreateTask={() => setIsCreateTaskOpen(true)}
           onSelectDate={setSelectedDate}
           selectedDate={selectedDate}
           taskListId={effectiveActiveId}
@@ -139,6 +145,7 @@ export default function TaskListPageShell({
 
       {isCreateTaskOpen && (
         <TaskListCreateTaskModal
+          initialSelectedDate={selectedDate}
           onClose={() => setIsCreateTaskOpen(false)}
           onSubmit={handleCreateTask}
           groupId={Number(teamId)}
@@ -150,6 +157,7 @@ export default function TaskListPageShell({
         <TaskListColumnDeleteModal
           onClose={() => setColumnPendingDelete(null)}
           onConfirm={handleConfirmDeleteColumnWithNav}
+          taskListTitle={columnPendingDelete.title}
         />
       )}
 

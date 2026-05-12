@@ -17,6 +17,7 @@ export type Task = {
   commentCount: number;
   recurringId: number;
   frequency: 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'ONCE';
+  weekDays?: number[];
   writer: UserSummary;
   doneBy: { user: UserSummary } | null;
 };

@@ -9,16 +9,15 @@ import {
   REPEAT_TRIGGER_LAYOUT_CLASS,
   TASK_LIST_CREATE_TASK_REPEAT_ITEMS,
 } from '@/app/(service)/[teamid]/tasklist/createTaskModalConstants';
-import { clampMonthDay } from '@/app/(service)/[teamid]/tasklist/hooks/useTaskListCreateTaskForm';
 import type { TaskListCreateTaskRepeatValue } from '@/app/(service)/[teamid]/tasklist/types';
 import Input from '@/components/common/form/components/Input';
 import { cn } from '@/utils/cn';
 
 type TaskListCreateTaskModalRepeatSectionProps = {
   formId: string;
-  monthDay: number;
+  monthDay: string;
   onMonthDayBlur: () => void;
-  onMonthDayChange: (value: number) => void;
+  onMonthDayChange: (value: string) => void;
   onRepeatChange: (value: TaskListCreateTaskRepeatValue) => void;
   onToggleWeekDay: (dayIndex: number) => void;
   repeat: TaskListCreateTaskRepeatValue;
@@ -84,21 +83,12 @@ export default function TaskListCreateTaskModalRepeatSection({
             </label>
             <Input
               id={`${formId}-monthday`}
-              type="number"
+              type="text"
               inputMode="numeric"
-              min={1}
-              max={31}
-              value={monthDay === 0 ? '' : monthDay}
-              onChange={(e) => {
-                const t = e.target.value;
-                if (t === '') {
-                  onMonthDayChange(0);
-                  return;
-                }
-                const v = Number(t);
-                if (Number.isNaN(v)) return;
-                onMonthDayChange(clampMonthDay(v));
-              }}
+              pattern="[0-9]*"
+              maxLength={2}
+              value={monthDay}
+              onChange={(e) => onMonthDayChange(e.target.value)}
               onBlur={onMonthDayBlur}
               className="max-w-30"
               aria-label="매월 반복할 날짜 1~31"

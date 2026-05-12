@@ -25,8 +25,15 @@ export default function useTaskListSidebarColumns({
   teamId,
 }: UseTaskListSidebarColumnsParams) {
   const dateString = toTaskListDateString(selectedDate);
+  const sortedTaskLists = useMemo(
+    () =>
+      taskLists.slice().sort((firstTaskList, secondTaskList) => {
+        return firstTaskList.displayIndex - secondTaskList.displayIndex;
+      }),
+    [taskLists],
+  );
   const taskListDetailQueries = useQueries({
-    queries: taskLists.map((taskList) =>
+    queries: sortedTaskLists.map((taskList) =>
       taskQueryOptions.taskListDetail(teamId, String(taskList.id), {
         date: dateString,
       }),
@@ -35,20 +42,17 @@ export default function useTaskListSidebarColumns({
 
   return useMemo<TaskListColumnItem[]>(
     () =>
-      taskLists
-        .slice()
-        .sort((a, b) => a.displayIndex - b.displayIndex)
-        .map((taskList, index) => {
-          const taskListDetail = taskListDetailQueries[index]?.data;
-          const tasks = taskListDetail ? taskListDetail.tasks : taskList.tasks;
+      sortedTaskLists.map((taskList, index) => {
+        const taskListDetail = taskListDetailQueries[index]?.data;
+        const tasks = taskListDetail ? taskListDetail.tasks : taskList.tasks;
 
-          return {
-            completed: tasks.filter((task) => task.doneAt !== null).length,
-            id: String(taskList.id),
-            title: taskList.name,
-            total: tasks.length,
-          };
-        }),
-    [taskListDetailQueries, taskLists],
+        return {
+          completed: tasks.filter((task) => task.doneAt !== null).length,
+          id: String(taskList.id),
+          title: taskList.name,
+          total: tasks.length,
+        };
+      }),
+    [sortedTaskLists, taskListDetailQueries],
   );
 }

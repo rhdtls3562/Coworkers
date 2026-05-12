@@ -4,6 +4,7 @@
 
 import type { RecurringBody } from '@/api/types';
 import type { TaskListCreateTaskRepeatValue } from '@/app/(service)/[teamid]/tasklist/types';
+import { toTaskListDateTimeString } from '@/app/(service)/[teamid]/tasklist/utils/taskListDate';
 
 const HOUR_MINUTE_LENGTH = 2;
 
@@ -43,7 +44,7 @@ export function buildTaskListStartDate(date: Date, time: string) {
 
   if (isValidTime(hours, minutes)) {
     nextDate.setHours(hours, minutes, 0, 0);
-    return nextDate.toISOString();
+    return toTaskListDateTimeString(nextDate);
   }
 
   const fallbackTime = `${String(nextDate.getHours()).padStart(
@@ -64,6 +65,78 @@ type BuildTaskListRecurringBodyParams = {
   weekDays: number[];
 };
 
+function getMonthDate(year: number, monthIndex: number, day: number) {
+  const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
+  return new Date(year, monthIndex, Math.min(day, daysInMonth));
+}
+
+function getNextWeeklyDate(selectedDate: Date, weekDays: number[]) {
+  if (weekDays.length === 0) {
+    return new Date(selectedDate);
+  }
+
+  const normalizedWeekDays = [...new Set(weekDays)]
+    .filter((day) => Number.isInteger(day) && day >= 0 && day <= 6)
+    .sort((firstDay, secondDay) => firstDay - secondDay);
+
+  if (normalizedWeekDays.length === 0) {
+    return new Date(selectedDate);
+  }
+
+  const normalizedSelectedDate = new Date(
+    selectedDate.getFullYear(),
+    selectedDate.getMonth(),
+    selectedDate.getDate(),
+  );
+
+  for (let dayOffset = 0; dayOffset < 7; dayOffset += 1) {
+    const candidateDate = new Date(normalizedSelectedDate);
+    candidateDate.setDate(normalizedSelectedDate.getDate() + dayOffset);
+
+    if (normalizedWeekDays.includes(candidateDate.getDay())) {
+      return candidateDate;
+    }
+  }
+
+  return normalizedSelectedDate;
+}
+
+export function resolveTaskListRecurringStartDate(
+  repeat: TaskListCreateTaskRepeatValue,
+  selectedDate: Date,
+  monthDay: number,
+  weekDays: number[] = [],
+) {
+  if (repeat === 'weekly') {
+    return getNextWeeklyDate(selectedDate, weekDays);
+  }
+
+  if (repeat !== 'monthly') {
+    return new Date(selectedDate);
+  }
+
+  const normalizedSelectedDate = new Date(
+    selectedDate.getFullYear(),
+    selectedDate.getMonth(),
+    selectedDate.getDate(),
+  );
+  const currentMonthDate = getMonthDate(
+    selectedDate.getFullYear(),
+    selectedDate.getMonth(),
+    monthDay,
+  );
+
+  if (currentMonthDate.getTime() >= normalizedSelectedDate.getTime()) {
+    return currentMonthDate;
+  }
+
+  return getMonthDate(
+    selectedDate.getFullYear(),
+    selectedDate.getMonth() + 1,
+    monthDay,
+  );
+}
+
 export function buildTaskListRecurringBody({
   description,
   monthDay,
@@ -73,12 +146,19 @@ export function buildTaskListRecurringBody({
   title,
   weekDays,
 }: BuildTaskListRecurringBodyParams): RecurringBody {
+  const resolvedStartDate = resolveTaskListRecurringStartDate(
+    repeat,
+    selectedDate,
+    monthDay,
+    weekDays,
+  );
+
   return {
     description,
     frequencyType: FREQUENCY_MAP[repeat],
     monthDay: repeat === 'monthly' ? monthDay : undefined,
     name: title,
-    startDate: buildTaskListStartDate(selectedDate, startTime),
-    weekDays: repeat === 'weekly' ? weekDays : undefined,
+    startDate: buildTaskListStartDate(resolvedStartDate, startTime),
+    weekDays: repeat === 'weekly' && weekDays.length > 0 ? weekDays : undefined,
   };
 }

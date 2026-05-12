@@ -7,6 +7,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/api/queryKeys';
 import { taskQueryOptions } from '@/api/queryOptions';
 import { updateTask } from '@/api/taskApi';
+import useTaskListRecurringWeekDays from '@/app/(service)/[teamid]/tasklist/hooks/useTaskListRecurringWeekDays';
 import type { TaskListBoardTask } from '@/app/(service)/[teamid]/tasklist/types';
 import { deleteTaskListBoardTask } from '@/app/(service)/[teamid]/tasklist/utils/deleteTaskListBoardTask';
 import { toTaskListDateString } from '@/app/(service)/[teamid]/tasklist/utils/taskListDate';
@@ -14,6 +15,7 @@ import {
   syncCheckedTaskToGroupDetail,
   syncCheckedTaskToTaskListDetail,
 } from '@/app/(service)/[teamid]/tasklist/utils/taskListQueryCache';
+import { formatTaskListRepeatLabel } from '@/app/(service)/[teamid]/tasklist/utils/taskListRepeatLabel';
 import { useToast } from '@/components/common/toast';
 import type { GroupDetail } from '@/types/group';
 import type { TaskListDetail } from '@/types/task';
@@ -33,31 +35,45 @@ export function useTaskListBoard(
     }),
     enabled: groupId !== null && taskListId !== '',
   });
+  const inferredRecurringWeekDays = useTaskListRecurringWeekDays({
+    groupId,
+    selectedDate,
+    taskListDetail,
+    taskListId,
+  });
 
   const tasks: TaskListBoardTask[] = useMemo(() => {
     if (!taskListDetail?.tasks) return [];
-    return taskListDetail.tasks.map((task) => ({
-      assigneeImage: task.writer.image,
-      id: String(task.id),
-      title: task.name,
-      checked: task.doneAt !== null,
-      commentCount: task.commentCount,
-      dueDateLabel: task.date.slice(0, 10),
-      frequency: task.frequency,
-      recurringId: String(task.recurringId),
-      repeatLabel:
-        task.frequency === 'ONCE'
-          ? ''
-          : `매${task.frequency === 'DAILY' ? '일' : task.frequency === 'WEEKLY' ? '주' : '월'} 반복`,
-      sortOrder: task.displayIndex,
-      assigneeName: task.writer.nickname,
-      description: task.description ?? '',
-      startedAtLabel: task.date.slice(0, 10),
-      taskListId: String(taskListId),
-      teamId: groupId ?? '',
-      comments: [],
-    }));
-  }, [taskListDetail, taskListId, groupId]);
+    return taskListDetail.tasks.map((task) => {
+      const resolvedWeekDays =
+        task.weekDays && task.weekDays.length > 0
+          ? task.weekDays
+          : inferredRecurringWeekDays[String(task.recurringId)];
+
+      return {
+        assigneeImage: task.writer.image,
+        id: String(task.id),
+        title: task.name,
+        checked: task.doneAt !== null,
+        commentCount: task.commentCount,
+        dueDateLabel: task.date.slice(0, 10),
+        frequency: task.frequency,
+        recurringId: String(task.recurringId),
+        repeatLabel: formatTaskListRepeatLabel(
+          task.frequency,
+          resolvedWeekDays,
+        ),
+        sortOrder: task.displayIndex,
+        assigneeName: task.writer.nickname,
+        description: task.description ?? '',
+        startedAtLabel: task.date.slice(0, 10),
+        taskListId: String(taskListId),
+        teamId: groupId ?? '',
+        comments: [],
+        weekDays: resolvedWeekDays,
+      };
+    });
+  }, [groupId, inferredRecurringWeekDays, taskListDetail, taskListId]);
 
   const [taskPendingDelete, setTaskPendingDelete] =
     useState<TaskListBoardTask | null>(null);

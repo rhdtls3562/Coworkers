@@ -55,6 +55,13 @@ export default function useHistoryBoardData({
   }, [completedDateKeys, isAllRange, selectedRange, viewMode]);
   const { isProgressivelyLoading, visibleDateKeys } =
     useProgressiveHistoryDateKeys(historyDateKeys, isAllRange);
+  const summaryDateKeys = useMemo(() => {
+    if (viewMode !== MY_HISTORY_VIEW_MODES.PENDING) {
+      return visibleDateKeys;
+    }
+
+    return Array.from(new Set([...completedDateKeys, ...visibleDateKeys]));
+  }, [completedDateKeys, viewMode, visibleDateKeys]);
   const {
     isError: isTaskListSourcesError,
     isLoading: isTaskListSourcesLoading,
@@ -64,6 +71,16 @@ export default function useHistoryBoardData({
     shouldLimitTeamQueries,
     teamDetails,
     visibleDateKeys,
+  });
+  const {
+    isError: isSummaryTaskListSourcesError,
+    isLoading: isSummaryTaskListSourcesLoading,
+    taskListSources: summaryTaskListSources,
+  } = useHistoryTaskListSources({
+    activeFilterId,
+    shouldLimitTeamQueries,
+    teamDetails,
+    visibleDateKeys: summaryDateKeys,
   });
   const visibleCompletedTasks = useMemo(
     () => getVisibleCompletedTasks(completedTasks, visibleDateKeys),
@@ -95,9 +112,16 @@ export default function useHistoryBoardData({
         teamDetails,
         completedTasks,
         taskListSources,
+        summaryTaskListSources,
         viewMode,
       ),
-    [completedTasks, taskListSources, teamDetails, viewMode],
+    [
+      completedTasks,
+      summaryTaskListSources,
+      taskListSources,
+      teamDetails,
+      viewMode,
+    ],
   );
 
   return {
@@ -107,12 +131,14 @@ export default function useHistoryBoardData({
       isMeError ||
       isMembershipsError ||
       isTeamDetailsError ||
-      isTaskListSourcesError,
+      isTaskListSourcesError ||
+      isSummaryTaskListSourcesError,
     isLoading:
       isMeLoading ||
       isMembershipsLoading ||
       isTeamDetailsLoading ||
-      isTaskListSourcesLoading,
+      isTaskListSourcesLoading ||
+      isSummaryTaskListSourcesLoading,
     isProgressivelyLoading,
     summaryItems: summaryData.items,
   } as const;

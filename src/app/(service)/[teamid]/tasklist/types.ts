@@ -33,6 +33,7 @@ export type TaskListBoardTask = {
   taskListId: string;
   teamId: string;
   title: string;
+  weekDays?: number[];
 };
 
 export type TaskListTaskDetailApplyPatch = {
@@ -51,6 +52,7 @@ export type TaskListBoardProps = {
   className?: string;
   columnTitle: string;
   groupId: string | null;
+  onOpenCreateTask: () => void;
   onSelectDate: (date: Date) => void;
   selectedDate: Date;
   taskListId: string;
@@ -58,11 +60,11 @@ export type TaskListBoardProps = {
 };
 
 export type TaskListCreateTaskModalProps = {
+  initialSelectedDate: Date;
   onClose: () => void;
-  onSubmit?: () => void;
+  onSubmit?: (selectedDate: Date) => void | Promise<void>;
   groupId: number;
   taskListId: string;
-  initialDate?: Date;
 };
 
 export type TaskListCalendarVariant =

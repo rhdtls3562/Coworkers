@@ -102,6 +102,7 @@ export default function TaskListPageHeader({
         <TaskListTeamPageDeleteModal
           onClose={() => setIsDeleteModalOpen(false)}
           onConfirm={handleConfirmDelete}
+          pageTitle={teamName}
         />
       ) : null}
     </>

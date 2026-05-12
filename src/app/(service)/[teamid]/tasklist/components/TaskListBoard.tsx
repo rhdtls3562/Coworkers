@@ -4,10 +4,9 @@
 
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 
 import TaskListBoardEmptyTaskRow from '@/app/(service)/[teamid]/tasklist/components/TaskListBoardEmptyTaskRow';
-import TaskListCreateTaskModal from '@/app/(service)/[teamid]/tasklist/components/TaskListCreateTaskModal';
 import TaskListMonthNavigator from '@/app/(service)/[teamid]/tasklist/components/TaskListMonthNavigator';
 import TaskListTaskDeleteModal from '@/app/(service)/[teamid]/tasklist/components/TaskListTaskDeleteModal';
 import TaskListTaskDetailPanel from '@/app/(service)/[teamid]/tasklist/components/TaskListTaskDetailPanel';
@@ -29,6 +28,7 @@ export default function TaskListBoard({
   className,
   columnTitle,
   groupId,
+  onOpenCreateTask,
   onSelectDate,
   selectedDate,
   taskListId,
@@ -45,8 +45,6 @@ export default function TaskListBoard({
     taskPendingDelete,
   } = useTaskListBoard(groupId, taskListId, selectedDate);
 
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-
   const handleOpenTaskDetail = useCallback(
     (task: (typeof sortedTasks)[number], mode: TaskListTaskDetailOpenMode) => {
       openRightPanel({
@@ -62,18 +60,6 @@ export default function TaskListBoard({
     },
     [openRightPanel, teamId],
   );
-
-  const handleOpenCreateModal = useCallback(() => {
-    setIsCreateModalOpen(true);
-  }, []);
-
-  const handleCloseCreateModal = useCallback(() => {
-    setIsCreateModalOpen(false);
-  }, []);
-
-  const handleCreateTaskSubmit = useCallback(() => {
-    handleCloseCreateModal();
-  }, [handleCloseCreateModal]);
 
   return (
     <section
@@ -101,7 +87,7 @@ export default function TaskListBoard({
           <li className="list-none">
             <TaskListBoardEmptyTaskRow
               selectedDate={selectedDate}
-              onClick={handleOpenCreateModal}
+              onClick={onOpenCreateTask}
             />
           </li>
         ) : (
@@ -118,20 +104,11 @@ export default function TaskListBoard({
         )}
       </ul>
 
-      {isCreateModalOpen && (
-        <TaskListCreateTaskModal
-          onClose={handleCloseCreateModal}
-          onSubmit={handleCreateTaskSubmit}
-          groupId={Number(groupId)}
-          taskListId={taskListId}
-          initialDate={selectedDate}
-        />
-      )}
-
       {taskPendingDelete && (
         <TaskListTaskDeleteModal
           onClose={handleCloseDeleteModal}
           onConfirm={handleConfirmDelete}
+          taskTitle={taskPendingDelete.title}
         />
       )}
     </section>

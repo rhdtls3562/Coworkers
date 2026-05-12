@@ -9,7 +9,7 @@ export const MODAL_HEADING_TYPO = cn(
 
 /** 피그마 필드 래퍼: 높이 48px, 좌우 16px, rounded-xl, focus-within 브랜드 보더 */
 export const CREATE_TASK_FIELD_SHELL_CLASS = cn(
-  'flex h-12 items-center gap-2.5 rounded-xl border border-background-tertiary bg-background-primary px-4',
+  'flex h-12 items-center gap-2.5 rounded-xl border border-background-tertiary bg-background-primary',
   'outline-none transition-colors',
   'focus-within:border-brand-primary focus-within:ring-1 focus-within:ring-brand-primary/30',
 );
@@ -17,7 +17,7 @@ export const CREATE_TASK_FIELD_SHELL_CLASS = cn(
 /** 제목 input — 셸 안에서 보더 제거 */
 export const CREATE_TASK_TITLE_INPUT_INNER_CLASS = cn(
   'h-auto min-h-0 flex-1 border-0 bg-transparent p-0 shadow-none ring-0 outline-none',
-  'text-base font-normal leading-[19px] text-text-primary placeholder:text-text-default',
+  'text-base font-normal leading-[19px] text-text-primary placeholder:text-text-default ',
   'focus:border-transparent focus:ring-0',
 );
 

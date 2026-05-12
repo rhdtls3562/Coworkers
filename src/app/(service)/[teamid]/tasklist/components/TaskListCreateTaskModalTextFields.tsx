@@ -47,7 +47,7 @@ export default function TaskListCreateTaskModalTextFields({
             value={title}
             onChange={(event) => onTitleChange(event.target.value)}
             placeholder="할 일 제목을 입력해주세요."
-            className={CREATE_TASK_TITLE_INPUT_INNER_CLASS}
+            className={cn(CREATE_TASK_TITLE_INPUT_INNER_CLASS, 'px-4')}
           />
         </div>
       </div>

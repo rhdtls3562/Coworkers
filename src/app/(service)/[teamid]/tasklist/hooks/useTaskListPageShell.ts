@@ -17,12 +17,14 @@ import { useTeamDetailQuery } from '@/hooks/useTeam';
 import type { GroupDetail } from '@/types/group';
 
 type UseTaskListPageShellParams = {
+  onSelectDate: (date: Date) => void;
   selectedDate: Date;
   teamId: string;
   taskId: string;
 };
 
 export default function useTaskListPageShell({
+  onSelectDate,
   selectedDate,
   teamId,
   taskId,
@@ -64,26 +66,31 @@ export default function useTaskListPageShell({
     [columns, effectiveActiveId],
   );
 
-  const refetchTaskListPage = useCallback(async () => {
-    await Promise.all([
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.team.detail(teamId),
-      }),
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.task.lists(teamId),
-      }),
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.taskList.all(teamId),
-      }),
-      effectiveActiveId
-        ? queryClient.invalidateQueries({
-            queryKey: queryKeys.taskList.detail(teamId, effectiveActiveId, {
-              date: dateString,
-            }),
-          })
-        : Promise.resolve(),
-    ]);
-  }, [dateString, effectiveActiveId, queryClient, teamId]);
+  const refetchTaskListPage = useCallback(
+    async (targetDate = selectedDate) => {
+      const targetDateString = toTaskListDateString(targetDate);
+
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.team.detail(teamId),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.task.lists(teamId),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.taskList.all(teamId),
+        }),
+        effectiveActiveId
+          ? queryClient.invalidateQueries({
+              queryKey: queryKeys.taskList.detail(teamId, effectiveActiveId, {
+                date: targetDateString,
+              }),
+            })
+          : Promise.resolve(),
+      ]);
+    },
+    [effectiveActiveId, queryClient, selectedDate, teamId],
+  );
 
   const handleConfirmDeleteColumn = useCallback(async () => {
     if (!columnPendingDelete) return;
@@ -135,11 +142,15 @@ export default function useTaskListPageShell({
     [refetchTaskListPage, showToast, teamId],
   );
 
-  const handleCreateTask = useCallback(async () => {
-    setIsCreateTaskOpen(false);
-    await refetchTaskListPage();
-    showToast('할일이 생성되었습니다.', 'success');
-  }, [refetchTaskListPage, showToast]);
+  const handleCreateTask = useCallback(
+    async (createdDate: Date) => {
+      setIsCreateTaskOpen(false);
+      onSelectDate(new Date(createdDate));
+      await refetchTaskListPage(createdDate);
+      showToast('할일이 생성되었습니다.', 'success');
+    },
+    [onSelectDate, refetchTaskListPage, showToast],
+  );
 
   const handleRenameColumn = useCallback(
     async (name: string) => {

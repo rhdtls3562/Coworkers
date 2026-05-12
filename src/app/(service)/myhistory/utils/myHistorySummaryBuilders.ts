@@ -18,10 +18,11 @@ import { buildTeamSummaryCards } from '@/app/(service)/myhistory/utils/myHistory
 export function buildHistorySummaryData(
   teamDetails: readonly HistoryTeamDetail[],
   completedTasks: readonly MyHistoryCompletedTaskRecord[],
-  sources: readonly HistoryTaskListDetailSource[],
+  countSources: readonly HistoryTaskListDetailSource[],
+  totalCountSources: readonly HistoryTaskListDetailSource[],
   viewMode: MyHistoryViewMode,
 ) {
-  const taskMetaMap = getTaskMetaMap(teamDetails, sources);
+  const taskMetaMap = getTaskMetaMap(teamDetails, totalCountSources);
   const completedTaskCountMap = buildCompletedTaskCountMap(
     completedTasks,
     taskMetaMap,
@@ -29,7 +30,8 @@ export function buildHistorySummaryData(
   const items = buildTeamSummaryCards(
     teamDetails,
     completedTaskCountMap,
-    sources,
+    countSources,
+    totalCountSources,
     viewMode,
   );
 

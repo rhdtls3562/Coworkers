@@ -5,7 +5,10 @@
 'use client';
 
 import { createRecurring } from '@/api/taskApi';
-import { buildTaskListRecurringBody } from '@/app/(service)/[teamid]/tasklist/utils/taskListCreateTaskPayload';
+import {
+  buildTaskListRecurringBody,
+  resolveTaskListRecurringStartDate,
+} from '@/app/(service)/[teamid]/tasklist/utils/taskListCreateTaskPayload';
 import { useToast } from '@/components/common/toast';
 
 type UseTaskListCreateTaskSubmitParams = {
@@ -13,7 +16,7 @@ type UseTaskListCreateTaskSubmitParams = {
   memo: string;
   monthDay: number;
   onClose: () => void;
-  onSubmit?: () => void;
+  onSubmit?: (selectedDate: Date) => void | Promise<void>;
   repeat: 'once' | 'daily' | 'weekly' | 'monthly';
   selectedDate: Date;
   startTime: string;
@@ -40,11 +43,6 @@ export default function useTaskListCreateTaskSubmit({
   const handleCreateTask = async () => {
     if (title.trim().length === 0) return;
 
-    if (repeat === 'weekly' && weekDays.length === 0) {
-      showToast('반복 요일을 선택해주세요.', 'error');
-      return;
-    }
-
     const body = buildTaskListRecurringBody({
       description: memo.trim(),
       monthDay,
@@ -54,10 +52,16 @@ export default function useTaskListCreateTaskSubmit({
       title: title.trim(),
       weekDays,
     });
+    const createdStartDate = resolveTaskListRecurringStartDate(
+      repeat,
+      selectedDate,
+      monthDay,
+      weekDays,
+    );
 
     try {
       await createRecurring(String(groupId), taskListId, body);
-      await onSubmit?.();
+      await onSubmit?.(createdStartDate);
       onClose();
     } catch (error) {
       const message =

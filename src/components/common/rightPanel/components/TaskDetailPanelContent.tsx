@@ -153,6 +153,7 @@ export default function TaskDetailPanelContent({
         <TaskDeleteConfirmModal
           onClose={handleCloseDeleteModal}
           onConfirm={handleConfirmDelete}
+          taskTitle={title}
         />
       )}
     </div>

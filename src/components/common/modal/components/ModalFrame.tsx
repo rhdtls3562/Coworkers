@@ -126,7 +126,7 @@ export default function ModalFrame({
         )}
         {title && (
           <div className="flex gap-1 items-center justify-center mb-2">
-            <p className="text-xl font-bold">{title}</p>
+            <p className="text-xl font-bold whitespace-pre-line">{title}</p>
             {subTitle && (
               <p className="text-base text-text-default">{subTitle}</p>
             )}

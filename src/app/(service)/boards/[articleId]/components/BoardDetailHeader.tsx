@@ -61,7 +61,7 @@ export default function BoardDetailHeader({
             description="게시글 정보가 삭제됩니다."
             lineButtonText="닫기"
             onLineButtonClick={handleCloseDeleteModal}
-            subButtonText="삭제"
+            subButtonText="삭제하기"
             onSubButtonClick={handleConfirmDelete}
           />
         )}
