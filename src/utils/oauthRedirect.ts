@@ -12,7 +12,7 @@ function normalizeBaseUrl(baseUrl: string) {
 }
 
 export function resolveOauthBaseUrl(fallbackOrigin?: string) {
-  return OAUTH_BASE_URL ?? fallbackOrigin ?? null;
+  return fallbackOrigin ?? OAUTH_BASE_URL ?? null;
 }
 
 export function buildOauthCallbackUrl(
