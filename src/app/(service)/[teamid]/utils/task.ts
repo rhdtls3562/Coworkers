@@ -2,7 +2,7 @@ import { STATUS } from '@/app/(service)/[teamid]/constants';
 import {
   TaskItemDetailProps,
   TaskList,
-  TeamDetailDataProps,
+  TeamDetailData,
 } from '@/app/(service)/[teamid]/types';
 
 export const getTaskListStatus = (
@@ -27,17 +27,17 @@ export const classifyTaskLists = (taskLists: TaskList[]) => {
   return result;
 };
 
-export const totalTasks = (teamData: TeamDetailDataProps) =>
+export const totalTasks = (teamData: TeamDetailData) =>
   teamData.taskLists.reduce((acc, taskList) => acc + taskList.tasks.length, 0);
 
-export const doneTasks = (teamData: TeamDetailDataProps) =>
+export const doneTasks = (teamData: TeamDetailData) =>
   teamData.taskLists.reduce(
     (acc, taskList) =>
       acc + taskList.tasks.filter((task) => task.doneAt !== null).length,
     0,
   );
 
-export const donePercent = (teamData: TeamDetailDataProps) => {
+export const donePercent = (teamData: TeamDetailData) => {
   const total = totalTasks(teamData);
   return total === 0 ? 0 : Math.round((doneTasks(teamData) / total) * 100);
 };

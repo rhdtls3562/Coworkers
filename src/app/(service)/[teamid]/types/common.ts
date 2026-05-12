@@ -12,9 +12,6 @@ export type ModalKey = (typeof MODAL_TYPE)[number];
 /** 모달 열기 함수 타입 */
 export type OpenModal = (modal: ModalKey) => void;
 
-/** 사용자 역할 - 관리자 또는 일반 멤버 */
-export type RoleProps = (typeof ROLE)[number];
-
 /** 태스크 반복 주기 */
 export type Frequency = 'ONCE' | 'DAILY' | 'WEEKLY' | 'MONTHLY';
 

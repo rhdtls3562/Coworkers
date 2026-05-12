@@ -73,7 +73,7 @@ export function useUpdateTaskMutation(
             await queryClient.invalidateQueries({
               queryKey: queryKeys.taskList.detail(
                 variables.teamId,
-                variables.taskListId,
+                String(variables.taskListId),
               ),
             });
           } else {

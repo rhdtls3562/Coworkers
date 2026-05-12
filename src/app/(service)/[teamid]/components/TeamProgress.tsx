@@ -59,7 +59,7 @@ export default function TeamProgress({ role, teamData }: TeamProgressProps) {
               오늘의 진행 상황
             </p>
             <p className="text-[32px] font-bold text-brand-primary md:text-[40px]">
-              {doneTasks(teamData)}%
+              {donePercent(teamData)}%
             </p>
           </div>
           <TeamProgressStats

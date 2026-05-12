@@ -52,7 +52,7 @@ export function syncTaskCheckedCaches({
   );
   queryClient.setQueriesData<TaskListDetail | undefined>(
     {
-      queryKey: queryKeys.taskList.detail(teamId, taskListId),
+      queryKey: queryKeys.taskList.detail(teamId, taskListIdString),
     },
     (previousTaskListDetail) =>
       syncCheckedTaskToTaskListDetail(

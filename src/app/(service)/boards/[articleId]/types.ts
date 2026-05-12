@@ -1,5 +1,5 @@
-import { RoleProps } from '@/app/(service)/[teamid]/types';
 import type { Post } from '@/app/(service)/boards/types';
+import { RoleProps } from '@/app/types';
 
 export type BoardDetailProps = {
   boardDetail: Post;
