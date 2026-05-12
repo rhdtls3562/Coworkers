@@ -10,7 +10,7 @@ import { usePathname, useRouter } from 'next/navigation';
 
 import { buildApiUrl, teamEndpoint } from '@/api/apiClient';
 import { useToast } from '@/components/common/toast/hooks/useToast';
-import { isGuestLayoutPath } from '@/components/layout/constants';
+import { isPublicServicePath } from '@/components/layout/constants';
 import { buildLoginPath, getSafeRedirectTo } from '@/utils/authRedirect';
 import {
   clearAuthSession,
@@ -27,7 +27,7 @@ export default function useAuthSessionGuard() {
   const { showToast } = useToast();
 
   useEffect(() => {
-    if (isGuestLayoutPath(pathname)) {
+    if (isPublicServicePath(pathname)) {
       return;
     }
 

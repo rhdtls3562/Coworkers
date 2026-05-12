@@ -27,3 +27,9 @@ export function isGuestLayoutPath(pathname: string | null) {
     pathname?.startsWith('/oauth/') === true
   );
 }
+
+export function isPublicServicePath(pathname: string | null) {
+  return (
+    isGuestLayoutPath(pathname) || pathname?.startsWith(ROUTES.BOARDS) === true
+  );
+}
