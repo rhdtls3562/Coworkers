@@ -14,7 +14,6 @@ type KoreaDateParts = {
   seconds: number;
   year: number;
 };
-
 type KoreaFormatterParts = {
   day: number;
   hour: number;
@@ -52,21 +51,47 @@ function getKoreaDateParts(date: Date): KoreaDateParts {
   };
 }
 
-export function getCurrentKoreaDate() {
-  const currentKoreaDateParts = getKoreaDateParts(new Date());
+function formatTaskListDateParts(
+  parts: Pick<KoreaDateParts, 'day' | 'month' | 'year'>,
+) {
+  return [
+    parts.year,
+    String(parts.month).padStart(DATE_PART_LENGTH, '0'),
+    String(parts.day).padStart(DATE_PART_LENGTH, '0'),
+  ].join('-');
+}
 
+function formatTaskListTimeParts(
+  parts: Pick<KoreaDateParts, 'hours' | 'minutes' | 'seconds'>,
+) {
+  return `${String(parts.hours).padStart(DATE_PART_LENGTH, '0')}:${String(parts.minutes).padStart(DATE_PART_LENGTH, '0')}:${String(parts.seconds).padStart(DATE_PART_LENGTH, '0')}`;
+}
+
+/**
+ * 달력 선택 상태에만 사용하는 "오늘(한국 날짜 기준)" Date입니다.
+ * 절대 시각 비교 용도가 아니라 YYYY-MM-DD 캘린더 값을 맞추기 위한 값입니다.
+ */
+export function getCurrentKoreaCalendarDate() {
+  const currentKoreaDateParts = getKoreaDateParts(new Date());
   return new Date(
     currentKoreaDateParts.year,
     currentKoreaDateParts.month - 1,
     currentKoreaDateParts.day,
-    currentKoreaDateParts.hours,
-    currentKoreaDateParts.minutes,
-    currentKoreaDateParts.seconds,
   );
 }
 
+export function getCurrentKoreaDateString() {
+  return formatTaskListDateParts(getKoreaDateParts(new Date()));
+}
+
+export function getCurrentKoreaTimeString() {
+  const { hours, minutes } = getKoreaDateParts(new Date());
+  return `${String(hours).padStart(DATE_PART_LENGTH, '0')}:${String(minutes).padStart(DATE_PART_LENGTH, '0')}`;
+}
+
 export function getCurrentKoreaDateTimeString() {
-  return toTaskListDateTimeString(getCurrentKoreaDate());
+  const currentKoreaDateParts = getKoreaDateParts(new Date());
+  return `${formatTaskListDateParts(currentKoreaDateParts)}T${formatTaskListTimeParts(currentKoreaDateParts)}${KOREA_UTC_OFFSET}`;
 }
 
 export function toTaskListDateString(date: Date) {
@@ -77,23 +102,10 @@ export function toTaskListDateString(date: Date) {
   ].join('-');
 }
 
-export function toTaskListTimeString(date: Date) {
-  return `${String(date.getHours()).padStart(DATE_PART_LENGTH, '0')}:${String(date.getMinutes()).padStart(DATE_PART_LENGTH, '0')}`;
-}
-
-export function mergeTaskListDateWithTime(baseDate: Date, timeSource: Date) {
-  const mergedDate = new Date(baseDate);
-
-  mergedDate.setHours(
-    timeSource.getHours(),
-    timeSource.getMinutes(),
-    timeSource.getSeconds(),
-    0,
-  );
-
-  return mergedDate;
-}
-
 export function toTaskListDateTimeString(date: Date) {
-  return `${toTaskListDateString(date)}T${String(date.getHours()).padStart(DATE_PART_LENGTH, '0')}:${String(date.getMinutes()).padStart(DATE_PART_LENGTH, '0')}:${String(date.getSeconds()).padStart(DATE_PART_LENGTH, '0')}${KOREA_UTC_OFFSET}`;
+  return `${toTaskListDateString(date)}T${formatTaskListTimeParts({
+    hours: date.getHours(),
+    minutes: date.getMinutes(),
+    seconds: date.getSeconds(),
+  })}${KOREA_UTC_OFFSET}`;
 }

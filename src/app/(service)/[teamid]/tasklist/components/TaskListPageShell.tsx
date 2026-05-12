@@ -22,7 +22,7 @@ import TaskListPageHeader from '@/app/(service)/[teamid]/tasklist/components/Tas
 import TaskListRenameColumnModal from '@/app/(service)/[teamid]/tasklist/components/TaskListRenameColumnModal';
 import TaskListSidebar from '@/app/(service)/[teamid]/tasklist/components/TaskListSidebar';
 import useTaskListPageShell from '@/app/(service)/[teamid]/tasklist/hooks/useTaskListPageShell';
-import { getCurrentKoreaDate } from '@/app/(service)/[teamid]/tasklist/utils/taskListDate';
+import { getCurrentKoreaCalendarDate } from '@/app/(service)/[teamid]/tasklist/utils/taskListDate';
 import { useToast } from '@/components/common/toast';
 import { ROUTES } from '@/constants/ROUTES';
 
@@ -35,7 +35,9 @@ export default function TaskListPageShell({
   teamId,
   taskId,
 }: TaskListPageShellProps) {
-  const [selectedDate, setSelectedDate] = useState(() => getCurrentKoreaDate());
+  const [selectedDate, setSelectedDate] = useState(() =>
+    getCurrentKoreaCalendarDate(),
+  );
   const router = useRouter();
   const queryClient = useQueryClient();
   const { showToast } = useToast();

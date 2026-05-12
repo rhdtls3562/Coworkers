@@ -70,22 +70,29 @@ export function useUpdateTaskMutation(
               taskListId: variables.taskListId,
               teamId: variables.teamId,
             });
-          }
-          await Promise.all([
-            queryClient.invalidateQueries({
-              queryKey: queryKeys.task.detail(
-                variables.teamId,
-                variables.taskId,
-                variables.taskListId,
-              ),
-            }),
-            queryClient.invalidateQueries({
+            await queryClient.invalidateQueries({
               queryKey: queryKeys.taskList.detail(
                 variables.teamId,
                 variables.taskListId,
               ),
-            }),
-          ]);
+            });
+          } else {
+            await Promise.all([
+              queryClient.invalidateQueries({
+                queryKey: queryKeys.task.detail(
+                  variables.teamId,
+                  variables.taskId,
+                  variables.taskListId,
+                ),
+              }),
+              queryClient.invalidateQueries({
+                queryKey: queryKeys.taskList.detail(
+                  variables.teamId,
+                  variables.taskListId,
+                ),
+              }),
+            ]);
+          }
           await handleSuccess?.(data, variables, onMutateResult, context);
         },
       },
