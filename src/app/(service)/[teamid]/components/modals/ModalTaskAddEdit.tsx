@@ -16,7 +16,8 @@ import {
 export function ModalTaskAdd({ onClose }: ModalTaskProps) {
   const { showToast } = useToast();
   const params = useParams();
-  const { mutate: createTaskList } = useCreateTaskListMutation();
+  const { isPending: isCreateTaskListPending, mutateAsync: createTaskList } =
+    useCreateTaskListMutation();
 
   const [taskListName, setTaskListName] = useState('');
 
@@ -24,24 +25,23 @@ export function ModalTaskAdd({ onClose }: ModalTaskProps) {
   const isOver = trimmed.length > 15;
   const isDisabled = trimmed.length === 0 || isOver;
 
-  const handleTaskAdd = () => {
-    if (isDisabled) return;
-    createTaskList(
-      {
+  const handleTaskAdd = async () => {
+    if (isDisabled || isCreateTaskListPending) return;
+
+    try {
+      await createTaskList({
         groupId: params.teamid as string,
         teamId: params.teamid as string,
         body: { name: trimmed },
-      },
-      {
-        onSuccess: () => {
-          showToast('할 일 목록이 추가되었습니다.', 'success');
-          onClose();
-        },
-        onError: () => {
-          showToast('생성에 실패했습니다.', 'error');
-        },
-      },
-    );
+      });
+      showToast('할 일 목록이 추가되었습니다.', 'success');
+      onClose();
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : '생성에 실패했습니다.';
+
+      showToast(message, 'error');
+    }
   };
 
   return (
@@ -49,11 +49,12 @@ export function ModalTaskAdd({ onClose }: ModalTaskProps) {
       title="할 일 목록 추가"
       onClose={onClose}
       primaryButtonText="만들기"
-      isPrimaryButtonDisabled={isDisabled}
+      isPrimaryButtonDisabled={isDisabled || isCreateTaskListPending}
       onPrimaryButtonClick={handleTaskAdd}
     >
       <Input
         placeholder="할 일 목록 명을 입력해주세요."
+        disabled={isCreateTaskListPending}
         onChange={(e) => setTaskListName(e.target.value)}
       />
       {isOver && (
@@ -73,7 +74,8 @@ export function ModalTaskEdit({
   const { showToast } = useToast();
   const params = useParams();
   const teamId = params.teamid as string;
-  const { mutate: updateTaskList } = useUpdateTaskListMutation();
+  const { isPending: isUpdateTaskListPending, mutateAsync: updateTaskList } =
+    useUpdateTaskListMutation();
 
   const [taskListName, setTaskListName] = useState(initialTitle ?? '');
 
@@ -82,25 +84,24 @@ export function ModalTaskEdit({
   const isDisabled =
     trimmed.length === 0 || trimmed === (initialTitle ?? '').trim() || isOver;
 
-  const handleTaskEdit = () => {
-    if (!taskListId || isDisabled) return;
-    updateTaskList(
-      {
+  const handleTaskEdit = async () => {
+    if (!taskListId || isDisabled || isUpdateTaskListPending) return;
+
+    try {
+      await updateTaskList({
         groupId: teamId,
         taskListId,
         body: { name: trimmed },
         teamId,
-      },
-      {
-        onSuccess: () => {
-          showToast('할 일 목록이 수정되었습니다.', 'success');
-          onClose();
-        },
-        onError: () => {
-          showToast('수정에 실패했습니다.', 'error');
-        },
-      },
-    );
+      });
+      showToast('할 일 목록이 수정되었습니다.', 'success');
+      onClose();
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : '수정에 실패했습니다.';
+
+      showToast(message, 'error');
+    }
   };
 
   return (
@@ -108,11 +109,12 @@ export function ModalTaskEdit({
       title="할 일 목록 수정"
       onClose={onClose}
       primaryButtonText="수정하기"
-      isPrimaryButtonDisabled={isDisabled}
+      isPrimaryButtonDisabled={isDisabled || isUpdateTaskListPending}
       onPrimaryButtonClick={handleTaskEdit}
     >
       <Input
         value={taskListName}
+        disabled={isUpdateTaskListPending}
         onChange={(e) => setTaskListName(e.target.value)}
       />
       {isOver && (

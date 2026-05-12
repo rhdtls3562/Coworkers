@@ -25,9 +25,16 @@ export default function useTodayTeamTaskLists({
   const todayDateString = useMemo(() => toTaskListDateString(new Date()), []);
   const taskListDetailQueries = useQueries({
     queries: (teamData?.taskLists ?? []).map((taskList) =>
-      taskQueryOptions.taskListDetail(teamId, String(taskList.id), {
-        date: todayDateString,
-      }),
+      taskQueryOptions.taskListDetail(
+        teamId,
+        String(taskList.id),
+        {
+          date: todayDateString,
+        },
+        {
+          enabled: taskList.tasks.length > 0,
+        },
+      ),
     ),
   });
 
@@ -42,9 +49,7 @@ export default function useTodayTeamTaskLists({
 
   return {
     isError: taskListDetailQueries.some((query) => query.isError),
-    isLoading: taskListDetailQueries.some(
-      (query) => query.isLoading || query.isPending,
-    ),
+    isLoading: taskListDetailQueries.some((query) => query.isLoading),
     todayTaskLists,
   } as const;
 }

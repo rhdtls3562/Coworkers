@@ -21,6 +21,8 @@ import {
   getTaskListDetail,
   updateTaskList,
 } from '@/api/taskApi';
+import type { GroupDetail } from '@/types/group';
+import type { TaskListCreateResponse } from '@/types/task';
 
 type TaskListDetailData = Awaited<ReturnType<typeof getTaskListDetail>>;
 
@@ -50,6 +52,44 @@ type DeleteTaskListVariables = {
   taskListId: Parameters<typeof deleteTaskList>[1];
   teamId: string;
 };
+
+type DeleteTaskListOnMutateResult = {
+  previousGroupDetail?: GroupDetail;
+};
+
+function removeDeletedTaskListFromTeamDetail(
+  groupDetail: GroupDetail | undefined,
+  taskListId: QueryKeyId,
+) {
+  if (!groupDetail) {
+    return groupDetail;
+  }
+
+  return {
+    ...groupDetail,
+    taskLists: groupDetail.taskLists.filter(
+      (taskList) => String(taskList.id) !== String(taskListId),
+    ),
+  };
+}
+
+function appendCreatedTaskListToTeamDetail(
+  groupDetail: GroupDetail | undefined,
+  taskList: TaskListCreateResponse,
+) {
+  if (!groupDetail) {
+    return groupDetail;
+  }
+
+  return {
+    ...groupDetail,
+    taskLists: [...groupDetail.taskLists, { ...taskList, tasks: [] }].sort(
+      (firstTaskList, secondTaskList) => {
+        return firstTaskList.displayIndex - secondTaskList.displayIndex;
+      },
+    ),
+  };
+}
 
 export function useTaskListDetailQuery<TData = TaskListDetailData>({
   options,
@@ -86,9 +126,14 @@ export function useUpdateTaskListMutation(
 }
 
 export function useDeleteTaskListMutation(
-  options?: MutationOptionsOverrides<void, DeleteTaskListVariables>,
+  options?: MutationOptionsOverrides<
+    void,
+    DeleteTaskListVariables,
+    DeleteTaskListOnMutateResult
+  >,
 ) {
   const queryClient = useQueryClient();
+  const handleError = options?.onError;
   const handleSuccess = options?.onSuccess;
 
   return useMutation(
@@ -97,9 +142,56 @@ export function useDeleteTaskListMutation(
         deleteTaskList(groupId, taskListId),
       options: {
         ...options,
+        onMutate: async (variables) => {
+          await Promise.all([
+            queryClient.cancelQueries({
+              queryKey: queryKeys.team.detail(variables.teamId),
+            }),
+            queryClient.cancelQueries({
+              queryKey: queryKeys.taskList.detail(
+                variables.teamId,
+                variables.taskListId,
+              ),
+            }),
+          ]);
+
+          const previousGroupDetail = queryClient.getQueryData<
+            GroupDetail | undefined
+          >(queryKeys.team.detail(variables.teamId));
+
+          queryClient.setQueryData<GroupDetail | undefined>(
+            queryKeys.team.detail(variables.teamId),
+            (currentGroupDetail) =>
+              removeDeletedTaskListFromTeamDetail(
+                currentGroupDetail,
+                variables.taskListId,
+              ),
+          );
+          queryClient.removeQueries({
+            queryKey: queryKeys.taskList.detail(
+              variables.teamId,
+              variables.taskListId,
+            ),
+          });
+
+          return { previousGroupDetail };
+        },
+        onError: async (error, variables, onMutateResult, context) => {
+          if (onMutateResult?.previousGroupDetail) {
+            queryClient.setQueryData(
+              queryKeys.team.detail(variables.teamId),
+              onMutateResult.previousGroupDetail,
+            );
+          }
+
+          await handleError?.(error, variables, onMutateResult, context);
+        },
         onSuccess: async (data, variables, onMutateResult, context) => {
           await queryClient.invalidateQueries({
             queryKey: queryKeys.team.detail(variables.teamId),
+          });
+          await queryClient.invalidateQueries({
+            queryKey: taskListQueryKeys.lists(variables.teamId),
           });
           await handleSuccess?.(data, variables, onMutateResult, context);
         },
@@ -124,12 +216,11 @@ export function useCreateTaskListMutation(
       options: {
         ...options,
         onSuccess: async (data, variables, onMutateResult, context) => {
-          await queryClient.invalidateQueries({
-            queryKey: taskListQueryKeys.lists(variables.teamId),
-          });
-          await queryClient.invalidateQueries({
-            queryKey: queryKeys.team.detail(variables.teamId),
-          });
+          queryClient.setQueryData<GroupDetail | undefined>(
+            queryKeys.team.detail(variables.teamId),
+            (previousGroupDetail) =>
+              appendCreatedTaskListToTeamDetail(previousGroupDetail, data),
+          );
           await handleSuccess?.(data, variables, onMutateResult, context);
         },
       },

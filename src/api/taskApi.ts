@@ -11,7 +11,7 @@ import type {
   TeamScopedDateQueryParams,
 } from '@/api/queryKeys';
 import type { RecurringBody, TaskUpdateBody } from '@/api/types';
-import type { TaskListDetail } from '@/types/task';
+import type { TaskListCreateResponse, TaskListDetail } from '@/types/task';
 
 function createGroupTaskListsPath(groupId: QueryKeyId) {
   return `${API_PATH_SEGMENTS.GROUPS}/${groupId}${API_PATH_SEGMENTS.TASK_LISTS}`;
@@ -41,10 +41,13 @@ export async function createTaskList(
   groupId: QueryKeyId,
   body: { name: string },
 ) {
-  return apiClient<unknown>(teamEndpoint(createGroupTaskListsPath(groupId)), {
-    body: JSON.stringify(body),
-    method: HTTP_METHODS.POST,
-  });
+  return apiClient<TaskListCreateResponse>(
+    teamEndpoint(createGroupTaskListsPath(groupId)),
+    {
+      body: JSON.stringify(body),
+      method: HTTP_METHODS.POST,
+    },
+  );
 }
 
 export async function getTaskListDetail(
