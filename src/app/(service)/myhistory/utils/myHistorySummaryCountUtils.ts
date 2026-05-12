@@ -3,16 +3,11 @@
  */
 
 import type {
+  HistoryTaskIdentityLike,
   HistoryTaskListDetailSource,
   HistoryTeamDetail,
 } from '@/app/(service)/myhistory/types';
 import { toHistoryTaskIdentityKey } from '@/app/(service)/myhistory/utils/myHistoryShared';
-
-type HistoryTaskIdentityLike = {
-  doneAt?: string;
-  id: string;
-  recurringId?: number;
-};
 
 export function toHistoryTaskListSummaryKey(
   teamId: string,

@@ -3,14 +3,12 @@
  */
 
 import type {
-  HistoryTaskMeta,
+  HistoryTaskMetaMap,
   MyHistoryCompletedTaskRecord,
   MyHistoryFilter,
   MyHistorySummaryItem,
 } from '@/app/(service)/myhistory/types';
 import { toHistoryTaskListSummaryKey } from '@/app/(service)/myhistory/utils/myHistorySummaryCountUtils';
-
-type HistoryTaskMetaMap = ReadonlyMap<string, HistoryTaskMeta>;
 
 function getTaskId(task: MyHistoryCompletedTaskRecord) {
   return typeof task.id === 'string' || typeof task.id === 'number'

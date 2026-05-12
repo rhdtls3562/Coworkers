@@ -4,6 +4,7 @@
 
 import { MY_HISTORY_DATE_RANGE_MODES } from '@/app/(service)/myhistory/constants';
 import type {
+  HistorySectionWithParsedDate,
   MyHistoryDateRange,
   MyHistoryDateSection,
   MyHistoryDisplayDateSection,
@@ -21,10 +22,6 @@ export function hasHistoryTasks(
     section.groups.some((group) => group.tasks.length > 0),
   );
 }
-
-type HistorySectionWithParsedDate = MyHistoryDisplayDateSection & {
-  parsedDate: Date;
-};
 
 function toDisplaySection(
   section: MyHistoryDateSection,

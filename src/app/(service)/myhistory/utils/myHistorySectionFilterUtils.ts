@@ -3,11 +3,9 @@
  */
 
 import type {
-  HistoryTaskMeta,
+  HistoryTaskMetaMap,
   MyHistoryCompletedTaskRecord,
 } from '@/app/(service)/myhistory/types';
-
-type HistoryTaskMetaMap = ReadonlyMap<string, HistoryTaskMeta>;
 
 function toHistoryTaskId(task: MyHistoryCompletedTaskRecord) {
   return typeof task.id === 'number' || typeof task.id === 'string'

@@ -8,6 +8,7 @@ import { MY_HISTORY_DATE_RANGE_MODES } from '@/app/(service)/myhistory/constants
 import type {
   MyHistoryDateRange,
   MyHistoryResolvedDateRange,
+  UseHistorySelectedRangeParams,
 } from '@/app/(service)/myhistory/types';
 import {
   addMonths,
@@ -15,10 +16,6 @@ import {
   createHistoryMonthRange,
   formatHistoryRangeTitle,
 } from '@/app/(service)/myhistory/utils/formatHistoryDate';
-
-type UseHistorySelectedRangeParams = {
-  defaultAnchorDate: Date;
-};
 
 export default function useHistorySelectedRange({
   defaultAnchorDate,

@@ -4,11 +4,10 @@
 
 import type {
   HistoryTaskMeta,
+  HistoryTaskMetaMap,
   MyHistoryCompletedTaskRecord,
 } from '@/app/(service)/myhistory/types';
 import { toTaskDate } from '@/app/(service)/myhistory/utils/myHistoryTaskDateHelpers';
-
-type HistoryTaskMetaMap = ReadonlyMap<string, HistoryTaskMeta>;
 
 function compareByCompletedAt(
   firstTask: MyHistoryCompletedTaskRecord,

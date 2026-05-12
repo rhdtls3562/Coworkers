@@ -4,6 +4,7 @@
 
 import type {
   HistoryTaskListDetailSource,
+  HistoryTaskListSummaryBase,
   HistoryTeamDetail,
   MyHistorySummaryItem,
   MyHistoryViewMode,
@@ -13,12 +14,6 @@ import {
   buildTaskListTotalIdentityMap,
   toHistoryTaskListSummaryKey,
 } from '@/app/(service)/myhistory/utils/myHistorySummaryCountUtils';
-
-type HistoryTaskListSummaryBase = {
-  displayIndex: number;
-  id: string;
-  name: string;
-};
 
 function buildTaskListBaseMap(
   teamDetail: HistoryTeamDetail,

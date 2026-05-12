@@ -6,17 +6,13 @@ import type {
   HistoryTaskListDetailSource,
   MyHistoryDateSection,
   MyHistoryTask,
+  PendingTaskSource,
 } from '@/app/(service)/myhistory/types';
 import {
   formatHistoryTaskFrequency,
   toDateLabel,
   toHistoryTaskIdentityKey,
 } from '@/app/(service)/myhistory/utils/myHistoryShared';
-
-type PendingTaskSource = {
-  source: HistoryTaskListDetailSource;
-  task: HistoryTaskListDetailSource['tasks'][number];
-};
 
 function toPendingTaskDateKey(source: PendingTaskSource) {
   return source.task.date.slice(0, 10) || source.source.dateKey;

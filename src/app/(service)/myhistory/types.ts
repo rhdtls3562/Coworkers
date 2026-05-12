@@ -195,6 +195,17 @@ export type UseHistoryBoardDataParams = {
   viewMode: MyHistoryViewMode;
 };
 
+export type UseHistorySelectedRangeParams = {
+  defaultAnchorDate: Date;
+};
+
+export type UseHistoryTaskListSourcesQueryParams = {
+  activeFilterId: string | null;
+  shouldLimitTeamQueries: boolean;
+  teamDetails: readonly HistoryTeamDetail[];
+  visibleDateKeys: readonly string[];
+};
+
 export type UseDragScrollReturn = {
   containerRef: RefObject<HTMLUListElement | null>;
   handleClickCapture: (event: ReactMouseEvent<HTMLElement>) => void;
@@ -272,4 +283,27 @@ export type MyHistorySummaryProps = {
 
 export type UseHistoryTaskCardParams = {
   task: MyHistoryTask;
+};
+
+export type HistorySectionWithParsedDate = MyHistoryDisplayDateSection & {
+  parsedDate: Date;
+};
+
+export type HistoryTaskMetaMap = ReadonlyMap<string, HistoryTaskMeta>;
+
+export type HistoryTaskListSummaryBase = {
+  displayIndex: number;
+  id: string;
+  name: string;
+};
+
+export type HistoryTaskIdentityLike = {
+  doneAt?: string;
+  id: string;
+  recurringId?: number;
+};
+
+export type PendingTaskSource = {
+  source: HistoryTaskListDetailSource;
+  task: HistoryTaskListDetailSource['tasks'][number];
 };

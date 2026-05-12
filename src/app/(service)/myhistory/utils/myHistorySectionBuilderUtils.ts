@@ -4,13 +4,12 @@
 
 import type {
   HistoryTaskMeta,
+  HistoryTaskMetaMap,
   MyHistoryCompletedTaskRecord,
   MyHistoryDateSection,
 } from '@/app/(service)/myhistory/types';
 import { toHistoryTask } from '@/app/(service)/myhistory/utils/myHistorySectionUtils';
 import { toSectionDateKey } from '@/app/(service)/myhistory/utils/myHistoryTaskDateHelpers';
-
-type HistoryTaskMetaMap = ReadonlyMap<string, HistoryTaskMeta>;
 
 function createEmptyDateSection(sectionDateKey: string): MyHistoryDateSection {
   return {
