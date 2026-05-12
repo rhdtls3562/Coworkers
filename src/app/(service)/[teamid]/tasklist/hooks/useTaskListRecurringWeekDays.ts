@@ -47,9 +47,16 @@ export default function useTaskListRecurringWeekDays({
   );
   const probeQueries = useQueries({
     queries: probeDateStrings.map((date) =>
-      taskQueryOptions.taskListDetail(String(groupId), taskListId, {
-        date,
-      }),
+      taskQueryOptions.taskListDetail(
+        groupId ?? '',
+        taskListId,
+        {
+          date,
+        },
+        {
+          enabled: groupId !== null && taskListId !== '',
+        },
+      ),
     ),
   });
 
