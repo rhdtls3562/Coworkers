@@ -1,5 +1,3 @@
-'use client';
-
 /**
  * 주 반복 할 일의 선택 요일을 현재 날짜 기준으로 추론하는 훅입니다.
  */
@@ -9,27 +7,20 @@ import { useMemo } from 'react';
 import { useQueries } from '@tanstack/react-query';
 
 import { taskQueryOptions } from '@/api/queryOptions';
+import type { UseTaskListRecurringWeekDaysQueryParams } from '@/app/(service)/[teamid]/tasklist/types';
 import {
   getTaskListRecurringProbeDates,
   getTaskListWeeklyRecurringIds,
   inferTaskListRecurringWeekDays,
   toTaskListRecurringProbeDateStrings,
 } from '@/app/(service)/[teamid]/tasklist/utils/taskListRecurringWeekDays';
-import type { TaskListDetail } from '@/types/task';
 
-type UseTaskListRecurringWeekDaysParams = {
-  groupId: string | null;
-  selectedDate: Date;
-  taskListDetail?: TaskListDetail;
-  taskListId: string;
-};
-
-export default function useTaskListRecurringWeekDays({
+export default function useTaskListRecurringWeekDaysQuery({
   groupId,
   selectedDate,
   taskListDetail,
   taskListId,
-}: UseTaskListRecurringWeekDaysParams) {
+}: UseTaskListRecurringWeekDaysQueryParams) {
   const recurringIds = useMemo(
     () => getTaskListWeeklyRecurringIds(taskListDetail),
     [taskListDetail],

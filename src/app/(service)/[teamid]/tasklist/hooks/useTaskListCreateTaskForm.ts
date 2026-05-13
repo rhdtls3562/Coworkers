@@ -12,17 +12,13 @@ import {
 import useTaskListCalendarPopover from '@/app/(service)/[teamid]/tasklist/hooks/useTaskListCalendarPopover';
 import type { TaskListCreateTaskRepeatValue } from '@/app/(service)/[teamid]/tasklist/types';
 import {
+  clampTaskListMonthDay,
+  DEFAULT_TASK_LIST_WEEKLY_REPEAT_DAYS,
+} from '@/app/(service)/[teamid]/tasklist/utils/taskListCreateTaskFormUtils';
+import {
   getCurrentKoreaCalendarDate,
   getCurrentKoreaTimeString,
 } from '@/app/(service)/[teamid]/tasklist/utils/taskListDate';
-
-const DEFAULT_WEEKLY_REPEAT_DAYS = [1, 2, 3, 4, 5] as const;
-
-export function clampMonthDay(n: number): number {
-  if (Number.isNaN(n) || n < 1) return 1;
-  if (n > 31) return 31;
-  return Math.floor(n);
-}
 
 export function useTaskListCreateTaskForm(initialSelectedDate: Date) {
   const formId = useId();
@@ -33,7 +29,7 @@ export function useTaskListCreateTaskForm(initialSelectedDate: Date) {
   const [startTime, setStartTime] = useState(() => getCurrentKoreaTimeString());
   const [repeat, setRepeat] = useState<TaskListCreateTaskRepeatValue>('once');
   const [weekDays, setWeekDays] = useState<number[]>([
-    ...DEFAULT_WEEKLY_REPEAT_DAYS,
+    ...DEFAULT_TASK_LIST_WEEKLY_REPEAT_DAYS,
   ]);
   const [monthDayInput, setMonthDayInput] = useState(() =>
     String(initialSelectedDate.getDate()),
@@ -100,7 +96,7 @@ export function useTaskListCreateTaskForm(initialSelectedDate: Date) {
 
   const handleMonthDayBlur = useCallback(() => {
     setMonthDayInput((previousValue) =>
-      String(clampMonthDay(Number(previousValue))),
+      String(clampTaskListMonthDay(Number(previousValue))),
     );
   }, []);
 
@@ -109,7 +105,7 @@ export function useTaskListCreateTaskForm(initialSelectedDate: Date) {
       setRepeat(value);
 
       if (value === 'weekly' && weekDays.length === 0) {
-        setWeekDays([...DEFAULT_WEEKLY_REPEAT_DAYS]);
+        setWeekDays([...DEFAULT_TASK_LIST_WEEKLY_REPEAT_DAYS]);
       }
     },
     [weekDays.length],
@@ -127,7 +123,7 @@ export function useTaskListCreateTaskForm(initialSelectedDate: Date) {
 
   const selected = startDate ?? getCurrentKoreaCalendarDate();
   const monthDay = useMemo(
-    () => clampMonthDay(Number(monthDayInput)),
+    () => clampTaskListMonthDay(Number(monthDayInput)),
     [monthDayInput],
   );
 

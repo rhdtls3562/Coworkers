@@ -4,16 +4,21 @@
  * lg 이상: 카드 목록 + 143×40 추가 버튼.
  */
 
-'use client';
-
 import TaskListColumnDropdown from '@/app/(service)/[teamid]/tasklist/components/TaskListColumnDropdown';
 import TaskListEmptyColumnPlaceholder from '@/app/(service)/[teamid]/tasklist/components/TaskListEmptyColumnPlaceholder';
 import TaskListNavItem from '@/app/(service)/[teamid]/tasklist/components/TaskListNavItem';
-import type { TaskListSidebarProps } from '@/app/(service)/[teamid]/tasklist/types';
+import {
+  TASK_LIST_ADD_LIST_BUTTON_DESKTOP_CLASS,
+  TASK_LIST_ADD_LIST_BUTTON_MOBILE_CLASS,
+} from '@/app/(service)/[teamid]/tasklist/constants/taskListSidebarConstants';
+import type {
+  TaskListSidebarPlusIconProps,
+  TaskListSidebarProps,
+} from '@/app/(service)/[teamid]/tasklist/types';
 import { cn } from '@/utils/cn';
 
 /** 16×16, stroke = currentColor (brand) */
-function AddTaskListPlusIcon({ className }: { className?: string }) {
+function AddTaskListPlusIcon({ className }: TaskListSidebarPlusIconProps) {
   return (
     <svg
       width={16}
@@ -39,22 +44,6 @@ function AddTaskListPlusIcon({ className }: { className?: string }) {
     </svg>
   );
 }
-
-const TASK_LIST_ADD_LIST_BUTTON_CORE = cn(
-  'rounded-[40px] border border-solid border-brand-primary bg-background-inverse',
-  'text-sm font-medium leading-4.25 text-brand-primary transition-colors hover:bg-brand-secondary',
-);
-
-const TASK_LIST_ADD_LIST_BUTTON_MOBILE = cn(
-  'inline-flex h-10 shrink-0 flex-row items-center justify-center px-3 py-3',
-  'shadow-[0_15px_50px_-12px_rgba(0,0,0,0.05)]',
-  TASK_LIST_ADD_LIST_BUTTON_CORE,
-);
-
-const TASK_LIST_ADD_LIST_BUTTON_DESKTOP = cn(
-  'mx-auto mt-10 inline-flex h-10 w-35.75 shrink-0 items-center justify-center px-0',
-  TASK_LIST_ADD_LIST_BUTTON_CORE,
-);
 
 export default function TaskListSidebar({
   className,
@@ -90,7 +79,7 @@ export default function TaskListSidebar({
           )}
           <button
             type="button"
-            className={TASK_LIST_ADD_LIST_BUTTON_MOBILE}
+            className={TASK_LIST_ADD_LIST_BUTTON_MOBILE_CLASS}
             onClick={onAddListClick}
           >
             <span className="inline-flex items-center justify-center gap-1">
@@ -125,7 +114,7 @@ export default function TaskListSidebar({
         </ul>
         <button
           type="button"
-          className={TASK_LIST_ADD_LIST_BUTTON_DESKTOP}
+          className={TASK_LIST_ADD_LIST_BUTTON_DESKTOP_CLASS}
           onClick={onAddListClick}
         >
           <span className="inline-flex items-center justify-center gap-1">

@@ -2,9 +2,8 @@
  * 할 일 생성 모달의 제출 로직을 담당하는 훅 파일입니다.
  */
 
-'use client';
-
 import { createRecurring } from '@/api/taskApi';
+import type { UseTaskListCreateTaskMutationParams } from '@/app/(service)/[teamid]/tasklist/types';
 import {
   buildTaskListRecurringBody,
   resolveTaskListRecurringStartDate,
@@ -12,21 +11,7 @@ import {
 import { isPastTaskListStartDate } from '@/app/(service)/[teamid]/tasklist/utils/taskListStartDateValidation';
 import { useToast } from '@/components/common/toast';
 
-type UseTaskListCreateTaskSubmitParams = {
-  groupId: number;
-  memo: string;
-  monthDay: number;
-  onClose: () => void;
-  onSubmit?: (selectedDate: Date) => void | Promise<void>;
-  repeat: 'once' | 'daily' | 'weekly' | 'monthly';
-  selectedDate: Date;
-  startTime: string;
-  taskListId: string;
-  title: string;
-  weekDays: number[];
-};
-
-export default function useTaskListCreateTaskSubmit({
+export default function useTaskListCreateTaskMutation({
   groupId,
   memo,
   monthDay,
@@ -38,7 +23,7 @@ export default function useTaskListCreateTaskSubmit({
   taskListId,
   title,
   weekDays,
-}: UseTaskListCreateTaskSubmitParams) {
+}: UseTaskListCreateTaskMutationParams) {
   const { showToast } = useToast();
 
   const handleCreateTask = async () => {

@@ -4,7 +4,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 
 import { TaskDeleteConfirmModal } from '@/components/common/modal';
 import TaskDetailPanelBody from '@/components/common/rightPanel/components/TaskDetailPanelBody';
@@ -34,6 +34,7 @@ export default function TaskDetailPanelContent({
   title: initialTitle,
 }: TaskDetailPanelContentProps) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const {
     assigneeImage: editableAssigneeImage,
     comments: editableComments,
@@ -82,6 +83,10 @@ export default function TaskDetailPanelContent({
     onDiscardChanges: handleDiscardUnsavedChanges,
   });
 
+  useLayoutEffect(() => {
+    scrollContainerRef.current?.scrollTo({ top: 0 });
+  }, [initialMode, isTaskEditing, taskId, taskListId]);
+
   const handleCloseDeleteModal = () => {
     setIsDeleteModalOpen(false);
   };
@@ -102,44 +107,51 @@ export default function TaskDetailPanelContent({
 
   return (
     <div className="flex h-full flex-col">
-      <div className="min-h-0 flex-1 overflow-y-auto px-6 pb-8 pt-8 md:px-8 md:pb-10 md:pt-10">
-        <TaskDetailPanelHeader
-          draftTitle={draftTitle}
-          isEditing={isTaskEditing}
-          onChangeDraftTitle={setDraftTitle}
-          onDelete={handleOpenDeleteModal}
-          onStartEdit={handleStartTaskEdit}
-          title={title}
-        />
-
-        <div className="mt-5 md:mt-6">
-          <TaskDetailPanelMeta
-            assigneeImage={editableAssigneeImage}
-            assigneeName={assigneeName}
-            frequency={frequency}
-            startedAt={startedAt}
+      <div
+        ref={scrollContainerRef}
+        className="min-h-0 flex-1 overflow-y-auto px-6 pb-8 pt-8 md:px-8 md:pb-10 md:pt-10"
+      >
+        <div className="-mx-6 sticky top-0 z-10 bg-background-inverse px-6 pb-6 pt-8 md:static md:mx-0 md:px-0 md:pb-0 md:pt-0">
+          <TaskDetailPanelHeader
+            draftTitle={draftTitle}
+            isEditing={isTaskEditing}
+            onChangeDraftTitle={setDraftTitle}
+            onDelete={handleOpenDeleteModal}
+            onStartEdit={handleStartTaskEdit}
+            title={title}
           />
+
+          <div className="mt-5 md:mt-6">
+            <TaskDetailPanelMeta
+              assigneeImage={editableAssigneeImage}
+              assigneeName={assigneeName}
+              frequency={frequency}
+              startedAt={startedAt}
+            />
+          </div>
         </div>
 
-        <TaskDetailPanelBody
-          commentCount={editableComments.length}
-          comments={editableComments}
-          currentUserImage={currentUserImage}
-          description={description}
-          draftCommentContent={draftCommentContent}
-          draftDescription={draftDescription}
-          editingCommentId={editingCommentId}
-          isCommentSubmitting={isCommentSubmitting}
-          isSubmittingNewComment={isSubmittingNewComment}
-          isTaskEditing={isTaskEditing}
-          onCancelCommentEdit={handleCancelCommentEdit}
-          onChangeDraftCommentContent={setDraftCommentContent}
-          onChangeDraftDescription={setDraftDescription}
-          onCreateComment={handleCreateComment}
-          onDeleteComment={handleDeleteComment}
-          onStartCommentEdit={handleStartCommentEdit}
-          onSubmitCommentEdit={handleSubmitCommentEdit}
-        />
+        <div className="mt-6 border-t border-background-tertiary pt-6 md:mt-7 md:pt-7">
+          <TaskDetailPanelBody
+            commentCount={editableComments.length}
+            comments={editableComments}
+            currentUserImage={currentUserImage}
+            description={description}
+            draftCommentContent={draftCommentContent}
+            draftDescription={draftDescription}
+            editingCommentId={editingCommentId}
+            isCommentSubmitting={isCommentSubmitting}
+            isSubmittingNewComment={isSubmittingNewComment}
+            isTaskEditing={isTaskEditing}
+            onCancelCommentEdit={handleCancelCommentEdit}
+            onChangeDraftCommentContent={setDraftCommentContent}
+            onChangeDraftDescription={setDraftDescription}
+            onCreateComment={handleCreateComment}
+            onDeleteComment={handleDeleteComment}
+            onStartCommentEdit={handleStartCommentEdit}
+            onSubmitCommentEdit={handleSubmitCommentEdit}
+          />
+        </div>
         <TaskDetailPanelFooter
           completionActionLabel={completionActionLabel}
           isEditing={isTaskEditing}

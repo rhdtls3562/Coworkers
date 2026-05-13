@@ -1,10 +1,8 @@
-'use client';
+/**
+ * 오른쪽 패널 댓글 편집 액션 버튼 묶음입니다.
+ */
 
-type TaskListTaskDetailCommentActionsProps = {
-  onCancel: () => void;
-  onPrimaryAction: () => void;
-  primaryLabel: string;
-};
+import type { TaskListTaskDetailCommentActionsProps } from '@/app/(service)/[teamid]/tasklist/types';
 
 export default function TaskListTaskDetailCommentActions({
   onCancel,

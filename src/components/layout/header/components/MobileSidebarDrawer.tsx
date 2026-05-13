@@ -8,6 +8,7 @@ import Link from 'next/link';
 
 import { IcCloseLarge, ImgLogoSymbolLarge } from '@/assets';
 import type { MobileSidebarDrawerProps } from '@/components/layout/header/types';
+import SidebarFooter from '@/components/layout/sidebar/components/SidebarFooter';
 import SidebarNav from '@/components/layout/sidebar/components/SidebarNav';
 import { ROUTES } from '@/constants/ROUTES';
 import { cn } from '@/utils/cn';
@@ -72,8 +73,12 @@ export default function MobileSidebarDrawer({
           </button>
         </div>
 
-        <div className="min-h-0 flex-1 overflow-y-auto">
-          <SidebarNav isExpanded isMobileDrawer />
+        <div className="flex min-h-0 flex-1 flex-col">
+          <div className="min-h-0 flex-1 overflow-y-auto">
+            <SidebarNav isExpanded isMobileDrawer />
+          </div>
+
+          <SidebarFooter isExpanded />
         </div>
       </aside>
     </>

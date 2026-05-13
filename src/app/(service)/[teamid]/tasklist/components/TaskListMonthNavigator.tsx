@@ -2,10 +2,9 @@
  * 할 일 보드 상단의 연·월 표시와 이전/다음 달·달력 버튼입니다.
  */
 
-'use client';
-
 import TaskListCalendarPopover from '@/app/(service)/[teamid]/tasklist/components/TaskListCalendarPopover';
 import useTaskListCalendarPopover from '@/app/(service)/[teamid]/tasklist/hooks/useTaskListCalendarPopover';
+import type { TaskListMonthNavigatorProps } from '@/app/(service)/[teamid]/tasklist/types';
 import {
   addMonths,
   formatTaskListTitleDate,
@@ -16,11 +15,6 @@ import {
   IcChevronLeftCircle,
   IcChevronRightCircle,
 } from '@/assets';
-
-type TaskListMonthNavigatorProps = {
-  selectedDate: Date;
-  onSelectDate: (date: Date) => void;
-};
 
 export default function TaskListMonthNavigator({
   selectedDate,

@@ -10,17 +10,10 @@ import {
   CREATE_TASK_MODAL_COLUMN_CLASS,
   CREATE_TASK_TITLE_INPUT_INNER_CLASS,
   MODAL_HEADING_TYPO,
-} from '@/app/(service)/[teamid]/tasklist/createTaskModalConstants';
+} from '@/app/(service)/[teamid]/tasklist/constants/createTaskModalConstants';
+import type { TaskListCreateTaskModalTextFieldsProps } from '@/app/(service)/[teamid]/tasklist/types';
 import Input from '@/components/common/form/components/Input';
 import { cn } from '@/utils/cn';
-
-type TaskListCreateTaskModalTextFieldsProps = {
-  formId: string;
-  memo: string;
-  onMemoChange: (value: string) => void;
-  onTitleChange: (value: string) => void;
-  title: string;
-};
 
 export default function TaskListCreateTaskModalTextFields({
   formId,

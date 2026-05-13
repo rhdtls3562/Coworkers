@@ -8,7 +8,7 @@ import TaskListCreateTaskModalDateTimeSection from '@/app/(service)/[teamid]/tas
 import TaskListCreateTaskModalRepeatSection from '@/app/(service)/[teamid]/tasklist/components/TaskListCreateTaskModalRepeatSection';
 import TaskListCreateTaskModalTextFields from '@/app/(service)/[teamid]/tasklist/components/TaskListCreateTaskModalTextFields';
 import { useTaskListCreateTaskForm } from '@/app/(service)/[teamid]/tasklist/hooks/useTaskListCreateTaskForm';
-import useTaskListCreateTaskSubmit from '@/app/(service)/[teamid]/tasklist/hooks/useTaskListCreateTaskSubmit';
+import useTaskListCreateTaskMutation from '@/app/(service)/[teamid]/tasklist/hooks/useTaskListCreateTaskMutation';
 import type { TaskListCreateTaskModalProps } from '@/app/(service)/[teamid]/tasklist/types';
 import Modal from '@/components/common/modal';
 
@@ -47,7 +47,7 @@ export default function TaskListCreateTaskModal({
   } = useTaskListCreateTaskForm(initialSelectedDate);
 
   const isDisabled = title.trim().length === 0;
-  const { handleCreateTask } = useTaskListCreateTaskSubmit({
+  const { handleCreateTask } = useTaskListCreateTaskMutation({
     groupId,
     memo,
     monthDay,
@@ -63,6 +63,9 @@ export default function TaskListCreateTaskModal({
 
   return (
     <Modal
+      bodyClassName="mt-6"
+      frameClassName="max-h-[calc(100dvh-2rem)]"
+      mobilePosition="center"
       onClose={onClose}
       title="할 일 만들기"
       description={

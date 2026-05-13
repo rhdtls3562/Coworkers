@@ -1,4 +1,6 @@
-'use client';
+/**
+ * 리스트 페이지 보드의 조회·체크 토글·삭제 처리 훅입니다.
+ */
 
 import { useCallback, useMemo, useState } from 'react';
 
@@ -6,19 +8,22 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { queryKeys } from '@/api/queryKeys';
 import { taskQueryOptions } from '@/api/queryOptions';
-import useTaskListRecurringWeekDays from '@/app/(service)/[teamid]/tasklist/hooks/useTaskListRecurringWeekDays';
-import type { TaskListBoardTask } from '@/app/(service)/[teamid]/tasklist/types';
+import useTaskListRecurringWeekDaysQuery from '@/app/(service)/[teamid]/tasklist/hooks/useTaskListRecurringWeekDaysQuery';
+import type {
+  TaskListBoardTask,
+  UseTaskListBoardQueryParams,
+} from '@/app/(service)/[teamid]/tasklist/types';
 import { deleteTaskListBoardTask } from '@/app/(service)/[teamid]/tasklist/utils/deleteTaskListBoardTask';
 import { toTaskListDateString } from '@/app/(service)/[teamid]/tasklist/utils/taskListDate';
 import { formatTaskListRepeatLabel } from '@/app/(service)/[teamid]/tasklist/utils/taskListRepeatLabel';
 import { useToast } from '@/components/common/toast';
 import { useUpdateTaskMutation } from '@/hooks/useTask';
 
-export function useTaskListBoard(
-  groupId: string | null,
-  taskListId: string,
-  selectedDate: Date,
-) {
+export function useTaskListBoardQuery({
+  groupId,
+  selectedDate,
+  taskListId,
+}: UseTaskListBoardQueryParams) {
   const { showToast } = useToast();
   const queryClient = useQueryClient();
   const updateTaskMutation = useUpdateTaskMutation();
@@ -30,7 +35,7 @@ export function useTaskListBoard(
     }),
     enabled: groupId !== null && taskListId !== '',
   });
-  const inferredRecurringWeekDays = useTaskListRecurringWeekDays({
+  const inferredRecurringWeekDays = useTaskListRecurringWeekDaysQuery({
     groupId,
     selectedDate,
     taskListDetail,

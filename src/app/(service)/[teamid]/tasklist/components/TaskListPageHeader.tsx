@@ -2,23 +2,15 @@
  * 할 일 리스트 메인 영역 상단 팀 헤더입니다.
  */
 
-'use client';
-
 import { useState } from 'react';
 
 import { useRouter } from 'next/navigation';
 
 import TaskListTaskRowOptionsMenu from '@/app/(service)/[teamid]/tasklist/components/TaskListTaskRowOptionsMenu';
 import TaskListTeamPageDeleteModal from '@/app/(service)/[teamid]/tasklist/components/TaskListTeamPageDeleteModal';
+import type { TaskListPageHeaderProps } from '@/app/(service)/[teamid]/tasklist/types';
 import { IcSettingsLarge, IcSettingsSmall } from '@/assets';
 import { cn } from '@/utils/cn';
-
-type TaskListPageHeaderProps = {
-  teamId: string;
-  teamName: string;
-  className?: string;
-  onConfirmTeamPageDelete?: () => void | Promise<void>;
-};
 
 export default function TaskListPageHeader({
   teamId,
@@ -102,7 +94,7 @@ export default function TaskListPageHeader({
         <TaskListTeamPageDeleteModal
           onClose={() => setIsDeleteModalOpen(false)}
           onConfirm={handleConfirmDelete}
-          pageTitle={teamName}
+          teamName={teamName}
         />
       ) : null}
     </>

@@ -1,3 +1,7 @@
+/**
+ * 오른쪽 패널 댓글 영역에서 재사용하는 클래스 상수입니다.
+ */
+
 import { cn } from '@/utils/cn';
 
 export const COMMENT_ROW_BLEED_X = '-mx-6 px-6 md:-mx-8 md:px-8';

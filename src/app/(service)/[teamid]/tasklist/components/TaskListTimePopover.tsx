@@ -1,40 +1,26 @@
-'use client';
+/**
+ * 할 일 만들기 모달의 시간 선택 팝오버입니다.
+ */
 
 import {
   DATE_TIME_TIME_POPOVER_COLUMN_CLASS,
   DATE_TIME_TIME_POPOVER_OPTION_ACTIVE_CLASS,
   DATE_TIME_TIME_POPOVER_OPTION_CLASS,
-} from '@/app/(service)/[teamid]/tasklist/createTaskModalConstants';
+} from '@/app/(service)/[teamid]/tasklist/constants/createTaskModalConstants';
+import {
+  TASK_LIST_TIME_PICKER_HOURS,
+  TASK_LIST_TIME_PICKER_MINUTES,
+} from '@/app/(service)/[teamid]/tasklist/constants/taskListTimePopoverConstants';
+import type { TaskListTimePopoverProps } from '@/app/(service)/[teamid]/tasklist/types';
+import { getTaskListTimeParts } from '@/app/(service)/[teamid]/tasklist/utils/taskListTimePopover';
 import { cn } from '@/utils/cn';
-
-const TIME_PICKER_HOURS = Array.from({ length: 24 }, (_, index) =>
-  String(index).padStart(2, '0'),
-);
-const TIME_PICKER_MINUTES = Array.from({ length: 12 }, (_, index) =>
-  String(index * 5).padStart(2, '0'),
-);
-
-function getTimeParts(time: string) {
-  const [hour = '00', minute = '00'] = time.split(':');
-
-  return {
-    hour: hour.padStart(2, '0'),
-    minute: minute.padStart(2, '0'),
-  };
-}
-
-type TaskListTimePopoverProps = {
-  formId: string;
-  selectedTime: string;
-  onSelectTime: (value: string) => void;
-};
 
 export default function TaskListTimePopover({
   formId,
   selectedTime,
   onSelectTime,
 }: TaskListTimePopoverProps) {
-  const { hour, minute } = getTimeParts(selectedTime);
+  const { hour, minute } = getTaskListTimeParts(selectedTime);
 
   return (
     <div
@@ -45,7 +31,7 @@ export default function TaskListTimePopover({
       <div className="flex flex-col gap-2">
         <p className="text-sm font-medium text-text-secondary">시</p>
         <div className={DATE_TIME_TIME_POPOVER_COLUMN_CLASS}>
-          {TIME_PICKER_HOURS.map((optionHour) => (
+          {TASK_LIST_TIME_PICKER_HOURS.map((optionHour) => (
             <button
               key={optionHour}
               type="button"
@@ -65,7 +51,7 @@ export default function TaskListTimePopover({
       <div className="flex flex-col gap-2">
         <p className="text-sm font-medium text-text-secondary">분</p>
         <div className={DATE_TIME_TIME_POPOVER_COLUMN_CLASS}>
-          {TIME_PICKER_MINUTES.map((optionMinute) => (
+          {TASK_LIST_TIME_PICKER_MINUTES.map((optionMinute) => (
             <button
               key={optionMinute}
               type="button"

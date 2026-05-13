@@ -1,3 +1,7 @@
+/**
+ * 팀 페이지 상단 진행 상황 카드와 관련 모달을 렌더링합니다.
+ */
+
 import { useParams, useRouter } from 'next/navigation';
 
 import MemberChip from '@/app/(service)/[teamid]/components/MemberChip';
@@ -89,6 +93,7 @@ export default function TeamProgress({ role, teamData }: TeamProgressProps) {
         selectedMember={selectedMember}
         openMemberDetail={openMemberDetail}
         members={teamData.members}
+        teamName={teamData.name}
         role={role}
       />
     </section>

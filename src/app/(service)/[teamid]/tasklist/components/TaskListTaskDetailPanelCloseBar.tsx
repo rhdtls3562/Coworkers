@@ -1,10 +1,9 @@
-'use client';
+/**
+ * 오른쪽 패널 상단 닫기 바입니다.
+ */
 
+import type { TaskListTaskDetailPanelCloseBarProps } from '@/app/(service)/[teamid]/tasklist/types';
 import { IcCloseSmall } from '@/assets';
-
-type TaskListTaskDetailPanelCloseBarProps = {
-  onClose: () => void;
-};
 
 export default function TaskListTaskDetailPanelCloseBar({
   onClose,

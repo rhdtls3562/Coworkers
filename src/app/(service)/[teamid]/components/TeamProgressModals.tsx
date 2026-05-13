@@ -1,3 +1,7 @@
+/**
+ * 팀 페이지에서 사용하는 멤버/팀 관련 모달들을 통합 렌더링합니다.
+ */
+
 import { ConfirmModal } from '@/app/(service)/[teamid]/components/modals/ConfirmModal';
 import { ModalMemberDetail } from '@/app/(service)/[teamid]/components/modals/ModalMemberDetails';
 import { ModalMembersInvite } from '@/app/(service)/[teamid]/components/modals/ModalMemberInvite';
@@ -14,6 +18,7 @@ export function TeamProgressModals({
   selectedMember,
   openMemberDetail,
   members,
+  teamName,
 }: TeamProgressModalProps) {
   const {
     canDeleteSelectedMember,
@@ -54,8 +59,12 @@ export function TeamProgressModals({
       {is('teamDelete') && (
         <ConfirmModal
           onClose={close}
-          title="해당 팀을 삭제하시겠습니까?"
-          description="팀 관련 모든 정보가 삭제됩니다."
+          title={
+            teamName
+              ? `'${teamName}'\n팀을 정말 삭제하시겠어요?`
+              : '팀을 정말 삭제하시겠어요?'
+          }
+          description="삭제 후에는 되돌릴 수 없습니다."
           confirmText="삭제하기"
           toastMessage="삭제 되었습니다."
           onConfirm={handleDeleteTeam}
@@ -73,7 +82,12 @@ export function TeamProgressModals({
       {is('memberDelete') && (
         <ConfirmModal
           onClose={reset}
-          title="해당 멤버를 삭제하시겠습니까?"
+          title={
+            selectedMember?.userName
+              ? `'${selectedMember.userName}'\n멤버를 정말 삭제하시겠어요?`
+              : '멤버를 정말 삭제하시겠어요?'
+          }
+          description="삭제 후에는 되돌릴 수 없습니다."
           confirmText="삭제하기"
           toastMessage="삭제 되었습니다."
           onConfirm={handleRemoveMemberFromTeam}

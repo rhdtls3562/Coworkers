@@ -1,17 +1,12 @@
-'use client';
+/**
+ * 모바일/태블릿용 할 일 목록 선택 드롭다운입니다.
+ */
 
-import type { TaskListColumnItem } from '@/app/(service)/[teamid]/tasklist/types';
+import type { TaskListColumnDropdownProps } from '@/app/(service)/[teamid]/tasklist/types';
 import { IcCheck, IcDownArrowLarge, IcDownArrowSmall } from '@/assets';
 import { Badge } from '@/components/common/badge';
 import { useDropdown } from '@/components/common/dropdown/hooks/useDropdown';
 import { cn } from '@/utils/cn';
-
-type TaskListColumnDropdownProps = {
-  items: TaskListColumnItem[];
-  activeId: string;
-  onSelect: (id: string) => void;
-  className?: string;
-};
 
 export default function TaskListColumnDropdown({
   items,

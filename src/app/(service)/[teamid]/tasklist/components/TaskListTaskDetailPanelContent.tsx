@@ -1,39 +1,14 @@
-'use client';
+/**
+ * 오른쪽 패널 본문(제목·메타·설명·댓글)을 렌더링합니다.
+ */
 
 import TaskListTaskDetailCommentInput from '@/app/(service)/[teamid]/tasklist/components/TaskListTaskDetailCommentInput';
 import TaskListTaskDetailCommentItem from '@/app/(service)/[teamid]/tasklist/components/TaskListTaskDetailCommentItem';
 import TaskListTaskDetailMeta from '@/app/(service)/[teamid]/tasklist/components/TaskListTaskDetailMeta';
-import type {
-  TaskListBoardTask,
-  TaskListTaskComment,
-} from '@/app/(service)/[teamid]/tasklist/types';
+import type { TaskListTaskDetailPanelContentProps } from '@/app/(service)/[teamid]/tasklist/types';
 import { IcMoreVerticalSmall } from '@/assets';
 import { ListDropdown } from '@/components/common/dropdown';
 import { ContentTextarea, TitleInput } from '@/components/common/form';
-
-type TaskListTaskDetailPanelContentProps = {
-  comments: TaskListTaskComment[];
-  currentUserImage: string | null;
-  currentUserName: string;
-  description: string;
-  draftCommentContent: string;
-  draftDescription: string;
-  draftTitle: string;
-  editingCommentId: string | null;
-  isTaskEditing: boolean;
-  onCancelCommentEdit: () => void;
-  onChangeDraftContent: (value: string) => void;
-  onCreateComment: (content: string) => void;
-  onDeleteComment: (id: string) => void;
-  onStartCommentEdit: (comment: TaskListTaskComment) => void;
-  onSubmitCommentEdit: () => void;
-  onDeleteFromPanel: () => void;
-  onStartTaskEdit: () => void;
-  setDraftDescription: (value: string) => void;
-  setDraftTitle: (value: string) => void;
-  task: TaskListBoardTask;
-  title: string;
-};
 
 export default function TaskListTaskDetailPanelContent({
   comments,

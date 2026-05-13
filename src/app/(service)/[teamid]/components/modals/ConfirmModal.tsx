@@ -1,3 +1,7 @@
+/**
+ * 팀 페이지 전용 위험 액션 확인 모달입니다.
+ */
+
 import { ConfirmModalProps } from '@/app/(service)/[teamid]/types';
 import Modal from '@/components/common/modal';
 import { useToast } from '@/components/common/toast';

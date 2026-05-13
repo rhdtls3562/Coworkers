@@ -3,54 +3,20 @@
  * 드래그로 스크롤하고, 월이 바뀌면 선택된 달 1일이 가운데 오도록 스크롤합니다.
  */
 
-'use client';
-
 import { useLayoutEffect, useMemo, useRef } from 'react';
 
+import {
+  TASK_LIST_WEEK_DAY_CELL_CLASS,
+  TASK_LIST_WEEK_STRIP_SCROLL_ROW_CLASS,
+} from '@/app/(service)/[teamid]/tasklist/constants/taskListWeekStripConstants';
 import useTaskListDragScroll from '@/app/(service)/[teamid]/tasklist/hooks/useTaskListDragScroll';
+import type { TaskListWeekStripProps } from '@/app/(service)/[teamid]/tasklist/types';
 import { formatWeekdayLabel } from '@/app/(service)/[teamid]/tasklist/utils/boardDate';
+import {
+  centerTaskListDayInScrollParent,
+  getTaskListCalendarDayKey,
+} from '@/app/(service)/[teamid]/tasklist/utils/taskListWeekStrip';
 import { cn } from '@/utils/cn';
-
-function calendarDayKey(d: Date): string {
-  return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
-}
-
-/** 스크롤 컨테이너 안에서 자식 요소의 가로 중앙이 보이는 영역 중앙에 오도록 맞춥니다. */
-function centerChildInHorizontalScrollParent(
-  scrollParent: HTMLElement,
-  child: HTMLElement,
-  behavior: ScrollBehavior = 'auto',
-) {
-  const parentRect = scrollParent.getBoundingClientRect();
-  const childRect = child.getBoundingClientRect();
-  const childCenterX = childRect.left + childRect.width / 2;
-  const parentCenterX = parentRect.left + parentRect.width / 2;
-  const delta = childCenterX - parentCenterX;
-  const maxScroll = Math.max(
-    0,
-    scrollParent.scrollWidth - scrollParent.clientWidth,
-  );
-  const next = scrollParent.scrollLeft + delta;
-  const left = Math.max(0, Math.min(next, maxScroll));
-  scrollParent.scrollTo({ left, behavior });
-}
-
-type TaskListWeekStripProps = {
-  selectedDate: Date;
-  onSelectDate: (date: Date) => void;
-  className?: string;
-};
-
-const WEEK_STRIP_SCROLL_ROW_CLASS =
-  'flex cursor-grab gap-1 overflow-x-auto select-none touch-pan-y sm:gap-2.5 md:gap-1.5 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden active:cursor-grabbing';
-
-/** 한 화면에 약 7칸 기준 칩 너비 */
-const WEEK_DAY_CELL_CLASS = cn(
-  'shrink-0',
-  'w-[max(3.25rem,calc((100%-1.5rem)/7))]',
-  'sm:w-[max(3.25rem,calc((100%-3.75rem)/7))]',
-  'md:w-[max(3.25rem,calc((100%-4.5rem)/7))]',
-);
 
 export default function TaskListWeekStrip({
   selectedDate,
@@ -67,7 +33,7 @@ export default function TaskListWeekStrip({
 
   const year = selectedDate.getFullYear();
   const month = selectedDate.getMonth();
-  const selectedDayKey = calendarDayKey(selectedDate);
+  const selectedDayKey = getTaskListCalendarDayKey(selectedDate);
 
   const stripDays = useMemo(() => {
     const prevMonthLastDay = new Date(year, month, 0).getDate();
@@ -95,7 +61,7 @@ export default function TaskListWeekStrip({
       return;
     }
 
-    centerChildInHorizontalScrollParent(
+    centerTaskListDayInScrollParent(
       row,
       selectedDay,
       shouldAnimateCenterRef.current ? 'smooth' : 'auto',
@@ -111,7 +77,7 @@ export default function TaskListWeekStrip({
   return (
     <ul
       ref={containerRef}
-      className={cn(WEEK_STRIP_SCROLL_ROW_CLASS, className)}
+      className={cn(TASK_LIST_WEEK_STRIP_SCROLL_ROW_CLASS, className)}
       role="tablist"
       aria-label="월간 날짜 선택"
       onClickCapture={handleClickCapture}
@@ -130,10 +96,10 @@ export default function TaskListWeekStrip({
 
         return (
           <li
-            key={calendarDayKey(day)}
-            data-calendar-day-key={calendarDayKey(day)}
+            key={getTaskListCalendarDayKey(day)}
+            data-calendar-day-key={getTaskListCalendarDayKey(day)}
             data-month-first={isMonthFirst ? 'true' : undefined}
-            className={WEEK_DAY_CELL_CLASS}
+            className={TASK_LIST_WEEK_DAY_CELL_CLASS}
           >
             <button
               type="button"

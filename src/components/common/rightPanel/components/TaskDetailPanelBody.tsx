@@ -22,7 +22,7 @@ export default function TaskDetailPanelBody({
   onSubmitCommentEdit,
 }: TaskDetailPanelBodyProps) {
   return (
-    <div className="mt-6 border-t border-background-tertiary pt-6 md:mt-7 md:pt-7">
+    <>
       {isTaskEditing ? (
         <ContentTextarea
           value={draftDescription}
@@ -53,6 +53,6 @@ export default function TaskDetailPanelBody({
         onStartCommentEdit={onStartCommentEdit}
         onSubmitCommentEdit={onSubmitCommentEdit}
       />
-    </div>
+    </>
   );
 }

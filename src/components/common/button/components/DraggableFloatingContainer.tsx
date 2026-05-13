@@ -1,3 +1,7 @@
+/**
+ * 플로팅 버튼을 드래그 가능한 컨테이너로 감싸는 컴포넌트입니다.
+ */
+
 'use client';
 
 import { useRef, useState } from 'react';
@@ -7,11 +11,15 @@ import Draggable from 'react-draggable';
 
 import { cn } from '@/utils/cn';
 
+import type { DraggableData, DraggableEvent } from 'react-draggable';
+
 type DraggableFloatingContainerProps = {
   children: ReactNode;
   className?: string;
   dragBounds?: 'body' | string;
 };
+
+const DRAG_THRESHOLD = 6;
 
 export default function DraggableFloatingContainer({
   children,
@@ -23,6 +31,7 @@ export default function DraggableFloatingContainer({
   const [isDragging, setIsDragging] = useState(false);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
   const hasDragged = useRef(false);
+  const dragDistanceRef = useRef(0);
   const tooltipTimer = useRef<ReturnType<typeof setTimeout>>(null);
 
   const handleTouchStart = () => {
@@ -37,31 +46,53 @@ export default function DraggableFloatingContainer({
     clearTimeout(tooltipTimer.current ?? undefined);
   };
 
+  const handleTouchCancel = () => {
+    clearTimeout(tooltipTimer.current ?? undefined);
+  };
+
+  const handleStart = () => {
+    hasDragged.current = false;
+    dragDistanceRef.current = 0;
+    setIsDragging(true);
+  };
+
+  const handleDrag = (_event: DraggableEvent, data: DraggableData) => {
+    dragDistanceRef.current += Math.abs(data.deltaX) + Math.abs(data.deltaY);
+
+    if (dragDistanceRef.current >= DRAG_THRESHOLD) {
+      hasDragged.current = true;
+      setShowTooltip(false);
+    }
+  };
+
+  const handleStop = () => {
+    setIsDragging(false);
+  };
+
+  const containerClassName = cn(
+    'relative select-none touch-none cursor-grab active:cursor-grabbing',
+    className,
+  );
+
   return (
     <Draggable
+      allowMobileScroll
       bounds={dragBounds}
       nodeRef={nodeRef}
-      onStart={() => {
-        hasDragged.current = false;
-        setIsDragging(true);
-      }}
-      onDrag={() => {
-        hasDragged.current = true;
-      }}
-      onStop={() => {
-        setIsDragging(false);
-      }}
+      onStart={handleStart}
+      onDrag={handleDrag}
+      onStop={handleStop}
     >
       <div
         ref={nodeRef}
-        className={cn(
-          'touch-none select-none cursor-grab active:cursor-grabbing relative',
-          className,
-        )}
+        className={containerClassName}
         onMouseEnter={() => setShowTooltip(true)}
-        onMouseLeave={() => setShowTooltip(false)}
+        onMouseLeave={() => {
+          setShowTooltip(false);
+        }}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
+        onTouchCancel={handleTouchCancel}
         onClickCapture={(e) => {
           if (hasDragged.current) {
             e.stopPropagation();

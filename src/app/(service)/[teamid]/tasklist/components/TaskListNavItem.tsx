@@ -3,21 +3,11 @@
  * 케밥 메뉴는 lg 이상에서만 표시합니다.
  */
 
-'use client';
-
-import type { TaskListColumnItem } from '@/app/(service)/[teamid]/tasklist/types';
+import type { TaskListNavItemProps } from '@/app/(service)/[teamid]/tasklist/types';
 import { IcMoreVerticalLarge } from '@/assets';
 import { Badge } from '@/components/common/badge';
 import { ListDropdown } from '@/components/common/dropdown';
 import { cn } from '@/utils/cn';
-
-type TaskListNavItemProps = {
-  item: TaskListColumnItem;
-  isActive: boolean;
-  onRequestRename: (item: TaskListColumnItem) => void;
-  onSelect: () => void;
-  onRequestDelete: (item: TaskListColumnItem) => void;
-};
 
 export default function TaskListNavItem({
   item,

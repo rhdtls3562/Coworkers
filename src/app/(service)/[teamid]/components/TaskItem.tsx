@@ -1,3 +1,7 @@
+/**
+ * 팀 페이지의 할 일 목록 카드와 관련 모달을 렌더링합니다.
+ */
+
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 
@@ -112,7 +116,8 @@ export default function TaskItem({
       {is('taskDelete') && (
         <ConfirmModal
           onClose={close}
-          title="해당 할 일 목록을 삭제하시겠습니까?"
+          title={`'${title}'\n할 일 목록을 정말 삭제하시겠어요?`}
+          description="삭제 후에는 되돌릴 수 없습니다."
           confirmText="삭제하기"
           toastMessage="삭제 되었습니다."
           onConfirm={() => handleDelete()}

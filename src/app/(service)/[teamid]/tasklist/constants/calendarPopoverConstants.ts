@@ -5,17 +5,13 @@
 
 import { cn } from '@/utils/cn';
 
-/** 인라인 달력 펼침 영역 높이 피그마 258px */
-const CALENDAR_POPOVER_HEIGHT_CLASS = 'h-[258px]';
-
 /** 월 네비 옆 앵커 — 버튼 아래 고정 */
 export const TASK_LIST_CALENDAR_ANCHORED_WRAPPER_CLASS =
   'absolute top-12 right-0 z-20';
 
 /** 보드 등 플로우에 펼쳐 높이 증가 */
 export const TASK_LIST_CALENDAR_INLINE_EXPAND_WRAPPER_CLASS = cn(
-  'flex w-full shrink-0 justify-center overflow-hidden rounded-xl border border-brand-primary bg-background-primary shadow-lg',
-  CALENDAR_POPOVER_HEIGHT_CLASS,
+  'mx-auto flex w-fit max-w-full shrink-0 items-center justify-center overflow-hidden rounded-xl border border-brand-primary bg-background-primary py-4 shadow-lg',
 );
 
 /** 할 일 만들기 모달 — 버튼 행 아래 오버레이 */
@@ -26,10 +22,10 @@ export const TASK_LIST_CALENDAR_MODAL_OVERLAY_WRAPPER_CLASS = cn(
 /** DatePicker 인라인 확장 시 내부 달력 폭·정렬(300px / md 336px) */
 export const TASK_LIST_EXPAND_DATE_PICKER_CLASS = cn(
   '!m-0 flex shrink-0 justify-center',
-  'w-full max-w-[280px] md:max-w-[300px]',
-  '[&_.coworkers-date-picker]:!mx-auto [&_.coworkers-date-picker]:!flex [&_.coworkers-date-picker]:!w-full [&_.coworkers-date-picker]:!max-w-[280px] md:[&_.coworkers-date-picker]:!max-w-[300px]',
+  'w-full max-w-[280px] md:max-w-[336px]',
+  '[&_.coworkers-date-picker]:!mx-auto [&_.coworkers-date-picker]:!flex [&_.coworkers-date-picker]:!w-full [&_.coworkers-date-picker]:!max-w-[280px] md:[&_.coworkers-date-picker]:!max-w-[336px]',
   '[&_.coworkers-date-picker]:!justify-center',
   '[&_.react-datepicker]:!mx-auto [&_.react-datepicker]:!border-0 [&_.react-datepicker]:!shadow-none',
-  '[&_.react-datepicker]:!h-full [&_.react-datepicker]:!min-h-0 [&_.react-datepicker]:!w-[280px] md:[&_.react-datepicker]:!w-[300px]',
+  '[&_.react-datepicker]:!h-full [&_.react-datepicker]:!min-h-0 [&_.react-datepicker]:!w-[280px] md:[&_.react-datepicker]:!w-[336px]',
   '[&_.react-datepicker__month-container]:!mx-auto',
 );

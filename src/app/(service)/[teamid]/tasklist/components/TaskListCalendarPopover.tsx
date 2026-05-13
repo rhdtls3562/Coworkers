@@ -7,7 +7,7 @@ import {
   TASK_LIST_CALENDAR_INLINE_EXPAND_WRAPPER_CLASS,
   TASK_LIST_CALENDAR_MODAL_OVERLAY_WRAPPER_CLASS,
   TASK_LIST_EXPAND_DATE_PICKER_CLASS,
-} from '@/app/(service)/[teamid]/tasklist/calendarPopoverConstants';
+} from '@/app/(service)/[teamid]/tasklist/constants/calendarPopoverConstants';
 import type { TaskListCalendarPopoverProps } from '@/app/(service)/[teamid]/tasklist/types';
 import { DatePicker } from '@/components/common/form';
 import { cn } from '@/utils/cn';

@@ -2,25 +2,12 @@
  * 보드에 할 일이 없을 때 표시하는 단일 플레이스홀더 행입니다.
  */
 
-'use client';
-
 import type { KeyboardEvent } from 'react';
 
+import type { TaskListBoardEmptyTaskRowProps } from '@/app/(service)/[teamid]/tasklist/types';
+import { formatTaskListBoardPlaceholderDate } from '@/app/(service)/[teamid]/tasklist/utils/taskListBoardPlaceholder';
 import { IcCalendarSmall, IcCheckboxLarge, IcRepeatSmall } from '@/assets';
 import { cn } from '@/utils/cn';
-
-function formatBoardPlaceholderDate(d: Date) {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  return `${y}. ${m}. ${day}`;
-}
-
-type TaskListBoardEmptyTaskRowProps = {
-  className?: string;
-  onClick: () => void;
-  selectedDate: Date;
-};
 
 export default function TaskListBoardEmptyTaskRow({
   selectedDate,
@@ -64,7 +51,7 @@ export default function TaskListBoardEmptyTaskRow({
         <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-normal text-text-default md:mt-2.5 md:text-base">
           <span className="flex items-center gap-2">
             <IcCalendarSmall width={16} height={16} aria-hidden="true" />
-            {formatBoardPlaceholderDate(selectedDate)}
+            {formatTaskListBoardPlaceholderDate(selectedDate)}
           </span>
           <span aria-hidden="true" className="text-border-secondary">
             |

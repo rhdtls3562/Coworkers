@@ -1,3 +1,7 @@
+/**
+ * 팀의 첫 번째 할 일 목록 페이지로 라우팅하는 리스트 진입 페이지입니다.
+ */
+
 'use client';
 
 import { use, useEffect } from 'react';
@@ -5,13 +9,15 @@ import { use, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 import useTeamRouteGuard from '@/app/(service)/[teamid]/hooks/useTeamRouteGuard';
+import type { TaskListPageParams } from '@/app/(service)/[teamid]/tasklist/types';
+import { getFirstTaskListByDisplayIndex } from '@/app/(service)/[teamid]/tasklist/utils/taskListSummary';
 import { ROUTES } from '@/constants/ROUTES';
 import { useTeamDetailQuery } from '@/hooks/useTeam';
 
 export default function TaskListPage({
   params,
 }: {
-  params: Promise<{ teamid: string }>;
+  params: TaskListPageParams;
 }) {
   const { teamid } = use(params);
   const router = useRouter();
@@ -25,9 +31,9 @@ export default function TaskListPage({
     },
   });
 
-  const firstTaskList = (groupDetail?.taskLists ?? [])
-    .slice()
-    .sort((a, b) => a.displayIndex - b.displayIndex)[0];
+  const firstTaskList = getFirstTaskListByDisplayIndex(
+    groupDetail?.taskLists ?? [],
+  );
 
   useEffect(() => {
     if (firstTaskList) {

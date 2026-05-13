@@ -1,34 +1,38 @@
-'use client';
+/**
+ * 리스트 페이지 셸에서 사용하는 팀 상세 조회·목록 관리 훅입니다.
+ */
 
 import { useCallback, useMemo, useRef, useState } from 'react';
 
+import { useRouter } from 'next/navigation';
+
 import { useQueryClient } from '@tanstack/react-query';
 
+import { deleteGroup } from '@/api/groupApi';
 import { queryKeys } from '@/api/queryKeys';
+import { refetchUserQueries } from '@/api/queryRefetch';
 import { createTaskList, deleteTaskList, updateTaskList } from '@/api/taskApi';
 import useTeamRouteGuard from '@/app/(service)/[teamid]/hooks/useTeamRouteGuard';
-import useTaskListSidebarColumns from '@/app/(service)/[teamid]/tasklist/hooks/useTaskListSidebarColumns';
-import type { TaskListColumnItem } from '@/app/(service)/[teamid]/tasklist/types';
+import useTaskListSidebarColumnsQuery from '@/app/(service)/[teamid]/tasklist/hooks/useTaskListSidebarColumnsQuery';
+import type {
+  TaskListColumnItem,
+  UseTaskListPageShellQueryParams,
+} from '@/app/(service)/[teamid]/tasklist/types';
 import { toTaskListDateString } from '@/app/(service)/[teamid]/tasklist/utils/taskListDate';
 import { removeTaskListFromGroupDetail } from '@/app/(service)/[teamid]/tasklist/utils/taskListQueryCache';
 import { resolveTeamExitRoute } from '@/app/(service)/[teamid]/utils/teamRouteAccess';
 import { useToast } from '@/components/common/toast';
+import { ROUTES } from '@/constants/ROUTES';
 import { useTeamDetailQuery } from '@/hooks/useTeam';
 import type { GroupDetail } from '@/types/group';
 
-type UseTaskListPageShellParams = {
-  onSelectDate: (date: Date) => void;
-  selectedDate: Date;
-  teamId: string;
-  taskId: string;
-};
-
-export default function useTaskListPageShell({
+export default function useTaskListPageShellQuery({
   onSelectDate,
   selectedDate,
   teamId,
   taskId,
-}: UseTaskListPageShellParams) {
+}: UseTaskListPageShellQueryParams) {
+  const router = useRouter();
   const { showToast } = useToast();
   const queryClient = useQueryClient();
   const {
@@ -44,7 +48,7 @@ export default function useTaskListPageShell({
     },
   });
   const isCreatingColumnRef = useRef(false);
-  const columns = useTaskListSidebarColumns({
+  const columns = useTaskListSidebarColumnsQuery({
     selectedDate,
     taskLists: groupDetail?.taskLists ?? [],
     teamId,
@@ -125,6 +129,8 @@ export default function useTaskListPageShell({
     showToast('삭제되었습니다.', 'error');
   }, [columnPendingDelete, queryClient, showToast, teamId]);
 
+  const leaveFallbackRoute = resolveTeamExitRoute(teamId, meData?.memberships);
+
   const handleCreateColumn = useCallback(
     async (name: string) => {
       if (isCreatingColumnRef.current) return;
@@ -162,6 +168,43 @@ export default function useTaskListPageShell({
     [columnPendingRename, refetchTaskListPage, showToast, teamId],
   );
 
+  const handleConfirmDeleteColumnWithNavigation = useCallback(async () => {
+    if (!columnPendingDelete) {
+      return;
+    }
+
+    const wasActive = columnPendingDelete.id === taskId;
+    const nextColumnId = columns.find(
+      (column) => column.id !== columnPendingDelete.id,
+    )?.id;
+
+    await handleConfirmDeleteColumn();
+
+    if (!wasActive) {
+      return;
+    }
+
+    router.replace(
+      nextColumnId
+        ? ROUTES.TASK_LIST_ITEM(teamId, nextColumnId)
+        : ROUTES.TEAM(teamId),
+    );
+  }, [
+    columnPendingDelete,
+    columns,
+    handleConfirmDeleteColumn,
+    router,
+    taskId,
+    teamId,
+  ]);
+
+  const handleConfirmTeamPageDelete = useCallback(async () => {
+    await deleteGroup(teamId);
+    await refetchUserQueries(queryClient);
+    showToast('삭제되었습니다.', 'error');
+    router.replace(leaveFallbackRoute);
+  }, [leaveFallbackRoute, queryClient, router, showToast, teamId]);
+
   return {
     columnPendingDelete,
     columnPendingRename,
@@ -171,13 +214,15 @@ export default function useTaskListPageShell({
     groupDetail,
     hasAccessibleTeamRoute: isAccessible,
     handleConfirmDeleteColumn,
+    handleConfirmDeleteColumnWithNavigation,
     handleCreateColumn,
     handleCreateTask,
+    handleConfirmTeamPageDelete,
     handleRenameColumn,
     isTeamRouteLoading,
     isCreateColumnOpen,
     isCreateTaskOpen,
-    leaveFallbackRoute: resolveTeamExitRoute(teamId, meData?.memberships),
+    leaveFallbackRoute,
     setColumnPendingDelete,
     setColumnPendingRename,
     setIsCreateColumnOpen,

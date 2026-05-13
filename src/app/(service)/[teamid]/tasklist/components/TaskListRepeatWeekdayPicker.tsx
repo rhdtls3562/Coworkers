@@ -2,17 +2,9 @@
  * 할 일 만들기 모달 — 반복 요일(일~토 한 글자). 피그마 date picker-요일 스펙.
  */
 
-'use client';
-
+import type { TaskListRepeatWeekdayPickerProps } from '@/app/(service)/[teamid]/tasklist/types';
 import { TASKLIST_WEEKDAY_LABELS } from '@/app/(service)/[teamid]/tasklist/utils/boardDate';
 import { cn } from '@/utils/cn';
-
-type TaskListRepeatWeekdayPickerProps = {
-  /** Date.getDay(): 0=일 … 6=토 */
-  selectedDays: number[];
-  onToggleDay: (getDay: number) => void;
-  className?: string;
-};
 
 export default function TaskListRepeatWeekdayPicker({
   selectedDays,

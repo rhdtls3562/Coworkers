@@ -2,14 +2,10 @@
  * 할 일 만들기 모달을 여는 플로팅 액션 버튼입니다.
  */
 
+import type { TaskListFABProps } from '@/app/(service)/[teamid]/tasklist/types';
 import { IcPlusLarge } from '@/assets';
 import { FloatingButton } from '@/components/common/button';
 import { cn } from '@/utils/cn';
-
-type TaskListFABProps = {
-  onClick: () => void;
-  className?: string;
-};
 
 export default function TaskListFAB({ onClick, className }: TaskListFABProps) {
   return (

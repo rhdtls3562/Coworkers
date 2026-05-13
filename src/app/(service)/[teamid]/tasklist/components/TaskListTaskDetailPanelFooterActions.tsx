@@ -1,13 +1,9 @@
-'use client';
+/**
+ * 오른쪽 패널 하단의 완료/등록 액션 버튼 영역입니다.
+ */
 
+import type { TaskListTaskDetailPanelFooterActionsProps } from '@/app/(service)/[teamid]/tasklist/types';
 import { IcCheckInverse } from '@/assets';
-
-type TaskListTaskDetailPanelFooterActionsProps = {
-  isTaskEditing: boolean;
-  onCancelTaskEdit: () => void;
-  onComplete: () => void;
-  onRegisterTask: () => void;
-};
 
 export default function TaskListTaskDetailPanelFooterActions({
   isTaskEditing,

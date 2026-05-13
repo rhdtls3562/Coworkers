@@ -2,13 +2,8 @@
  * 할 일 보드의 단일 할 일 행(체크·제목·메타·더보기)입니다.
  */
 
-'use client';
-
 import TaskListTaskRowOptionsMenu from '@/app/(service)/[teamid]/tasklist/components/TaskListTaskRowOptionsMenu';
-import type {
-  TaskListBoardTask,
-  TaskListTaskDetailOpenMode,
-} from '@/app/(service)/[teamid]/tasklist/types';
+import type { TaskListTaskRowProps } from '@/app/(service)/[teamid]/tasklist/types';
 import {
   IcCalendarSmall,
   IcComment,
@@ -17,16 +12,6 @@ import {
 } from '@/assets';
 import TodoCheckUncheck from '@/components/common/todo/TodoCheckUncheck';
 import { cn } from '@/utils/cn';
-
-type TaskListTaskRowProps = {
-  task: TaskListBoardTask;
-  onOpenDetail: (
-    task: TaskListBoardTask,
-    mode: TaskListTaskDetailOpenMode,
-  ) => void;
-  onToggleChecked: (id: string, checked: boolean) => void;
-  onRequestDelete: (task: TaskListBoardTask) => void;
-};
 
 export default function TaskListTaskRow({
   task,
@@ -64,7 +49,7 @@ export default function TaskListTaskRow({
 
           <button
             type="button"
-            className="pointer-events-auto mb-1.5 flex shrink-0 items-center gap-1 text-sm font-medium text-text-default md:text-base"
+            className="pointer-events-auto mb-1 flex shrink-0 items-center gap-1 text-sm font-medium text-text-default md:text-base"
             aria-label={`${task.title} 댓글 ${task.commentCount}개 보기`}
             onClick={handleOpenDetail}
           >

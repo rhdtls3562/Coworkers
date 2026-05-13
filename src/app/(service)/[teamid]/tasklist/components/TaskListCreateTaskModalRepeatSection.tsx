@@ -1,4 +1,6 @@
-'use client';
+/**
+ * 할 일 만들기 모달의 반복 설정과 추가 반복 옵션을 렌더링합니다.
+ */
 
 import TaskListRepeatWeekdayPicker from '@/app/(service)/[teamid]/tasklist/components/TaskListRepeatWeekdayPicker';
 import TaskListSelectDropdown from '@/app/(service)/[teamid]/tasklist/components/TaskListSelectDropdown';
@@ -8,21 +10,13 @@ import {
   REPEAT_DROPDOWN_BUTTON_CLASS,
   REPEAT_TRIGGER_LAYOUT_CLASS,
   TASK_LIST_CREATE_TASK_REPEAT_ITEMS,
-} from '@/app/(service)/[teamid]/tasklist/createTaskModalConstants';
-import type { TaskListCreateTaskRepeatValue } from '@/app/(service)/[teamid]/tasklist/types';
+} from '@/app/(service)/[teamid]/tasklist/constants/createTaskModalConstants';
+import type {
+  TaskListCreateTaskModalRepeatSectionProps,
+  TaskListCreateTaskRepeatValue,
+} from '@/app/(service)/[teamid]/tasklist/types';
 import Input from '@/components/common/form/components/Input';
 import { cn } from '@/utils/cn';
-
-type TaskListCreateTaskModalRepeatSectionProps = {
-  formId: string;
-  monthDay: string;
-  onMonthDayBlur: () => void;
-  onMonthDayChange: (value: string) => void;
-  onRepeatChange: (value: TaskListCreateTaskRepeatValue) => void;
-  onToggleWeekDay: (dayIndex: number) => void;
-  repeat: TaskListCreateTaskRepeatValue;
-  weekDays: number[];
-};
 
 export default function TaskListCreateTaskModalRepeatSection({
   formId,
@@ -54,6 +48,7 @@ export default function TaskListCreateTaskModalRepeatSection({
           placeholder="선택"
           className={REPEAT_TRIGGER_LAYOUT_CLASS}
           buttonClassName={REPEAT_DROPDOWN_BUTTON_CLASS}
+          variant="inlineExpand"
         />
 
         {repeat === 'weekly' ? (

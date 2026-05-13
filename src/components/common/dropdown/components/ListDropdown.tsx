@@ -26,6 +26,7 @@ export default function ListDropdown({
   const triggerRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLUListElement>(null);
   const { isOpen, toggle, close, containerRef } = useDropdown([menuRef]);
+  const animationFrameRef = useRef<number | null>(null);
 
   const [menuPosition, setMenuPosition] = useState({
     top: 0,
@@ -43,19 +44,38 @@ export default function ListDropdown({
     const viewportHeight = window.innerHeight;
     const menuWidth = menuRect.width || 120;
     const menuHeight = menuRect.height || 0;
+    const isTriggerOutOfViewport =
+      triggerRect.bottom <= 8 ||
+      triggerRect.top >= viewportHeight - 8 ||
+      triggerRect.right <= 8 ||
+      triggerRect.left >= viewportWidth - 8;
+
+    if (isTriggerOutOfViewport) {
+      close();
+      return;
+    }
 
     const alignedLeft =
       horizontalAlign === 'start'
         ? triggerRect.left
         : triggerRect.right - menuWidth;
-    const alignedTop =
+    const preferredTop =
       verticalPosition === 'top'
         ? triggerRect.top - menuHeight - 8
         : triggerRect.bottom + 8;
+    const fallbackTop =
+      verticalPosition === 'top'
+        ? triggerRect.bottom + 8
+        : triggerRect.top - menuHeight - 8;
+    const canUsePreferredTop =
+      verticalPosition === 'top'
+        ? preferredTop >= 8
+        : preferredTop + menuHeight <= viewportHeight - 8;
+    const nextTop = canUsePreferredTop ? preferredTop : fallbackTop;
 
     setMenuPosition({
       top: Math.min(
-        Math.max(8, alignedTop),
+        Math.max(8, nextTop),
         Math.max(8, viewportHeight - menuHeight - 8),
       ),
       left: Math.min(
@@ -63,23 +83,37 @@ export default function ListDropdown({
         Math.max(8, viewportWidth - menuWidth - 8),
       ),
     });
-  }, [horizontalAlign, verticalPosition]);
+  }, [close, horizontalAlign, verticalPosition]);
 
   useLayoutEffect(() => {
     if (!isOpen) {
       return;
     }
 
-    updateMenuPosition();
-    const rafId = window.requestAnimationFrame(updateMenuPosition);
+    const scheduleUpdateMenuPosition = () => {
+      if (animationFrameRef.current !== null) {
+        window.cancelAnimationFrame(animationFrameRef.current);
+      }
 
-    window.addEventListener('scroll', updateMenuPosition, true);
-    window.addEventListener('resize', updateMenuPosition);
+      animationFrameRef.current = window.requestAnimationFrame(() => {
+        animationFrameRef.current = null;
+        updateMenuPosition();
+      });
+    };
+
+    updateMenuPosition();
+    scheduleUpdateMenuPosition();
+
+    window.addEventListener('scroll', scheduleUpdateMenuPosition, true);
+    window.addEventListener('resize', scheduleUpdateMenuPosition);
 
     return () => {
-      window.cancelAnimationFrame(rafId);
-      window.removeEventListener('scroll', updateMenuPosition, true);
-      window.removeEventListener('resize', updateMenuPosition);
+      if (animationFrameRef.current !== null) {
+        window.cancelAnimationFrame(animationFrameRef.current);
+      }
+
+      window.removeEventListener('scroll', scheduleUpdateMenuPosition, true);
+      window.removeEventListener('resize', scheduleUpdateMenuPosition);
     };
   }, [isOpen, updateMenuPosition]);
 
@@ -96,7 +130,12 @@ export default function ListDropdown({
         aria-haspopup="menu"
         aria-expanded={isOpen}
         onClick={toggle}
-        onKeyDown={(e) => e.key === 'Enter' && toggle()}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            toggle();
+          }
+        }}
       >
         {trigger}
       </div>
@@ -106,8 +145,8 @@ export default function ListDropdown({
           <ul
             ref={menuRef}
             className={cn(
-              menuClassName,
               'fixed z-70! flex w-30 flex-col overflow-hidden rounded-xl border border-border-secondary bg-background-primary p-0 shadow-lg',
+              menuClassName,
             )}
             style={{
               top: menuPosition.top,

@@ -1,15 +1,12 @@
-'use client';
+/**
+ * 할 일 목록 이름 변경 모달입니다.
+ */
 
 import { useMemo, useRef, useState } from 'react';
 
+import type { TaskListRenameColumnModalProps } from '@/app/(service)/[teamid]/tasklist/types';
 import TitleInput from '@/components/common/form/components/TitleInput';
 import Modal from '@/components/common/modal';
-
-type TaskListRenameColumnModalProps = {
-  initialName: string;
-  onClose: () => void;
-  onSubmit: (name: string) => void | Promise<void>;
-};
 
 export default function TaskListRenameColumnModal({
   initialName,

@@ -1,19 +1,14 @@
-'use client';
+/**
+ * 오른쪽 패널의 로컬 편집 상태와 댓글 임시 상태를 관리하는 훅입니다.
+ */
 
 import { useCallback, useState } from 'react';
 
 import type {
-  TaskListBoardTask,
   TaskListTaskComment,
   TaskListTaskDetailApplyPatch,
-  TaskListTaskDetailOpenMode,
+  UseTaskListTaskDetailPanelParams,
 } from '@/app/(service)/[teamid]/tasklist/types';
-
-type UseTaskListTaskDetailPanelParams = {
-  currentUserName: string;
-  initialMode: TaskListTaskDetailOpenMode;
-  task: TaskListBoardTask;
-};
 
 export default function useTaskListTaskDetailPanel({
   currentUserName,

@@ -1,15 +1,11 @@
-'use client';
+/**
+ * 오른쪽 패널 상단의 담당자·시작일·반복 정보 영역입니다.
+ */
 
 import Image from 'next/image';
 
+import type { TaskListTaskDetailMetaProps } from '@/app/(service)/[teamid]/tasklist/types';
 import { IcCalendarSmall, IcRepeatSmall, IcUserLarge } from '@/assets';
-
-type TaskListTaskDetailMetaProps = {
-  assigneeImage: string | null;
-  assigneeName: string;
-  frequency: string;
-  startedAtLabel: string;
-};
 
 export default function TaskListTaskDetailMeta({
   assigneeImage,

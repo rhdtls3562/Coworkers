@@ -1,4 +1,6 @@
-'use client';
+/**
+ * 오른쪽 패널 댓글 한 개의 읽기/수정 상태를 렌더링합니다.
+ */
 
 import Image from 'next/image';
 
@@ -10,19 +12,16 @@ import {
   COMMENT_FORM_TEXTAREA_CLASS_NAME,
   COMMENT_ROW_BLEED_X,
   commentItemRootClassName,
-} from '@/app/(service)/[teamid]/tasklist/taskListTaskDetailCommentClassNames';
-import type { TaskListTaskDetailCommentItemProps } from '@/app/(service)/[teamid]/tasklist/types';
+} from '@/app/(service)/[teamid]/tasklist/constants/taskListTaskDetailCommentClassNames';
+import type {
+  TaskListCommentAvatarProps,
+  TaskListTaskDetailCommentItemProps,
+} from '@/app/(service)/[teamid]/tasklist/types';
 import { IcMoreVerticalSmall, IcUserLarge } from '@/assets';
 import { ListDropdown } from '@/components/common/dropdown';
 import { cn } from '@/utils/cn';
 
-function CommentAvatar({
-  author,
-  authorImage,
-}: {
-  author: string;
-  authorImage: string | null;
-}) {
+function CommentAvatar({ author, authorImage }: TaskListCommentAvatarProps) {
   if (authorImage) {
     return (
       <Image

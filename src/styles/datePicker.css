@@ -1,11 +1,11 @@
 .coworkers-date-picker {
-  width: 300px;
+  width: 280px;
 }
 
 .coworkers-date-picker .react-datepicker {
   display: block;
   position: relative;
-  width: 300px;
+  width: 280px;
   min-height: 256px;
   overflow: hidden;
   border: 1px solid var(--color-brand-primary);
@@ -44,7 +44,7 @@
 .coworkers-date-picker .react-datepicker__header {
   border: 0;
   background: var(--color-background-primary);
-  padding: 18px 0 0;
+  padding: 15px 0 0;
 }
 
 .coworkers-date-picker .react-datepicker__day-names {
@@ -104,7 +104,8 @@
 }
 
 .coworkers-date-picker .react-datepicker__day:not([aria-disabled='true']):hover,
-.coworkers-date-picker .react-datepicker__day:not([aria-disabled='true']):active {
+.coworkers-date-picker
+  .react-datepicker__day:not([aria-disabled='true']):active {
   background: var(--color-brand-primary);
   border-radius: 8px;
   color: var(--color-text-inverse);
@@ -123,15 +124,27 @@
   color: var(--color-text-primary);
 }
 
-.coworkers-date-picker .react-datepicker__day--in-range:not(.react-datepicker__day--range-start):not(.react-datepicker__day--range-end),
-.coworkers-date-picker .react-datepicker__day--in-range:not(.react-datepicker__day--range-start):not(.react-datepicker__day--range-end):hover {
+.coworkers-date-picker
+  .react-datepicker__day--in-range:not(.react-datepicker__day--range-start):not(
+    .react-datepicker__day--range-end
+  ),
+.coworkers-date-picker
+  .react-datepicker__day--in-range:not(.react-datepicker__day--range-start):not(
+    .react-datepicker__day--range-end
+  ):hover {
   background: var(--color-brand-secondary);
   border-radius: 8px;
   color: var(--color-text-primary);
 }
 
-.coworkers-date-picker .react-datepicker__day--in-selecting-range:not(.react-datepicker__day--selecting-range-start):not(.react-datepicker__day--selecting-range-end),
-.coworkers-date-picker .react-datepicker__day--in-selecting-range:not(.react-datepicker__day--selecting-range-start):not(.react-datepicker__day--selecting-range-end):hover {
+.coworkers-date-picker
+  .react-datepicker__day--in-selecting-range:not(
+    .react-datepicker__day--selecting-range-start
+  ):not(.react-datepicker__day--selecting-range-end),
+.coworkers-date-picker
+  .react-datepicker__day--in-selecting-range:not(
+    .react-datepicker__day--selecting-range-start
+  ):not(.react-datepicker__day--selecting-range-end):hover {
   background: transparent;
   border-radius: 8px;
   color: var(--color-text-primary);
@@ -147,7 +160,8 @@
 .coworkers-date-picker .react-datepicker__day--selecting-range-start:hover,
 .coworkers-date-picker .react-datepicker__day--selecting-range-end,
 .coworkers-date-picker .react-datepicker__day--selecting-range-end:hover,
-.coworkers-date-picker .react-datepicker__day--keyboard-selected.react-datepicker__day--selected {
+.coworkers-date-picker
+  .react-datepicker__day--keyboard-selected.react-datepicker__day--selected {
   background: var(--color-brand-primary);
   border-radius: 8px;
   color: var(--color-text-inverse);

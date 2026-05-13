@@ -8,10 +8,6 @@ import { useState } from 'react';
 
 import { useRouter } from 'next/navigation';
 
-import { useQueryClient } from '@tanstack/react-query';
-
-import { deleteGroup } from '@/api/groupApi';
-import { refetchUserQueries } from '@/api/queryRefetch';
 import TaskListBoard from '@/app/(service)/[teamid]/tasklist/components/TaskListBoard';
 import TaskListColumnDeleteModal from '@/app/(service)/[teamid]/tasklist/components/TaskListColumnDeleteModal';
 import TaskListContentArea from '@/app/(service)/[teamid]/tasklist/components/TaskListContentArea';
@@ -21,15 +17,10 @@ import TaskListFAB from '@/app/(service)/[teamid]/tasklist/components/TaskListFA
 import TaskListPageHeader from '@/app/(service)/[teamid]/tasklist/components/TaskListPageHeader';
 import TaskListRenameColumnModal from '@/app/(service)/[teamid]/tasklist/components/TaskListRenameColumnModal';
 import TaskListSidebar from '@/app/(service)/[teamid]/tasklist/components/TaskListSidebar';
-import useTaskListPageShell from '@/app/(service)/[teamid]/tasklist/hooks/useTaskListPageShell';
+import useTaskListPageShellQuery from '@/app/(service)/[teamid]/tasklist/hooks/useTaskListPageShellQuery';
+import type { TaskListPageShellProps } from '@/app/(service)/[teamid]/tasklist/types';
 import { getCurrentKoreaCalendarDate } from '@/app/(service)/[teamid]/tasklist/utils/taskListDate';
-import { useToast } from '@/components/common/toast';
 import { ROUTES } from '@/constants/ROUTES';
-
-type TaskListPageShellProps = {
-  teamId: string;
-  taskId: string;
-};
 
 export default function TaskListPageShell({
   teamId,
@@ -39,8 +30,6 @@ export default function TaskListPageShell({
     getCurrentKoreaCalendarDate(),
   );
   const router = useRouter();
-  const queryClient = useQueryClient();
-  const { showToast } = useToast();
 
   const {
     columnPendingDelete,
@@ -50,52 +39,24 @@ export default function TaskListPageShell({
     effectiveActiveId,
     groupDetail,
     hasAccessibleTeamRoute,
-    handleConfirmDeleteColumn,
+    handleConfirmDeleteColumnWithNavigation,
     handleCreateColumn,
     handleCreateTask,
+    handleConfirmTeamPageDelete,
     handleRenameColumn,
     isTeamRouteLoading,
     isCreateColumnOpen,
     isCreateTaskOpen,
-    leaveFallbackRoute,
     setColumnPendingDelete,
     setColumnPendingRename,
     setIsCreateColumnOpen,
     setIsCreateTaskOpen,
-  } = useTaskListPageShell({
+  } = useTaskListPageShellQuery({
     onSelectDate: setSelectedDate,
     selectedDate,
     teamId,
     taskId,
   });
-
-  const handleConfirmDeleteColumnWithNav = async () => {
-    if (!columnPendingDelete) {
-      return;
-    }
-
-    const wasActive = columnPendingDelete.id === taskId;
-    const nextColumnId = columns.find(
-      (column) => column.id !== columnPendingDelete.id,
-    )?.id;
-
-    await handleConfirmDeleteColumn();
-
-    if (wasActive) {
-      router.replace(
-        nextColumnId
-          ? ROUTES.TASK_LIST_ITEM(teamId, nextColumnId)
-          : ROUTES.TEAM(teamId),
-      );
-    }
-  };
-
-  const handleConfirmTeamPageDelete = async () => {
-    await deleteGroup(teamId);
-    await refetchUserQueries(queryClient);
-    showToast('삭제되었습니다.', 'error');
-    router.replace(leaveFallbackRoute);
-  };
 
   if (isTeamRouteLoading || !hasAccessibleTeamRoute) {
     return null;
@@ -159,7 +120,7 @@ export default function TaskListPageShell({
       {columnPendingDelete && (
         <TaskListColumnDeleteModal
           onClose={() => setColumnPendingDelete(null)}
-          onConfirm={handleConfirmDeleteColumnWithNav}
+          onConfirm={handleConfirmDeleteColumnWithNavigation}
           taskListTitle={columnPendingDelete.title}
         />
       )}

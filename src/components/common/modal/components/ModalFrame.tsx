@@ -23,17 +23,21 @@
 import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
 
 import { IcAlertCircleLarge, IcCloseMedium } from '@/assets/index';
+import { cn } from '@/utils/cn';
 
 import { ModalFrameProps } from '../types';
 
 export default function ModalFrame({
+  bodyClassName,
   children,
+  frameClassName,
   hasIcon,
   hasCloseButton = true,
   title,
   subTitle,
   description,
   subDescription,
+  mobilePosition = 'bottom',
   lineButtonText,
   onLineButtonClick,
   primaryButtonText,
@@ -43,6 +47,7 @@ export default function ModalFrame({
   onSubButtonClick,
   isButtonAlign,
   onClose,
+  overlayClassName,
 }: ModalFrameProps) {
   const handleKeyDownCapture = (event: ReactKeyboardEvent<HTMLDivElement>) => {
     if (
@@ -91,12 +96,24 @@ export default function ModalFrame({
 
   return (
     <div
-      className="fixed top-0 left-0 right-0 bottom-0 flex 
-      justify-center items-end-safe md:justify-center md:items-center md:px-4 bg-black/60 z-999"
+      className={cn(
+        'fixed inset-0 z-999 flex bg-black/60',
+        mobilePosition === 'center'
+          ? 'items-center justify-center px-4 py-6 md:px-4'
+          : 'items-end-safe justify-center md:items-center md:px-4',
+        overlayClassName,
+      )}
       onClick={onClose}
     >
       <div
-        className="w-full bg-white rounded-tl-xl rounded-tr-xl p-10 pb-8 min-w-80 relative text-center md:max-w-sm md:rounded-3xl"
+        className={cn(
+          'relative w-full bg-white text-center',
+          mobilePosition === 'center'
+            ? 'max-h-[calc(100dvh-3rem)] overflow-y-auto rounded-3xl p-6 pb-6'
+            : 'rounded-tl-xl rounded-tr-xl p-10 pb-8 min-w-80 md:rounded-3xl',
+          'md:max-w-sm',
+          frameClassName,
+        )}
         onClick={(e) => e.stopPropagation()}
         onKeyDownCapture={handleKeyDownCapture}
       >
@@ -140,7 +157,9 @@ export default function ModalFrame({
         {subDescription && (
           <p className="text-sm text-gray-400">{subDescription}</p>
         )}
-        {children && <div className="w-full mt-4">{children}</div>}
+        {children && (
+          <div className={cn('mt-4 w-full', bodyClassName)}>{children}</div>
+        )}
         <div
           className={`flex gap-2 mt-6 w-full mx-auto ${isButtonAlign ? 'flex-col px-4' : 'flex-row px-0'} max-w-90`}
         >

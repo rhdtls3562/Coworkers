@@ -1,9 +1,14 @@
+/**
+ * 선택한 할 일 목록 상세 리스트 페이지의 서버 래퍼입니다.
+ */
+
 import TaskListPageShell from '@/app/(service)/[teamid]/tasklist/components/TaskListPageShell';
+import type { TaskListItemPageParams } from '@/app/(service)/[teamid]/tasklist/types';
 
 export default async function TaskListItemPage({
   params,
 }: {
-  params: Promise<{ teamid: string; taskid: string }>;
+  params: TaskListItemPageParams;
 }) {
   const { teamid, taskid } = await params;
 

@@ -1,15 +1,13 @@
-'use client';
+/**
+ * 오른쪽 패널 댓글 입력창과 전송 버튼입니다.
+ */
 
 import { type ChangeEvent, type KeyboardEvent, useRef, useState } from 'react';
 
 import Image from 'next/image';
 
+import type { TaskListTaskDetailCommentInputProps } from '@/app/(service)/[teamid]/tasklist/types';
 import { IcArrowUpCircle, IcArrowUpCircleActive, IcUserLarge } from '@/assets';
-
-type TaskListTaskDetailCommentInputProps = {
-  onSubmit: (content: string) => void;
-  userImage: string | null;
-};
 
 export default function TaskListTaskDetailCommentInput({
   onSubmit,

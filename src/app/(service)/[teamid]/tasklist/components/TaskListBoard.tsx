@@ -12,11 +12,11 @@ import TaskListTaskDeleteModal from '@/app/(service)/[teamid]/tasklist/component
 import TaskListTaskDetailPanel from '@/app/(service)/[teamid]/tasklist/components/TaskListTaskDetailPanel';
 import TaskListTaskRow from '@/app/(service)/[teamid]/tasklist/components/TaskListTaskRow';
 import TaskListWeekStrip from '@/app/(service)/[teamid]/tasklist/components/TaskListWeekStrip';
-import { useTaskListBoard } from '@/app/(service)/[teamid]/tasklist/hooks/useTaskListBoard';
 import {
   TASK_LIST_BOARD_CARD_SHELL_CLASS,
   TASK_LIST_BOARD_COLUMN_TITLE_CLASS,
-} from '@/app/(service)/[teamid]/tasklist/taskListBoardConstants';
+} from '@/app/(service)/[teamid]/tasklist/constants/taskListBoardConstants';
+import { useTaskListBoardQuery } from '@/app/(service)/[teamid]/tasklist/hooks/useTaskListBoardQuery';
 import type {
   TaskListBoardProps,
   TaskListTaskDetailOpenMode,
@@ -43,7 +43,7 @@ export default function TaskListBoard({
     isTaskListEmpty,
     sortedTasks,
     taskPendingDelete,
-  } = useTaskListBoard(groupId, taskListId, selectedDate);
+  } = useTaskListBoardQuery({ groupId, selectedDate, taskListId });
 
   const handleOpenTaskDetail = useCallback(
     (task: (typeof sortedTasks)[number], mode: TaskListTaskDetailOpenMode) => {

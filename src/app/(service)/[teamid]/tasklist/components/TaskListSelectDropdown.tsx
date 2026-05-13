@@ -2,26 +2,10 @@
  * 할 일 목록(tasklist) 전용 선택 드롭다운. 공용 SelectDropdown과 분리합니다.
  */
 
-'use client';
-
+import type { TaskListSelectDropdownProps } from '@/app/(service)/[teamid]/tasklist/types';
 import { IcDownArrowLarge, IcDownArrowSmall } from '@/assets';
 import { useDropdown } from '@/components/common/dropdown/hooks/useDropdown';
 import { cn } from '@/utils/cn';
-
-export type TaskListSelectDropdownItem<T extends string> = {
-  label: string;
-  value: T;
-};
-
-type TaskListSelectDropdownProps<T extends string> = {
-  items: TaskListSelectDropdownItem<T>[];
-  value: T;
-  onChange: (value: T) => void;
-  placeholder?: string;
-  className?: string;
-  buttonClassName?: string;
-  menuClassName?: string;
-};
 
 export default function TaskListSelectDropdown<T extends string>({
   items,
@@ -31,14 +15,22 @@ export default function TaskListSelectDropdown<T extends string>({
   className,
   buttonClassName,
   menuClassName,
+  variant = 'overlay',
 }: TaskListSelectDropdownProps<T>) {
   const { isOpen, toggle, close, containerRef } = useDropdown();
+  const isInlineExpand = variant === 'inlineExpand';
 
   const selectedLabel =
     items.find((item) => item.value === value)?.label ?? placeholder;
 
   return (
-    <div ref={containerRef} className={cn('relative inline-block', className)}>
+    <div
+      ref={containerRef}
+      className={cn(
+        isInlineExpand ? 'flex w-full flex-col' : 'relative inline-block',
+        className,
+      )}
+    >
       <button
         type="button"
         onClick={toggle}
@@ -76,7 +68,9 @@ export default function TaskListSelectDropdown<T extends string>({
         <ul
           role="listbox"
           className={cn(
-            'absolute left-0 top-full z-10 mt-2 flex w-full flex-col overflow-hidden rounded-xl border border-border-secondary bg-background-primary p-0',
+            isInlineExpand
+              ? 'flex w-full flex-col overflow-hidden rounded-xl border border-brand-primary bg-background-primary p-0 shadow-lg mt-4'
+              : 'absolute left-0 top-full z-10 mt-2 flex w-full flex-col overflow-hidden rounded-xl border border-border-secondary bg-background-primary p-0',
             menuClassName,
           )}
         >

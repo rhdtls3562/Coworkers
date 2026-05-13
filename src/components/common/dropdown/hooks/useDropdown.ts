@@ -21,7 +21,7 @@ export function useDropdown(
   const close = useCallback(() => setIsOpen(false), []);
 
   useEffect(() => {
-    const handleOutsideClick = (event: MouseEvent) => {
+    const handleOutsidePointerDown = (event: PointerEvent) => {
       const target = event.target as Node;
 
       const isInsideContainer = containerRef.current?.contains(target);
@@ -34,12 +34,20 @@ export function useDropdown(
       }
     };
 
+    const handleEscapeKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        close();
+      }
+    };
+
     if (isOpen) {
-      document.addEventListener('mousedown', handleOutsideClick);
+      document.addEventListener('pointerdown', handleOutsidePointerDown);
+      document.addEventListener('keydown', handleEscapeKeyDown);
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleOutsideClick);
+      document.removeEventListener('pointerdown', handleOutsidePointerDown);
+      document.removeEventListener('keydown', handleEscapeKeyDown);
     };
   }, [isOpen, close, ignoreRefs]);
 

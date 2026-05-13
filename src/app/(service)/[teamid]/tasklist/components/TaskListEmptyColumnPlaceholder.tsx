@@ -2,16 +2,11 @@
  * 할 일 목록(컬럼)이 없을 때 표시하는 빈 상태 한 줄입니다. (피그마: 제목 없음 + 0/0 + 메뉴)
  */
 
-'use client';
-
+import type { TaskListEmptyColumnPlaceholderProps } from '@/app/(service)/[teamid]/tasklist/types';
 import { IcMoreVerticalLarge } from '@/assets';
 import { Badge } from '@/components/common/badge';
 import { ListDropdown } from '@/components/common/dropdown';
 import { cn } from '@/utils/cn';
-
-type TaskListEmptyColumnPlaceholderProps = {
-  className?: string;
-};
 
 export default function TaskListEmptyColumnPlaceholder({
   className,
