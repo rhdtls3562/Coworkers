@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ReactNode, RefObject } from 'react';
 
 export type RightPanelComment = {
   authorId?: string;
@@ -71,6 +71,40 @@ export type TaskDetailPanelContentProps = {
   taskId: string;
   taskListId: string;
   teamId: string;
+  title: string;
+};
+
+export type TaskDetailPanelContentLayoutProps = {
+  assigneeImage?: string | null;
+  assigneeName: string;
+  commentCount: number;
+  comments: readonly RightPanelComment[];
+  completionActionLabel?: string;
+  currentUserImage?: string;
+  description: string;
+  draftCommentContent: string;
+  draftDescription: string;
+  draftTitle: string;
+  editingCommentId: string | null;
+  frequency: string;
+  isCommentSubmitting: boolean;
+  isSubmittingNewComment: boolean;
+  isSubmittingTaskAction: boolean;
+  isTaskEditing: boolean;
+  onCancelCommentEdit: () => void;
+  onChangeDraftCommentContent: (value: string) => void;
+  onChangeDraftDescription: (value: string) => void;
+  onChangeDraftTitle: (value: string) => void;
+  onCreateComment: (content: string) => Promise<boolean>;
+  onDelete: () => void;
+  onDeleteComment: (commentId: string) => Promise<void> | void;
+  onStartCommentEdit: (comment: RightPanelComment) => void;
+  onStartEdit: () => void;
+  onSubmitCommentEdit: () => Promise<void> | void;
+  onSubmitEdit: () => Promise<boolean> | void;
+  onToggleCompletion: () => Promise<boolean> | void;
+  scrollContainerRef: RefObject<HTMLDivElement | null>;
+  startedAt: string;
   title: string;
 };
 

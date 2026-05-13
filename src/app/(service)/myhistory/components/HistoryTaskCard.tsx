@@ -40,7 +40,12 @@ export default function HistoryTaskCard({ task }: HistoryTaskCardProps) {
 
       <div className="relative z-10 min-w-0 flex-1 pointer-events-none">
         <div className="flex min-w-0 items-center gap-2">
-          <TodoCheckUncheck label={task.title} checked={task.isCompleted} />
+          <div
+            className="pointer-events-auto min-w-0"
+            onClick={handleOpenDetailPanel}
+          >
+            <TodoCheckUncheck label={task.title} checked={task.isCompleted} />
+          </div>
           <span className="flex shrink-0 items-center gap-1 text-sm font-medium text-text-default">
             <IcComment
               width={22}
