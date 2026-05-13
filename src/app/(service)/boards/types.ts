@@ -3,6 +3,8 @@ import {
   BOARD_ORDER_BY,
 } from '@/app/(service)/boards/constants';
 
+export type ArticleSubmitAction = 'create' | 'update';
+
 export type Writer = {
   id: number;
   image?: string | null;

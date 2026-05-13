@@ -1,68 +1,25 @@
 'use client';
 
-import { useParams, usePathname, useRouter } from 'next/navigation';
-
 import BoardDetailCommentComposer from '@/app/(service)/boards/[articleId]/components/BoardDetailCommentComposer';
 import BoardDetailCommentItem from '@/app/(service)/boards/[articleId]/components/BoardDetailCommentItem';
-import { TEAM_ID } from '@/app/(service)/boards/[articleId]/constants';
-import { useSortedComments } from '@/app/(service)/boards/[articleId]/hooks/useSortedComments';
-import type {
-  Comment,
-  UserProfileResponse,
-} from '@/app/(service)/boards/[articleId]/types';
-import { useInfinitePages } from '@/app/(service)/boards/hooks/useInfinitePages';
-import { useInfiniteScrollObserver } from '@/app/(service)/boards/hooks/useInfiniteScrollObserver';
-import { useArticleCommentsInfiniteQuery } from '@/hooks/useArticleComment';
-import { buildLoginPath } from '@/utils/authRedirect';
+import { useBoardDetailComments } from '@/app/(service)/boards/[articleId]/hooks/useBoardDetailComments';
+import type { BoardDetailCommentsProps } from '@/app/(service)/boards/[articleId]/types';
 
 export default function BoardDetailComments({
   commentCount,
   userProfile,
-}: {
-  commentCount: number;
-  userProfile: UserProfileResponse | null;
-}) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const params = useParams<{ articleId: string }>();
-  const articleId = Number(params.articleId);
-  const isValidArticleId = Number.isFinite(articleId);
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useArticleCommentsInfiniteQuery({
-      articleId,
-      options: {
-        enabled: isValidArticleId,
-      },
-      teamId: TEAM_ID,
-    });
-  const comments = useInfinitePages<Comment>({ pages: data?.pages });
-  const sortedComments = useSortedComments({
-    comments,
-    userId: userProfile?.id,
-  });
-  const hasVisibleComments = sortedComments.length > 0;
-  const sentinelRef = useInfiniteScrollObserver({
-    fetchNextPage,
+}: BoardDetailCommentsProps) {
+  const {
+    articleId,
+    currentUserId,
+    handleCommentMutated,
+    handleRequireAuth,
     hasNextPage,
-    isFetchingNextPage,
-  });
-  const isAuthenticated = Boolean(userProfile);
-  const handleCommentMutated = () => {
-    router.refresh();
-  };
-
-  const handleRequireAuth = () => {
-    if (isAuthenticated) {
-      return;
-    }
-
-    router.push(
-      buildLoginPath({
-        notice: 'auth-required',
-        redirectTo: pathname,
-      }),
-    );
-  };
+    hasVisibleComments,
+    isAuthenticated,
+    sentinelRef,
+    sortedComments,
+  } = useBoardDetailComments({ userProfile });
 
   return (
     <div className="pb-9.75 md:pb-13.5">
@@ -92,7 +49,7 @@ export default function BoardDetailComments({
                   key={comment.id}
                   articleId={articleId}
                   comment={comment}
-                  currentUserId={userProfile?.id}
+                  currentUserId={currentUserId}
                   onDeleteSuccess={handleCommentMutated}
                 />
               ))}

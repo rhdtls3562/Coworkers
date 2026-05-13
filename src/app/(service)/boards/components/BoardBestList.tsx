@@ -6,6 +6,7 @@ import {
   BOARD_BEST_LIST_PARAMS,
   BOARD_DEVICE_TYPE,
   BOARD_DEVICE_TYPE_LIMIT,
+  TEAM_ID,
 } from '@/app/(service)/boards/constants';
 import useBestPostsMemo from '@/app/(service)/boards/hooks/useBestPostsMemo';
 import { useBoardPagination } from '@/app/(service)/boards/hooks/useBoardPagination';
@@ -16,8 +17,6 @@ import {
 } from '@/app/(service)/boards/utils/boardListUtils';
 import { useArticleListQuery } from '@/hooks/useArticle';
 import useDeviceType from '@/hooks/useDeviceType';
-
-const TEAM_ID = process.env.NEXT_PUBLIC_TEAM_ID ?? '';
 
 export default function BoardBestList() {
   const deviceType = useDeviceType();

@@ -1,5 +1,9 @@
 import type { ArticleListQueryParams } from '@/api/queryKeys';
-import type { ArticleSubmitAction } from '@/app/(service)/boards/utils/boardFormUtils';
+
+export const TEAM_ID = process.env.NEXT_PUBLIC_TEAM_ID ?? '';
+
+/** 검색 파라미터 등에서 불린 플래그를 켤 때 사용하는 값 (`?write=`, `?edit=` 등) */
+export const BOARD_URL_QUERY_FLAG_ENABLED = 'true';
 
 export const BOARD_ORDER_BY = {
   RECENT: 'recent',
@@ -39,7 +43,12 @@ export const BOARD_SORT_OPTIONS = [
   { label: '좋아요순', value: 'likes' },
 ] as const;
 
-export const ARTICLE_SUBMIT_FALLBACK: Record<ArticleSubmitAction, string> = {
+export const BOARD_SORT_VALUE = {
+  LATEST: BOARD_SORT_OPTIONS[0].value,
+  LIKES: BOARD_SORT_OPTIONS[1].value,
+} as const;
+
+export const ARTICLE_SUBMIT_FALLBACK = {
   create: '등록 중 오류가 발생했습니다.',
   update: '수정 중 오류가 발생했습니다.',
-};
+} satisfies Record<'create' | 'update', string>;

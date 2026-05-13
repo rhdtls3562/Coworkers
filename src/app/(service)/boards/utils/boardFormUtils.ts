@@ -4,12 +4,11 @@
 
 import type { ApiError, ArticleBody } from '@/api/types';
 import { ARTICLE_SUBMIT_FALLBACK } from '@/app/(service)/boards/constants';
+import type { ArticleSubmitAction } from '@/app/(service)/boards/types';
 
 export const isRequiredTextValid = (value: string) => {
   return value.trim().length > 0;
 };
-
-export type ArticleSubmitAction = 'create' | 'update';
 
 function isApiError(error: unknown): error is ApiError {
   if (!(error instanceof Error)) {

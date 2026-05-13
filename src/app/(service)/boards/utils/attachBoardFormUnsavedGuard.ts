@@ -3,26 +3,13 @@
  */
 
 import shouldBlockBoardFormInteraction from '@/app/(service)/boards/utils/boardFormShouldBlockInteraction';
+import {
+  BOARD_FORM_UNSAVED_TOAST_COPY,
+  BOARD_FORM_UNSAVED_TOAST_DURATION,
+  type BoardFormUnsavedIntent,
+} from '@/app/(service)/boards/utils/boardFormUnsavedGuardConstants';
 import type { ToastAction } from '@/components/common/toast/types';
 import { ROUTES } from '@/constants/ROUTES';
-
-const BOARD_FORM_UNSAVED_TOAST_DURATION = 3000;
-
-export type BoardFormUnsavedIntent = 'create' | 'edit';
-
-const UNSAVED_TOAST_COPY: Record<
-  BoardFormUnsavedIntent,
-  { discardLabel: string; message: string }
-> = {
-  create: {
-    message: '아직 게시글을 작성하지 않았어요!',
-    discardLabel: '작성 취소',
-  },
-  edit: {
-    message: '저장하지 않은 변경사항이 있어요!',
-    discardLabel: '변경사항 취소',
-  },
-};
 
 type ShowToastFn = (
   message: string,
@@ -49,7 +36,7 @@ export function attachBoardFormUnsavedGuard({
   showToast,
   toastTimeoutRef,
 }: AttachBoardFormUnsavedGuardParams): () => void {
-  const { discardLabel, message } = UNSAVED_TOAST_COPY[intent];
+  const { discardLabel, message } = BOARD_FORM_UNSAVED_TOAST_COPY[intent];
 
   const moveToBoardsMain = () => {
     onDiscardChanges();
@@ -62,6 +49,18 @@ export function attachBoardFormUnsavedGuard({
     }
 
     return target.textContent?.trim() === discardLabel;
+  };
+
+  const tryHandleDiscardButtonInteraction = (event: Event) => {
+    if (!isDiscardToastButton(event.target)) {
+      return false;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+    moveToBoardsMain();
+    return true;
   };
 
   const showUnsavedChangesToast = () => {
@@ -93,11 +92,7 @@ export function attachBoardFormUnsavedGuard({
   };
 
   const handlePointerDownCapture = (event: PointerEvent) => {
-    if (isDiscardToastButton(event.target)) {
-      event.preventDefault();
-      event.stopPropagation();
-      event.stopImmediatePropagation();
-      moveToBoardsMain();
+    if (tryHandleDiscardButtonInteraction(event)) {
       return;
     }
 
@@ -110,11 +105,7 @@ export function attachBoardFormUnsavedGuard({
   };
 
   const handleClickCapture = (event: MouseEvent) => {
-    if (isDiscardToastButton(event.target)) {
-      event.preventDefault();
-      event.stopPropagation();
-      event.stopImmediatePropagation();
-      moveToBoardsMain();
+    if (tryHandleDiscardButtonInteraction(event)) {
       return;
     }
 

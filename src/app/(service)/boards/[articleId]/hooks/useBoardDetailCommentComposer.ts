@@ -73,11 +73,17 @@ export function useBoardDetailCommentComposer({
     handleSubmit();
   };
 
+  const hasDraft = draft.trim().length > 0;
+  const isCreatePending = createMutation.isPending;
+  const isSubmitEnabled = isAuthenticated && hasDraft && !isCreatePending;
+  const isButtonDisabled = isAuthenticated && !isSubmitEnabled;
+
   return {
     draft,
     setDraft,
-    handleSubmit,
     handleKeyDown,
-    isCreatePending: createMutation.isPending,
+    handleSubmit,
+    isButtonDisabled,
+    isSubmitEnabled,
   };
 }

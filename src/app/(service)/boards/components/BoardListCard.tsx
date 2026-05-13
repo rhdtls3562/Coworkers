@@ -1,6 +1,6 @@
-import Image from 'next/image';
 import Link from 'next/link';
 
+import BoardPostImageWithFallback from '@/app/(service)/boards/components/BoardPostImageWithFallback';
 import type { Post } from '@/app/(service)/boards/types';
 import {
   formatDateToYmd,
@@ -28,12 +28,12 @@ export default function BoardListCard({ post }: { post: Post }) {
         </div>
         {post.image && (
           <div className="shrink-0 rounded-lg overflow-hidden w-20 h-20 md:w-22 md:h-22">
-            <Image
+            <BoardPostImageWithFallback
               src={post.image}
               alt={`${post.title} 게시글 이미지`}
               width={80}
               height={80}
-              className="object-cover object-center w-full h-full md:w-22 md:h-22"
+              className="object-cover object-center h-full w-full md:w-22 md:h-22"
             />
           </div>
         )}

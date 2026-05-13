@@ -1,6 +1,8 @@
-import Image from 'next/image';
+'use client';
 
-import { IcUserXlarge } from '@/assets';
+import { CommentWriterAvatarView } from '@/app/(service)/boards/[articleId]/components/CommentWriterAvatarView';
+import { useImageLoadFallback } from '@/app/(service)/boards/hooks/useImageLoadFallback';
+import { getBoardImageRemountKey } from '@/app/(service)/boards/utils/boardImageKeys';
 import { cn } from '@/utils/cn';
 
 type CommentWriterAvatarProps = {
@@ -12,6 +14,39 @@ type CommentWriterAvatarProps = {
   imageClassName?: string;
   iconClassName?: string;
 };
+
+type CommentWriterAvatarBodyProps = {
+  image: string | null;
+  nickname: string;
+  width: number;
+  height: number;
+  imageClassName?: string;
+  iconClassName?: string;
+};
+
+function CommentWriterAvatarBody({
+  image,
+  nickname,
+  width,
+  height,
+  imageClassName,
+  iconClassName,
+}: CommentWriterAvatarBodyProps) {
+  const { isRemoteFailed, onRemoteError } = useImageLoadFallback();
+
+  return (
+    <CommentWriterAvatarView
+      image={image}
+      nickname={nickname}
+      width={width}
+      height={height}
+      imageClassName={imageClassName}
+      iconClassName={iconClassName}
+      isRemoteFailed={isRemoteFailed}
+      onRemoteError={onRemoteError}
+    />
+  );
+}
 
 export default function CommentWriterAvatar({
   image,
@@ -29,23 +64,15 @@ export default function CommentWriterAvatar({
         containerClassName,
       )}
     >
-      {image ? (
-        <Image
-          src={image}
-          alt={nickname}
-          width={width}
-          height={height}
-          className={cn('size-7 object-cover md:size-9', imageClassName)}
-        />
-      ) : (
-        <IcUserXlarge
-          width={width}
-          height={height}
-          className={cn('size-7 object-cover md:size-9', iconClassName)}
-          role="img"
-          aria-label={`${nickname}의 프로필 이미지`}
-        />
-      )}
+      <CommentWriterAvatarBody
+        key={getBoardImageRemountKey(image)}
+        image={image}
+        nickname={nickname}
+        width={width}
+        height={height}
+        imageClassName={imageClassName}
+        iconClassName={iconClassName}
+      />
     </div>
   );
 }

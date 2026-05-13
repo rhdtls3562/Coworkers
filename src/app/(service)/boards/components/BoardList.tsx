@@ -6,6 +6,7 @@ import {
   BOARD_LIST_LOAD_MORE_ROOT_MARGIN,
   BOARD_MAIN_LIST_PARAMS,
   BOARD_SORT_OPTIONS,
+  TEAM_ID,
 } from '@/app/(service)/boards/constants';
 import { useInfinitePages } from '@/app/(service)/boards/hooks/useInfinitePages';
 import { useInfiniteScrollObserver } from '@/app/(service)/boards/hooks/useInfiniteScrollObserver';
@@ -14,8 +15,6 @@ import type { BoardListProps, Post } from '@/app/(service)/boards/types';
 import { hasPosts } from '@/app/(service)/boards/utils/boardListUtils';
 import SelectDropdown from '@/components/common/dropdown/components/SelectDropdown';
 import { useArticleInfiniteListQuery } from '@/hooks/useArticle';
-
-const TEAM_ID = process.env.NEXT_PUBLIC_TEAM_ID ?? '';
 
 export default function BoardList({ isSearchMode, keyword }: BoardListProps) {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =

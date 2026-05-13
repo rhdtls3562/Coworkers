@@ -1,6 +1,5 @@
-import Image from 'next/image';
-
 import type { BoardDetailProps } from '@/app/(service)/boards/[articleId]/types';
+import BoardPostImageWithFallback from '@/app/(service)/boards/components/BoardPostImageWithFallback';
 
 export default function BoardDetailContent({ boardDetail }: BoardDetailProps) {
   return (
@@ -10,12 +9,12 @@ export default function BoardDetailContent({ boardDetail }: BoardDetailProps) {
       </p>
       {boardDetail.image && (
         <div className="w-35 h-35 mt-5 md:mt-6 md:w-50 md:h-50 rounded-xl overflow-hidden">
-          <Image
+          <BoardPostImageWithFallback
             src={boardDetail.image}
             alt={`${boardDetail.title} 게시글 이미지`}
             width={140}
             height={140}
-            className="object-cover object-center w-full h-full"
+            className="object-cover object-center h-full w-full"
           />
         </div>
       )}

@@ -4,11 +4,11 @@
 
 'use client';
 
-import Image from 'next/image';
-
+import BoardDetailCommentComposerProfileAvatar from '@/app/(service)/boards/[articleId]/components/BoardDetailCommentComposerProfileAvatar';
 import { useBoardDetailCommentComposer } from '@/app/(service)/boards/[articleId]/hooks/useBoardDetailCommentComposer';
 import type { UserProfileResponse } from '@/app/(service)/boards/[articleId]/types';
-import { IcArrowUpCircle, IcArrowUpCircleActive, IcUserXlarge } from '@/assets';
+import { getBoardImageRemountKey } from '@/app/(service)/boards/utils/boardImageKeys';
+import { IcArrowUpCircle, IcArrowUpCircleActive } from '@/assets';
 
 type BoardDetailCommentComposerProps = {
   articleId: number;
@@ -25,41 +25,33 @@ export default function BoardDetailCommentComposer({
   onRequireAuth,
   userProfile,
 }: BoardDetailCommentComposerProps) {
-  const { draft, setDraft, handleSubmit, handleKeyDown, isCreatePending } =
-    useBoardDetailCommentComposer({
-      articleId,
-      isAuthenticated,
-      onCreateSuccess,
-      onRequireAuth,
-    });
-  const hasDraft = draft.trim().length > 0;
-  const isSubmitEnabled = isAuthenticated && hasDraft && !isCreatePending;
-  const isButtonDisabled = isAuthenticated && !isSubmitEnabled;
+  const {
+    draft,
+    setDraft,
+    handleKeyDown,
+    handleSubmit,
+    isButtonDisabled,
+    isSubmitEnabled,
+  } = useBoardDetailCommentComposer({
+    articleId,
+    isAuthenticated,
+    onCreateSuccess,
+    onRequireAuth,
+  });
 
   return (
     <div className="flex items-center gap-3 mt-3 md:mt-4 md:gap-4">
       <div className="overflow-hidden size-7 rounded-md bg-background-tertiary flex items-center justify-center md:size-8">
-        {userProfile?.image ? (
-          <Image
-            src={userProfile.image}
-            width={28}
-            height={28}
-            alt={`${userProfile.nickname}의 프로필 이미지`}
-            className="size-7 object-cover md:size-8"
-          />
-        ) : (
-          <IcUserXlarge
-            width={28}
-            height={28}
-            className="size-7 md:size-8"
-            role="img"
-            aria-label={
-              userProfile
-                ? `${userProfile.nickname}의 프로필 이미지`
-                : '게스트 프로필 이미지'
-            }
-          />
-        )}
+        <BoardDetailCommentComposerProfileAvatar
+          key={getBoardImageRemountKey(userProfile?.image)}
+          image={userProfile?.image ?? null}
+          nickname={userProfile?.nickname ?? ''}
+          guestAriaLabel={
+            userProfile
+              ? `${userProfile.nickname}의 프로필 이미지`
+              : '게스트 프로필 이미지'
+          }
+        />
       </div>
       <div className="flex min-w-0 flex-1 items-center gap-2 border-y border-background-tertiary px-3 py-2 md:gap-3 md:py-3">
         <input

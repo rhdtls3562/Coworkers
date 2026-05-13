@@ -59,3 +59,8 @@ export type CommentListResponse = {
   nextCursor: number | null;
   list: Comment[];
 };
+
+export type BoardDetailCommentsProps = {
+  commentCount: number;
+  userProfile: UserProfileResponse | null;
+};

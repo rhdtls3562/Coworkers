@@ -6,10 +6,8 @@
 
 import { useEffect, useRef } from 'react';
 
-import {
-  attachBoardFormUnsavedGuard,
-  type BoardFormUnsavedIntent,
-} from '@/app/(service)/boards/utils/attachBoardFormUnsavedGuard';
+import { attachBoardFormUnsavedGuard } from '@/app/(service)/boards/utils/attachBoardFormUnsavedGuard';
+import type { BoardFormUnsavedIntent } from '@/app/(service)/boards/utils/boardFormUnsavedGuardConstants';
 import { useToast } from '@/components/common/toast';
 
 type UseBoardFormUnsavedChangesGuardParams = {

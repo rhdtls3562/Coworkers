@@ -10,6 +10,7 @@ import BoardCreateForm from '@/app/(service)/boards/components/BoardCreateForm';
 import BoardHeader from '@/app/(service)/boards/components/BoardHeader';
 import BoardList from '@/app/(service)/boards/components/BoardList';
 import BoardWriteFloatingButton from '@/app/(service)/boards/components/BoardWriteFloatingButton';
+import { BOARD_URL_QUERY_FLAG_ENABLED } from '@/app/(service)/boards/constants';
 import { isSearchMode } from '@/app/(service)/boards/utils/boardListUtils';
 import { ROUTES } from '@/constants/ROUTES';
 import { buildLoginPath } from '@/utils/authRedirect';
@@ -22,7 +23,7 @@ export default async function BoardsPage({
   const parsedParams = await searchParams;
   const keyword = parsedParams.keyword;
   const isSearchModeValue = isSearchMode(keyword);
-  const isWriteMode = parsedParams.write === 'true';
+  const isWriteMode = parsedParams.write === BOARD_URL_QUERY_FLAG_ENABLED;
 
   if (isWriteMode) {
     const cookieStore = await cookies();
@@ -32,7 +33,7 @@ export default async function BoardsPage({
       redirect(
         buildLoginPath({
           notice: 'auth-required',
-          redirectTo: `${ROUTES.BOARDS}?write=true`,
+          redirectTo: `${ROUTES.BOARDS}?write=${BOARD_URL_QUERY_FLAG_ENABLED}`,
         }),
       );
     }
