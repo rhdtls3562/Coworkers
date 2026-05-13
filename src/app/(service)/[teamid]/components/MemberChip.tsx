@@ -11,12 +11,16 @@ export default function MemberChip({
     <div className="border-background-tertiary border rounded-lg flex gap-2 h-8 pr-2 pl-3 justify-center items-center  ">
       <div className="flex flex-row">
         {members.map((member) => (
-          <UserAvatar
+          <div
             key={member.userId}
-            userImage={member.userImage}
-            userName={member.userName}
-            size={24}
-          />
+            className="border-background-tertiary border rounded-lg flex h-6 w-6 overflow-hidden justify-center items-center -ml-2 "
+          >
+            <UserAvatar
+              userImage={member.userImage}
+              userName={member.userName}
+              size={24}
+            />
+          </div>
         ))}
       </div>
       <p className="text-text-default text-sm font-medium">{members.length}</p>
