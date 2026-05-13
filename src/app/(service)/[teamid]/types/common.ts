@@ -4,7 +4,7 @@
 
 import type { ReactNode } from 'react';
 
-import { MODAL_TYPE, ROLE } from '@/app/(service)/[teamid]/constants';
+import { MODAL_TYPE } from '@/app/(service)/[teamid]/constants';
 
 /** 모달 키 식별자 - 열려있는 모달 종류를 구분 */
 export type ModalKey = (typeof MODAL_TYPE)[number];

@@ -1,9 +1,8 @@
-import Image from 'next/image';
-
 import { ModalMemberProps } from '@/app/(service)/[teamid]/types';
-import { IcUserXlarge } from '@/assets/index';
 import Modal from '@/components/common/modal';
 import { useToast } from '@/components/common/toast';
+
+import UserAvatar from '../UserImage';
 
 // 멤버 개인 정보
 export function ModalMemberDetail({
@@ -49,23 +48,11 @@ export function ModalMemberDetail({
     >
       <div className="flex flex-col justify-center items-center">
         <div className="rounded-xl mb-4 w-10 h-10 overflow-hidden  bg-background-tertiary">
-          {member.userImage ? (
-            <Image
-              src={member.userImage}
-              alt={`${member.userName} 프로필 이미지`}
-              width={40}
-              height={40}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <IcUserXlarge
-              width={40}
-              height={40}
-              className="w-full h-full"
-              role="img"
-              aria-label={`${member.userName} 프로필 이미지`}
-            />
-          )}
+          <UserAvatar
+            userImage={member.userImage}
+            userName={member.userName}
+            size={40}
+          />
         </div>
         <p className="text-base text-text-primary font-semibold mb-1">
           {member?.userName}

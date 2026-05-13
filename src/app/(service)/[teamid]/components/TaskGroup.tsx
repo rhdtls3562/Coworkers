@@ -1,6 +1,6 @@
 import { ModalTaskAdd } from '@/app/(service)/[teamid]/components/modals/ModalTaskAddEdit';
 import TaskItem from '@/app/(service)/[teamid]/components/TaskItem';
-import { EMPTY_MESSAGE, STATUS } from '@/app/(service)/[teamid]/constants';
+import { EMPTY_MESSAGE } from '@/app/(service)/[teamid]/constants';
 import { useModalState } from '@/app/(service)/[teamid]/hooks/useModalState';
 import { TaskProps } from '@/app/(service)/[teamid]/types';
 import { IcPlusSub } from '@/assets/index';
