@@ -42,10 +42,11 @@ export default function useDragScroll(): UseDragScrollReturn {
   };
 
   const handlePointerDown = (event: React.PointerEvent<HTMLElement>) => {
-    if (
-      (event.pointerType === 'mouse' && event.button !== 0) ||
-      !containerRef.current
-    ) {
+    if (event.pointerType !== 'mouse' || event.button !== 0) {
+      return;
+    }
+
+    if (!containerRef.current) {
       return;
     }
 

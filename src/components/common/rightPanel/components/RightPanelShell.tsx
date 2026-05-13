@@ -4,6 +4,9 @@ import RightPanelCloseButton from '@/components/common/rightPanel/components/Rig
 import type { RightPanelShellProps } from '@/components/common/rightPanel/types';
 import { cn } from '@/utils/cn';
 
+/**
+ * 공통 오른쪽 패널의 상단 바, 본문, 하단 액션 영역을 배치하는 셸 컴포넌트입니다.
+ */
 export default function RightPanelShell({
   body,
   className,
@@ -23,7 +26,7 @@ export default function RightPanelShell({
           className,
         )}
       >
-        <div className="flex items-center px-6 pt-6 md:px-8 md:pt-8">
+        <div className="sticky top-0 z-10 flex h-13 items-center  bg-background-inverse px-4 md:static md:h-auto md:border-b-0 md:bg-transparent md:px-8 md:pt-8">
           <RightPanelCloseButton onClose={onClose} />
         </div>
 
@@ -53,11 +56,11 @@ export default function RightPanelShell({
         className,
       )}
     >
-      <div className="flex items-center px-6 pt-6 md:px-8 md:pt-8">
+      <div className="sticky top-0 z-10 flex h-13 items-center border-b border-background-tertiary bg-background-inverse px-4 md:static md:h-auto md:border-b-0 md:bg-transparent md:px-8 md:pt-8">
         <RightPanelCloseButton onClose={onClose} />
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto px-6 pb-36 pt-8 md:px-8 md:pb-40 md:pt-10">
+      <div className="min-h-0 flex-1 overflow-y-auto px-6 pb-36 pt-6 md:px-8 md:pb-40 md:pt-10">
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0 flex-1">{renderedTitle}</div>
           {headerAction}

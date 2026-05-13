@@ -31,7 +31,7 @@ export default function useHistoryTaskCardMutation({
       ? meData.nickname
       : '';
 
-  const handleEdit = () => {
+  const handleOpenDetailPanel = () => {
     openRightPanel({
       content: (
         <TaskDetailPanelContent
@@ -66,7 +66,7 @@ export default function useHistoryTaskCardMutation({
   const dropdownItems = [
     {
       label: HISTORY_TASK_CARD_TEXT.edit,
-      onClick: handleEdit,
+      onClick: handleOpenDetailPanel,
     },
     {
       label: HISTORY_TASK_CARD_TEXT.delete,
@@ -97,6 +97,7 @@ export default function useHistoryTaskCardMutation({
     dropdownItems,
     handleCloseDeleteModal,
     handleConfirmDelete,
+    handleOpenDetailPanel,
     isDeleteModalOpen,
   } as const;
 }

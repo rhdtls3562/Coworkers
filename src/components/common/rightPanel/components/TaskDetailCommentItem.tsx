@@ -108,7 +108,7 @@ export default function TaskDetailCommentItem({
             )}
           </div>
 
-          <div className="mt-2 text-sm font-medium text-interaction-inactive">
+          <div className="mt-2 text-sm font-medium text-interaction-inactive mb-5">
             {comment.meta}
           </div>
         </div>

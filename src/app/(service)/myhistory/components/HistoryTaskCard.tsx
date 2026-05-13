@@ -20,17 +20,25 @@ export default function HistoryTaskCard({ task }: HistoryTaskCardProps) {
     dropdownItems,
     handleCloseDeleteModal,
     handleConfirmDelete,
+    handleOpenDetailPanel,
     isDeleteModalOpen,
   } = useHistoryTaskCardMutation({ task });
 
   return (
     <article
       className={cn(
-        'relative flex items-start rounded-xl border border-background-tertiary px-3.5 py-3',
+        'relative flex items-start overflow-hidden rounded-xl border border-background-tertiary px-3.5 py-3',
         task.isCompleted ? 'bg-background-secondary' : 'bg-background-primary',
       )}
     >
-      <div className="min-w-0 flex-1">
+      <button
+        type="button"
+        aria-label={`${task.title} 상세 열기`}
+        onClick={handleOpenDetailPanel}
+        className="absolute inset-0 z-0 rounded-xl"
+      />
+
+      <div className="relative z-10 min-w-0 flex-1 pointer-events-none">
         <div className="flex min-w-0 items-center gap-2">
           <TodoCheckUncheck label={task.title} checked={task.isCompleted} />
           <span className="flex shrink-0 items-center gap-1 text-sm font-medium text-text-default">
@@ -58,7 +66,7 @@ export default function HistoryTaskCard({ task }: HistoryTaskCardProps) {
       </div>
 
       <ListDropdown
-        className="ml-3 shrink-0"
+        className="relative z-10 ml-3 shrink-0"
         items={dropdownItems}
         trigger={
           <>

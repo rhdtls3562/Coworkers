@@ -109,7 +109,7 @@ export default function TaskDetailPanelContent({
     <div className="flex h-full flex-col">
       <div
         ref={scrollContainerRef}
-        className="min-h-0 flex-1 overflow-y-auto px-6 pb-8 pt-8 md:px-8 md:pb-10 md:pt-10"
+        className="min-h-0 flex-1 overflow-y-auto px-6 pb-8  md:px-8 md:pb-10 md:pt-10"
       >
         <div className="-mx-6 sticky top-0 z-10 bg-background-inverse px-6 pb-6 pt-8 md:static md:mx-0 md:px-0 md:pb-0 md:pt-0">
           <TaskDetailPanelHeader

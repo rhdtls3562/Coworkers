@@ -9,6 +9,16 @@ body {
   font-family: var(--font-sans);
 }
 
+@media (max-width: 767px) {
+  input:not([type='checkbox']):not([type='radio']):not([type='range']):not(
+      [type='color']
+    ),
+  textarea,
+  select {
+    font-size: 16px;
+  }
+}
+
 button,
 [role='button'] {
   cursor: pointer;

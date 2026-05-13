@@ -23,7 +23,7 @@ export default function HistoryFilterTabs({
   return (
     <ul
       ref={containerRef}
-      className="flex cursor-grab gap-1 overflow-x-auto select-none touch-pan-y md:gap-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden active:cursor-grabbing"
+      className="flex cursor-grab gap-1 overflow-x-auto select-none touch-pan-x md:gap-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden active:cursor-grabbing"
       onClickCapture={handleClickCapture}
       onPointerCancel={handlePointerCancel}
       onPointerDown={handlePointerDown}

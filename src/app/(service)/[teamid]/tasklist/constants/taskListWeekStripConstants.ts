@@ -5,7 +5,7 @@
 import { cn } from '@/utils/cn';
 
 export const TASK_LIST_WEEK_STRIP_SCROLL_ROW_CLASS =
-  'flex cursor-grab gap-1 overflow-x-auto select-none touch-pan-y sm:gap-2.5 md:gap-1.5 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden active:cursor-grabbing';
+  'flex cursor-grab gap-1 overflow-x-auto select-none touch-pan-x sm:gap-2.5 md:gap-1.5 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden active:cursor-grabbing';
 
 export const TASK_LIST_WEEK_DAY_CELL_CLASS = cn(
   'shrink-0',
