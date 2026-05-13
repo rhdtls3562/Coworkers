@@ -1,6 +1,5 @@
+import UserAvatar from '@/app/(service)/[teamid]/components/UserImage';
 import { MemberChipsProps } from '@/app/(service)/[teamid]/types';
-
-import UserAvatar from './UserImage';
 
 export default function MemberChip({
   members,
@@ -13,7 +12,7 @@ export default function MemberChip({
         {members.map((member) => (
           <div
             key={member.userId}
-            className="border-background-tertiary border rounded-lg flex h-6 w-6 overflow-hidden justify-center items-center -ml-2 "
+            className="border-background-tertiary bg-background-tertiary border rounded-lg flex h-6 w-6 overflow-hidden justify-center items-center -ml-2 "
           >
             <UserAvatar
               userImage={member.userImage}

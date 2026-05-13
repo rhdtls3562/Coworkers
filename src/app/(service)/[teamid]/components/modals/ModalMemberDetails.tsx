@@ -1,8 +1,7 @@
+import UserAvatar from '@/app/(service)/[teamid]/components/UserImage';
 import { ModalMemberProps } from '@/app/(service)/[teamid]/types';
 import Modal from '@/components/common/modal';
 import { useToast } from '@/components/common/toast';
-
-import UserAvatar from '../UserImage';
 
 // 멤버 개인 정보
 export function ModalMemberDetail({

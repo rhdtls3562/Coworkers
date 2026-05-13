@@ -1,7 +1,6 @@
+import UserAvatar from '@/app/(service)/[teamid]/components/UserImage';
 import { MemberCardProps } from '@/app/(service)/[teamid]/types';
 import { IcMoreVerticalLarge } from '@/assets/index';
-
-import UserAvatar from './UserImage';
 
 export default function MemberCard({
   name,
