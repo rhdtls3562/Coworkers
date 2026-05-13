@@ -37,13 +37,13 @@ export default function BoardWriteFloatingButton() {
       type="button"
       aria-label="게시글 작성"
       onClick={handleClick}
-      className="bottom-24 right-6 md:bottom-20 md:right-6 lg:right-10"
-      buttonClassName="size-14"
+      className="bottom-24 right-6 z-40 md:bottom-28 md:right-10"
+      buttonClassName="size-14 md:size-16"
     >
       <IcPencil
         width={28}
         height={28}
-        className="size-7 brightness-0 invert md:size-6 md:brightness-100 md:invert-0"
+        className="size-7 brightness-0 invert md:size-8"
         aria-hidden="true"
       />
     </FloatingButton>
