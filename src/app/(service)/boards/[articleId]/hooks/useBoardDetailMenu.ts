@@ -1,5 +1,9 @@
 'use client';
 
+/**
+ * 게시글 상세 드롭다운 메뉴(수정·삭제 등) 상태와 라우팅·삭제 mutation 핸들러를 제공하는 훅입니다.
+ */
+
 import { useState } from 'react';
 
 import { useRouter } from 'next/navigation';

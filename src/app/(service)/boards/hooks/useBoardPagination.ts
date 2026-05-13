@@ -1,5 +1,9 @@
 'use client';
 
+/**
+ * 목록 전체와 페이지 크기로 현재 페이지·총 페이지·구간 slice를 계산하는 훅입니다.
+ */
+
 import { useMemo, useState } from 'react';
 
 type UseBoardPaginationParams<TItem> = {

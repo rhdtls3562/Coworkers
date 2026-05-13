@@ -1,5 +1,9 @@
 'use client';
 
+/**
+ * 게시글 좋아요 토글 mutation과 좋아요 수·상태 로컬 동기화를 담당하는 훅입니다.
+ */
+
 import { useState } from 'react';
 
 import { usePathname, useRouter } from 'next/navigation';

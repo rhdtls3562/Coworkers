@@ -1,5 +1,9 @@
 'use client';
 
+/**
+ * 게시글 제목·본문·대표 이미지 필드 상태와 블러·변경 검증을 관리하는 훅입니다.
+ */
+
 import { useCallback, useMemo, useState } from 'react';
 
 import { isRequiredTextValid } from '@/app/(service)/boards/utils/boardFormUtils';

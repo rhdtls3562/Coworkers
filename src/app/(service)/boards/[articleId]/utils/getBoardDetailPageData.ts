@@ -1,3 +1,7 @@
+/**
+ * 게시글 상세 페이지에 필요한 게시글 본문과 사용자 프로필을 병렬로 조회하는 유틸입니다.
+ */
+
 import { teamEndpoint } from '@/api/apiClient';
 import { TEAM_ID } from '@/app/(service)/boards/[articleId]/constants';
 import type { UserProfileResponse } from '@/app/(service)/boards/[articleId]/types';

@@ -1,5 +1,9 @@
 'use client';
 
+/**
+ * 게시판 검색어 상태와 제출 시 keyword 쿼리로 라우팅하는 훅입니다.
+ */
+
 import { useState } from 'react';
 
 import { useRouter } from 'next/navigation';

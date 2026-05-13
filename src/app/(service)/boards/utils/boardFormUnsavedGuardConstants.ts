@@ -1,3 +1,7 @@
+/**
+ * 게시글 작성·수정 폼 미저장 안내 토스트 문구와 표시 시간 상수입니다.
+ */
+
 export type BoardFormUnsavedIntent = 'create' | 'edit';
 
 export const BOARD_FORM_UNSAVED_TOAST_DURATION = 3000;

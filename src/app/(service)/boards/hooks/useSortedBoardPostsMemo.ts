@@ -1,5 +1,9 @@
 'use client';
 
+/**
+ * 게시판 정렬 옵션 상태와 최신순·좋아요순 정렬된 게시글 목록을 메모이제이션하는 훅입니다.
+ */
+
 import { useMemo, useState } from 'react';
 
 import { BOARD_SORT_VALUE } from '@/app/(service)/boards/constants';

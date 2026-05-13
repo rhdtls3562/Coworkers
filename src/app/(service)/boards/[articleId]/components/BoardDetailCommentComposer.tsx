@@ -46,11 +46,7 @@ export default function BoardDetailCommentComposer({
           key={getBoardImageRemountKey(userProfile?.image)}
           image={userProfile?.image ?? null}
           nickname={userProfile?.nickname ?? ''}
-          guestAriaLabel={
-            userProfile
-              ? `${userProfile.nickname}의 프로필 이미지`
-              : '게스트 프로필 이미지'
-          }
+          isGuest={!userProfile}
         />
       </div>
       <div className="flex min-w-0 flex-1 items-center gap-2 border-y border-background-tertiary px-3 py-2 md:gap-3 md:py-3">

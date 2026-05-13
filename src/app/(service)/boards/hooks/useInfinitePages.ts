@@ -1,5 +1,9 @@
 'use client';
 
+/**
+ * TanStack Query 무한 쿼리의 pages 배열을 페이지별 list를 이어 붙인 단일 배열로 만드는 훅입니다.
+ */
+
 import { useMemo } from 'react';
 
 type InfinitePage<TItem> = {

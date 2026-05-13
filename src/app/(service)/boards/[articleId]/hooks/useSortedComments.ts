@@ -1,5 +1,9 @@
 'use client';
 
+/**
+ * 댓글 목록을 본인 작성 우선·작성 시각 순으로 정렬해 반환하는 훅입니다.
+ */
+
 import { useMemo } from 'react';
 
 import {

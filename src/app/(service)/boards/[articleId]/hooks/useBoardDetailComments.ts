@@ -1,5 +1,9 @@
 'use client';
 
+/**
+ * 게시글 상세 댓글 무한 조회·스크롤·정렬 및 비로그인 시 로그인 유도를 묶는 훅입니다.
+ */
+
 import { useParams, usePathname, useRouter } from 'next/navigation';
 
 import { TEAM_ID } from '@/app/(service)/boards/[articleId]/constants';

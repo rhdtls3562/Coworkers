@@ -1,5 +1,9 @@
 'use client';
 
+/**
+ * 베스트 게시글 그리드 표시 여부와 빈 목록 안내 문구를 메모이제이션하는 훅입니다.
+ */
+
 import { useMemo } from 'react';
 
 import type { Post } from '@/app/(service)/boards/types';

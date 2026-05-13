@@ -1,5 +1,9 @@
 'use client';
 
+/**
+ * 게시글 작성 폼 제출·이미지 업로드·미저장 변경 가드를 한데 묶는 훅입니다.
+ */
+
 import { useState } from 'react';
 
 import { useRouter } from 'next/navigation';
