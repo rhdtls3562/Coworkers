@@ -1,5 +1,9 @@
 'use client';
 
+/**
+ * 팀 이름과 이미지를 수정하는 폼 컴포넌트 파일입니다.
+ */
+
 import { useState } from 'react';
 
 import { useRouter } from 'next/navigation';
@@ -9,6 +13,7 @@ import AddUserImg from '@/components/common/adduserimg/AddUserImg';
 import { PrimaryButton } from '@/components/common/button';
 import { Input } from '@/components/common/form';
 import { useToast } from '@/components/common/toast';
+import { TEAM_NAME_MAX_LENGTH } from '@/constants/team';
 import { useUploadImageMutation } from '@/hooks/useImage';
 import { useUpdateTeamMutation } from '@/hooks/useTeam';
 
@@ -30,8 +35,13 @@ export default function EditTeamForm({ teamData, teamid }: EditTeamFormProps) {
   const [imageFile, setImageFile] = useState<File | null>(null);
 
   const isPending = isUpdating || isUploading;
+  const isOverTeamNameLimit = teamName.trim().length > TEAM_NAME_MAX_LENGTH;
   const isChanged = teamName.trim() !== teamData.name || imageFile !== null;
-  const isDisabled = isPending || teamName.trim().length === 0 || !isChanged;
+  const isDisabled =
+    isPending ||
+    teamName.trim().length === 0 ||
+    isOverTeamNameLimit ||
+    !isChanged;
 
   const handleSubmit: React.SubmitEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
@@ -89,9 +99,15 @@ export default function EditTeamForm({ teamData, teamid }: EditTeamFormProps) {
 
             <Input
               id="teamName"
+              maxLength={TEAM_NAME_MAX_LENGTH}
               value={teamName}
               onChange={(e) => setTeamName(e.target.value)}
             />
+            {isOverTeamNameLimit && (
+              <p className="text-sm font-medium text-status-danger">
+                {TEAM_NAME_MAX_LENGTH}자 이내로 작성해 주세요.
+              </p>
+            )}
           </div>
 
           <PrimaryButton
@@ -103,7 +119,7 @@ export default function EditTeamForm({ teamData, teamid }: EditTeamFormProps) {
           </PrimaryButton>
         </form>
 
-        <p className="text-center text-sm font-normal text-text-default">
+        <p className="break-keep text-center text-sm font-normal text-text-default">
           팀 이름은 회사명이나 모임 이름 등으로 설정하면 좋아요.
         </p>
       </div>

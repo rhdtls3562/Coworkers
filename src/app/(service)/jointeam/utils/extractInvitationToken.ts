@@ -4,6 +4,10 @@
 
 const URL_BASE = 'https://coworkers.local';
 
+function normalizeInvitationToken(token: string) {
+  return decodeURIComponent(token).replace(/\s+/g, '+');
+}
+
 export function extractInvitationToken(value: string) {
   const trimmedValue = value.trim();
 
@@ -16,7 +20,7 @@ export function extractInvitationToken(value: string) {
     const token = parsedUrl.searchParams.get('token');
 
     if (token) {
-      return decodeURIComponent(token);
+      return normalizeInvitationToken(token);
     }
 
     if (trimmedValue.startsWith('/') || /^https?:\/\//.test(trimmedValue)) {
@@ -26,5 +30,5 @@ export function extractInvitationToken(value: string) {
     return '';
   }
 
-  return trimmedValue;
+  return normalizeInvitationToken(trimmedValue);
 }

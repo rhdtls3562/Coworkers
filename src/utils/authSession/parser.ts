@@ -1,5 +1,15 @@
 import { isRecord } from '@/utils/authSession/browser';
-import type { AuthSession, AuthSessionUser } from '@/utils/authSession/types';
+import type {
+  AuthSession,
+  AuthSessionProvider,
+  AuthSessionUser,
+} from '@/utils/authSession/types';
+
+function toAuthSessionProvider(
+  value: unknown,
+): AuthSessionProvider | undefined {
+  return value === 'google' || value === 'kakao' ? value : undefined;
+}
 
 function toAuthSessionUser(value: unknown): AuthSessionUser | undefined {
   if (!isRecord(value)) {
@@ -13,6 +23,7 @@ function toAuthSessionUser(value: unknown): AuthSessionUser | undefined {
         ? value.image
         : undefined,
     nickname: typeof value.nickname === 'string' ? value.nickname : undefined,
+    provider: toAuthSessionProvider(value.provider),
     teamName: typeof value.teamName === 'string' ? value.teamName : undefined,
   };
 }

@@ -35,6 +35,10 @@ function buildProcessedOauthCodeKey(provider: string, code: string) {
   return `${OAUTH_CODE_SESSION_STORAGE_KEY}:${provider}:${code}`;
 }
 
+function toAuthSessionProvider(provider: string) {
+  return provider === 'google' || provider === 'kakao' ? provider : undefined;
+}
+
 export default function useOauthSignupPage({
   code,
   error,
@@ -70,7 +74,13 @@ export default function useOauthSignupPage({
         return;
       }
 
-      saveAuthSession(session);
+      saveAuthSession({
+        ...session,
+        user: {
+          ...session.user,
+          provider: toAuthSessionProvider(provider),
+        },
+      });
 
       const safeRedirectTo = getSafeRedirectTo(state ?? null);
       if (safeRedirectTo) {

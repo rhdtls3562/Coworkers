@@ -8,6 +8,7 @@ import { useCreateTeamForm } from '@/app/(service)/addteam/hooks/useCreateTeamFo
 import AddUserImg from '@/components/common/adduserimg/AddUserImg';
 import { PrimaryButton } from '@/components/common/button';
 import { Input } from '@/components/common/form';
+import { TEAM_NAME_MAX_LENGTH } from '@/constants/team';
 import { cn } from '@/utils/cn';
 
 export default function CreateTeamPage() {
@@ -42,6 +43,7 @@ export default function CreateTeamPage() {
 
             <Input
               id="teamName"
+              maxLength={TEAM_NAME_MAX_LENGTH}
               placeholder="팀 이름을 입력해주세요."
               aria-invalid={Boolean(errorMessage)}
               className={cn(
@@ -67,7 +69,7 @@ export default function CreateTeamPage() {
           </PrimaryButton>
         </form>
 
-        <p className="text-center text-sm font-normal text-text-default">
+        <p className="break-keep text-center text-sm font-normal text-text-default">
           팀 이름은 회사명이나 모임 이름 등으로 설정하면 좋아요.
         </p>
       </div>

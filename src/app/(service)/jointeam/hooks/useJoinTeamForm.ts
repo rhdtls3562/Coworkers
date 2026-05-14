@@ -4,41 +4,44 @@
  * 팀 참여하기 폼 상태와 제출 로직을 관리하는 훅입니다.
  */
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 
+import { TEAM_ID } from '@/app/(service)/jointeam/constants';
+import { buildJoinTeamLink } from '@/app/(service)/jointeam/utils/buildJoinTeamLink';
+import { extractInvitationGroupId } from '@/app/(service)/jointeam/utils/extractInvitationGroupId';
 import { extractInvitationToken } from '@/app/(service)/jointeam/utils/extractInvitationToken';
+import {
+  handleAlreadyJoinedTeam,
+  joinTeamByLink,
+} from '@/app/(service)/jointeam/utils/joinTeamActions';
 import {
   joinTeamFormSchema,
   type JoinTeamFormValues,
 } from '@/app/(service)/jointeam/utils/joinTeamFormSchema';
 import { useToast } from '@/components/common/toast';
-import { ROUTES } from '@/constants/ROUTES';
 import { useAcceptTeamInvitationMutation } from '@/hooks/useTeam';
 import { useMeQuery } from '@/hooks/useUser';
 
-const TEAM_ID = process.env.NEXT_PUBLIC_TEAM_ID;
-
-function getJoinTeamErrorMessage(error: unknown) {
-  return error instanceof Error
-    ? error.message
-    : '팀 참여 중 문제가 발생했어요. 다시 시도해주세요.';
-}
-
 export function useJoinTeamForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { showToast } = useToast();
+  const [hasStartedManualJoin, setHasStartedManualJoin] = useState(false);
   const [serverError, setServerError] = useState('');
+  const hasHandledJoinedTeamRef = useRef(false);
   const acceptTeamInvitationMutation = useAcceptTeamInvitationMutation();
-  const meQuery = useMeQuery<{ email?: string }>();
+  const meQuery = useMeQuery();
   const {
-    formState: { errors, isValid },
+    control,
+    formState: { errors },
     handleSubmit,
     register,
+    setValue,
   } = useForm<JoinTeamFormValues>({
     defaultValues: {
       teamLink: '',
@@ -50,40 +53,108 @@ export function useJoinTeamForm() {
   const teamLinkField = register('teamLink', {
     onChange: () => setServerError(''),
   });
+  const currentTeamLink = useWatch({
+    control,
+    name: 'teamLink',
+  });
+  const hasTeamLinkInput = (currentTeamLink ?? '').trim().length > 0;
+
+  const invitationGroupId = extractInvitationGroupId(
+    searchParams.get('groupId') ?? '',
+  );
+  const invitationToken = extractInvitationToken(
+    searchParams.get('token') ?? '',
+  );
+  const hasJoinedInvitationGroup = meQuery.data?.memberships?.some(
+    (membership) => String(membership.groupId) === invitationGroupId,
+  );
+
+  useEffect(() => {
+    if (!invitationToken) {
+      return;
+    }
+
+    setValue(
+      'teamLink',
+      buildJoinTeamLink({
+        groupId: invitationGroupId,
+        token: invitationToken,
+      }),
+      {
+        shouldDirty: true,
+        shouldTouch: true,
+        shouldValidate: true,
+      },
+    );
+  }, [invitationGroupId, invitationToken, setValue]);
+
+  useEffect(() => {
+    if (hasStartedManualJoin) {
+      return;
+    }
+
+    if (invitationGroupId && hasJoinedInvitationGroup) {
+      if (hasHandledJoinedTeamRef.current) {
+        return;
+      }
+
+      hasHandledJoinedTeamRef.current = true;
+      handleAlreadyJoinedTeam({
+        groupId: invitationGroupId,
+        router,
+        setServerError,
+        showToast,
+      });
+      return;
+    }
+  }, [
+    acceptTeamInvitationMutation,
+    hasStartedManualJoin,
+    hasJoinedInvitationGroup,
+    router,
+    showToast,
+    invitationGroupId,
+  ]);
 
   const handleSubmitForm = handleSubmit(async (values) => {
-    setServerError('');
+    setHasStartedManualJoin(true);
 
-    if (!TEAM_ID) {
-      setServerError('팀 정보가 설정되지 않았습니다.');
-      return;
-    }
+    const submitGroupId = extractInvitationGroupId(values.teamLink);
 
-    if (!meQuery.data?.email) {
-      setServerError('사용자 정보를 불러오지 못했어요. 다시 로그인해주세요.');
-      return;
-    }
-
-    try {
-      const joinedTeam = await acceptTeamInvitationMutation.mutateAsync({
-        body: {
-          token: extractInvitationToken(values.teamLink),
-          userEmail: meQuery.data.email,
-        },
-        teamId: TEAM_ID,
+    if (
+      submitGroupId &&
+      meQuery.data?.memberships?.some(
+        (membership) => String(membership.groupId) === submitGroupId,
+      )
+    ) {
+      handleAlreadyJoinedTeam({
+        groupId: submitGroupId,
+        router,
+        setServerError,
+        showToast,
       });
+      return;
+    }
 
-      router.push(ROUTES.TEAM(String(joinedTeam.groupId)));
-      showToast('팀 참여가 완료되었습니다.', 'success');
-    } catch (error) {
-      setServerError(getJoinTeamErrorMessage(error));
+    const isJoined = await joinTeamByLink({
+      acceptInvitation: acceptTeamInvitationMutation,
+      email: meQuery.data?.email,
+      router,
+      setServerError,
+      showToast,
+      teamId: TEAM_ID,
+      teamLink: values.teamLink,
+    });
+
+    if (!isJoined) {
+      setHasStartedManualJoin(false);
     }
   });
 
   return {
     errorMessage: errors.teamLink?.message ?? serverError,
     handleSubmit: handleSubmitForm,
-    isDisabled: !isValid || acceptTeamInvitationMutation.isPending,
+    isDisabled: !hasTeamLinkInput || acceptTeamInvitationMutation.isPending,
     teamLinkField,
   };
 }

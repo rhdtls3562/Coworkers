@@ -7,6 +7,7 @@ import { useState } from 'react';
 
 import AccountForm from '@/app/(service)/mypage/components/AccountForm';
 import WithdrawModal from '@/app/(service)/mypage/components/WithdrawModal';
+import { useSocialLoginState } from '@/app/(service)/mypage/hook/useSocialLoginState';
 import { IcLogout } from '@/assets/index';
 import { PrimaryButton } from '@/components/common/button';
 import { useToast } from '@/components/common/toast';
@@ -18,6 +19,7 @@ export default function MyPage() {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const { showToast } = useToast();
   const { data: me } = useMeQuery();
+  const { isSocialLogin } = useSocialLoginState();
 
   const { mutateAsync: updateProfile } = useUpdateMeMutation({
     onSuccess: () => {
@@ -44,7 +46,10 @@ export default function MyPage() {
           onSubmitError={submitError}
         />
         <div className="mt-1">
-          <div className="flex justify-end">
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-sm font-medium text-text-default">
+              {isSocialLogin ? '소셜로그인 회원입니다.' : ''}
+            </span>
             <button
               onClick={() => setIsWithdrawModalOpen(true)}
               className="flex items-center gap-2 leading-none text-status-danger font-medium text-base"

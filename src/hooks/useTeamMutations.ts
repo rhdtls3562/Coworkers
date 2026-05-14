@@ -95,7 +95,12 @@ export function useAcceptTeamInvitationMutation(
       options: {
         ...options,
         onSuccess: async (data, variables, onMutateResult, context) => {
-          await refetchUserQueries(queryClient);
+          await Promise.all([
+            refetchUserQueries(queryClient),
+            queryClient.invalidateQueries({
+              queryKey: queryKeys.team.detail(String(data.groupId)),
+            }),
+          ]);
           await handleSuccess?.(data, variables, onMutateResult, context);
         },
       },

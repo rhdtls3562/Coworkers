@@ -4,6 +4,8 @@
 
 import { z } from 'zod';
 
+import { TEAM_NAME_MAX_LENGTH } from '@/constants/team';
+
 export const createTeamFormSchema = z.object({
   teamImage: z.custom<File | null>().optional(),
   teamName: z
@@ -18,7 +20,10 @@ export const createTeamFormSchema = z.object({
       (value) => !/[^a-zA-Z0-9가-힣\s]/.test(value),
       '특수기호가 포함된 이름은 사용할 수 없습니다.',
     )
-    .refine((value) => value.length <= 8, '8자 이내로 작성해 주세요.'),
+    .refine(
+      (value) => value.length <= TEAM_NAME_MAX_LENGTH,
+      `${TEAM_NAME_MAX_LENGTH}자 이내로 작성해 주세요.`,
+    ),
 });
 
 export type CreateTeamFormValues = z.infer<typeof createTeamFormSchema>;
