@@ -4,7 +4,7 @@
 
 const DATE_PART_LENGTH = 2;
 const KOREA_TIME_ZONE = 'Asia/Seoul';
-const API_DATE_TIME_SUFFIX = 'Z';
+const KOREA_UTC_OFFSET = '+09:00';
 
 type KoreaDateParts = {
   day: number;
@@ -21,6 +21,15 @@ type KoreaFormatterParts = {
   month: number;
   second: number;
   year: number;
+};
+
+type KoreaDateStringParts = {
+  day: string;
+  hour: string;
+  minute: string;
+  month: string;
+  second: string;
+  year: string;
 };
 
 function getKoreaDateParts(date: Date): KoreaDateParts {
@@ -49,6 +58,24 @@ function getKoreaDateParts(date: Date): KoreaDateParts {
     seconds: parts.second,
     year: parts.year,
   };
+}
+
+function getKoreaDateStringParts(date: Date) {
+  return Object.fromEntries(
+    new Intl.DateTimeFormat('en-CA', {
+      day: '2-digit',
+      hour: '2-digit',
+      hour12: false,
+      minute: '2-digit',
+      month: '2-digit',
+      second: '2-digit',
+      timeZone: KOREA_TIME_ZONE,
+      year: 'numeric',
+    })
+      .formatToParts(date)
+      .filter((part) => part.type !== 'literal')
+      .map((part) => [part.type, part.value]),
+  ) as KoreaDateStringParts;
 }
 
 function formatTaskListDateParts(
@@ -91,7 +118,7 @@ export function getCurrentKoreaTimeString() {
 
 export function getCurrentKoreaDateTimeString() {
   const currentKoreaDateParts = getKoreaDateParts(new Date());
-  return `${formatTaskListDateParts(currentKoreaDateParts)}T${formatTaskListTimeParts(currentKoreaDateParts)}${API_DATE_TIME_SUFFIX}`;
+  return `${formatTaskListDateParts(currentKoreaDateParts)}T${formatTaskListTimeParts(currentKoreaDateParts)}${KOREA_UTC_OFFSET}`;
 }
 
 export function toTaskListDateString(date: Date) {
@@ -107,5 +134,17 @@ export function toTaskListDateTimeString(date: Date) {
     hours: date.getHours(),
     minutes: date.getMinutes(),
     seconds: date.getSeconds(),
-  })}${API_DATE_TIME_SUFFIX}`;
+  })}${KOREA_UTC_OFFSET}`;
+}
+
+export function toTaskListKoreaDateKey(dateString: string) {
+  const parsedDate = new Date(dateString);
+
+  if (Number.isNaN(parsedDate.getTime())) {
+    return dateString.slice(0, 10);
+  }
+
+  const koreaDateParts = getKoreaDateStringParts(parsedDate);
+
+  return `${koreaDateParts.year}-${koreaDateParts.month}-${koreaDateParts.day}`;
 }

@@ -12,7 +12,10 @@ import type {
   TaskListBoardTask,
   UseTaskListBoardQueryParams,
 } from '@/app/(service)/[teamid]/tasklist/types';
-import { toTaskListDateString } from '@/app/(service)/[teamid]/tasklist/utils/taskListDate';
+import {
+  toTaskListDateString,
+  toTaskListKoreaDateKey,
+} from '@/app/(service)/[teamid]/tasklist/utils/taskListDate';
 import { formatTaskListRepeatLabel } from '@/app/(service)/[teamid]/tasklist/utils/taskListRepeatLabel';
 import { useToast } from '@/components/common/toast';
 import { useDeleteTaskMutation, useUpdateTaskMutation } from '@/hooks/useTask';
@@ -58,7 +61,7 @@ export function useTaskListBoardQuery({
         title: task.name,
         checked: task.doneAt !== null,
         commentCount: task.commentCount,
-        dueDateLabel: task.date.slice(0, 10),
+        dueDateLabel: toTaskListKoreaDateKey(task.date),
         frequency: task.frequency,
         recurringId,
         repeatLabel: formatTaskListRepeatLabel(
@@ -69,7 +72,7 @@ export function useTaskListBoardQuery({
         assigneeName: task.writer.nickname,
         description: task.description ?? '',
         startedAtRaw: task.date,
-        startedAtLabel: task.date.slice(0, 10),
+        startedAtLabel: toTaskListKoreaDateKey(task.date),
         taskListId: String(taskListId),
         teamId: groupId ?? '',
         comments: [],

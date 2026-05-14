@@ -4,81 +4,41 @@
  * 오른쪽 패널 일정 수정 모달의 날짜/시간/반복 draft 상태를 관리합니다.
  */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { RefObject } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import useTaskListCalendarPopover from '@/app/(service)/[teamid]/tasklist/hooks/useTaskListCalendarPopover';
 import {
   clampTaskListMonthDay,
   DEFAULT_TASK_LIST_WEEKLY_REPEAT_DAYS,
 } from '@/app/(service)/[teamid]/tasklist/utils/taskListCreateTaskFormUtils';
+import type { UseTaskDetailScheduleFormReturn } from '@/components/common/rightPanel/hooks/useTaskDetailScheduleForm.types';
+import {
+  getTaskDetailScheduleFormInitialValues,
+  hasTaskDetailScheduleChanges,
+} from '@/components/common/rightPanel/hooks/useTaskDetailScheduleForm.utils';
+import useTaskDetailTimePopover from '@/components/common/rightPanel/hooks/useTaskDetailTimePopover';
 import type {
   TaskDetailScheduleEditConfig,
   TaskDetailScheduleRepeatValue,
 } from '@/components/common/rightPanel/types';
-import {
-  toTaskDetailScheduleDate,
-  toTaskDetailScheduleMonthDay,
-  toTaskDetailScheduleRepeatValue,
-  toTaskDetailScheduleTime,
-} from '@/components/common/rightPanel/utils/taskDetailSchedule';
-
-type UseTaskDetailScheduleFormReturn = {
-  calendarButtonRef: RefObject<HTMLDivElement | null>;
-  calendarRef: RefObject<HTMLDivElement | null>;
-  handleDateChange: (date: Date | null) => void;
-  handleMonthDayBlur: () => void;
-  handleMonthDayChange: (value: string) => void;
-  handleOpenDateCalendar: () => void;
-  handleOpenTime: () => void;
-  handleRepeatChange: (value: TaskDetailScheduleRepeatValue) => void;
-  hasScheduleChanges: boolean;
-  isCalendarOpen: boolean;
-  isTimePopoverOpen: boolean;
-  monthDay: number;
-  monthDayInput: string;
-  repeat: TaskDetailScheduleRepeatValue;
-  selectedDate: Date;
-  setStartTime: (value: string) => void;
-  startTime: string;
-  timePopoverContainerRef: RefObject<HTMLDivElement | null>;
-  toggleWeekDay: (dayIndex: number) => void;
-  weekDays: number[];
-};
 
 export default function useTaskDetailScheduleForm(
   initialSchedule: TaskDetailScheduleEditConfig,
 ): UseTaskDetailScheduleFormReturn {
-  const initialSelectedDate = useMemo(
-    () => toTaskDetailScheduleDate(initialSchedule.startedAtRaw),
-    [initialSchedule.startedAtRaw],
-  );
-  const initialStartTime = useMemo(
-    () => toTaskDetailScheduleTime(initialSchedule.startedAtRaw),
-    [initialSchedule.startedAtRaw],
-  );
-  const initialRepeat = useMemo(
-    () => toTaskDetailScheduleRepeatValue(initialSchedule.frequencyType),
-    [initialSchedule.frequencyType],
-  );
-  const initialWeekDays = useMemo(
-    () =>
-      initialSchedule.weekDays?.length
-        ? [...initialSchedule.weekDays]
-        : [...DEFAULT_TASK_LIST_WEEKLY_REPEAT_DAYS],
-    [initialSchedule.weekDays],
-  );
-  const initialMonthDay = useMemo(
-    () => toTaskDetailScheduleMonthDay(initialSchedule.startedAtRaw),
-    [initialSchedule.startedAtRaw],
+  const initialValues = useMemo(
+    () => getTaskDetailScheduleFormInitialValues(initialSchedule),
+    [initialSchedule],
   );
 
-  const [selectedDate, setSelectedDate] = useState(initialSelectedDate);
-  const [startTime, setStartTime] = useState(initialStartTime);
-  const [repeat, setRepeat] =
-    useState<TaskDetailScheduleRepeatValue>(initialRepeat);
-  const [weekDays, setWeekDays] = useState<number[]>(initialWeekDays);
-  const [monthDayInput, setMonthDayInput] = useState(String(initialMonthDay));
+  const [selectedDate, setSelectedDate] = useState(initialValues.selectedDate);
+  const [startTime, setStartTime] = useState(initialValues.startTime);
+  const [repeat, setRepeat] = useState<TaskDetailScheduleRepeatValue>(
+    initialValues.repeat,
+  );
+  const [weekDays, setWeekDays] = useState<number[]>(initialValues.weekDays);
+  const [monthDayInput, setMonthDayInput] = useState(
+    String(initialValues.monthDay),
+  );
 
   const {
     calendarButtonRef,
@@ -87,27 +47,12 @@ export default function useTaskDetailScheduleForm(
     isCalendarOpen,
     toggleCalendar,
   } = useTaskListCalendarPopover();
-
-  const timePopoverContainerRef = useRef<HTMLDivElement>(null);
-  const [isTimePopoverOpen, setIsTimePopoverOpen] = useState(false);
-
-  useEffect(() => {
-    if (!isTimePopoverOpen) return;
-
-    const handleOutsideClick = (event: PointerEvent) => {
-      if (
-        timePopoverContainerRef.current &&
-        !timePopoverContainerRef.current.contains(event.target as Node)
-      ) {
-        setIsTimePopoverOpen(false);
-      }
-    };
-
-    document.addEventListener('pointerdown', handleOutsideClick);
-    return () => {
-      document.removeEventListener('pointerdown', handleOutsideClick);
-    };
-  }, [isTimePopoverOpen]);
+  const {
+    closeTimePopover,
+    isTimePopoverOpen,
+    timePopoverContainerRef,
+    toggleTimePopover,
+  } = useTaskDetailTimePopover();
 
   const handleDateChange = useCallback(
     (date: Date | null) => {
@@ -154,25 +99,30 @@ export default function useTaskDetailScheduleForm(
   );
 
   const handleOpenTime = useCallback(() => {
-    if (isCalendarOpen) closeCalendar();
-    setIsTimePopoverOpen((previousValue) => !previousValue);
-  }, [closeCalendar, isCalendarOpen]);
+    if (isCalendarOpen) {
+      closeCalendar();
+    }
+
+    toggleTimePopover();
+  }, [closeCalendar, isCalendarOpen, toggleTimePopover]);
 
   const handleOpenDateCalendar = useCallback(() => {
-    setIsTimePopoverOpen(false);
+    closeTimePopover();
     toggleCalendar();
-  }, [toggleCalendar]);
+  }, [closeTimePopover, toggleCalendar]);
 
   const monthDay = useMemo(
     () => clampTaskListMonthDay(Number(monthDayInput)),
     [monthDayInput],
   );
-  const hasScheduleChanges =
-    selectedDate.getTime() !== initialSelectedDate.getTime() ||
-    startTime !== initialStartTime ||
-    repeat !== initialRepeat ||
-    monthDay !== initialMonthDay ||
-    weekDays.join(',') !== initialWeekDays.join(',');
+  const hasScheduleChanges = hasTaskDetailScheduleChanges({
+    initialValues,
+    monthDayInput,
+    repeat,
+    selectedDate,
+    startTime,
+    weekDays,
+  });
 
   return {
     calendarButtonRef,

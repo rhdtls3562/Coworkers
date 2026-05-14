@@ -47,23 +47,19 @@ function toKoreaFormatterParts(date: Date) {
 }
 
 function parseTaskDetailDateString(dateString: string) {
-  const matchedDate = dateString.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  const parsedDate = new Date(dateString);
 
-  if (!matchedDate) {
+  if (Number.isNaN(parsedDate.getTime())) {
     return null;
   }
-
-  const [, year, month, day] = matchedDate;
-  const matchedTime = dateString.match(/T(\d{2}):(\d{2})/);
-  const hours = matchedTime ? Number(matchedTime[1]) : 0;
-  const minutes = matchedTime ? Number(matchedTime[2]) : 0;
+  const koreaDateParts = toKoreaFormatterParts(parsedDate);
 
   return new Date(
-    Number(year),
-    Number(month) - 1,
-    Number(day),
-    hours,
-    minutes,
+    Number(koreaDateParts.year),
+    Number(koreaDateParts.month) - 1,
+    Number(koreaDateParts.day),
+    Number(koreaDateParts.hour),
+    Number(koreaDateParts.minute),
     0,
     0,
   );
@@ -74,15 +70,19 @@ export function toTaskDetailScheduleDate(dateString: string) {
 }
 
 export function toTaskDetailScheduleTime(dateString: string) {
-  const parsedDate = toTaskDetailScheduleDate(dateString);
+  const parsedDate = parseTaskDetailDateString(dateString);
+
+  if (!parsedDate) {
+    return '00:00';
+  }
 
   return `${String(parsedDate.getHours()).padStart(DATE_PART_LENGTH, '0')}:${String(parsedDate.getMinutes()).padStart(DATE_PART_LENGTH, '0')}`;
 }
 
 export function toTaskDetailScheduleMonthDay(dateString: string) {
-  const parsedDate = toTaskDetailScheduleDate(dateString);
+  const parsedDate = parseTaskDetailDateString(dateString);
 
-  return parsedDate.getDate();
+  return parsedDate?.getDate() ?? 1;
 }
 
 export function toTaskDetailScheduleRepeatValue(
@@ -92,9 +92,13 @@ export function toTaskDetailScheduleRepeatValue(
 }
 
 export function formatTaskDetailStartedAt(dateString: string) {
-  const formattedParts = toKoreaFormatterParts(
-    toTaskDetailScheduleDate(dateString),
-  );
+  const parsedDate = new Date(dateString);
+
+  if (Number.isNaN(parsedDate.getTime())) {
+    return '-';
+  }
+
+  const formattedParts = toKoreaFormatterParts(parsedDate);
 
   return `${formattedParts.year}-${formattedParts.month}-${formattedParts.day} ${formattedParts.hour}:${formattedParts.minute}`;
 }
