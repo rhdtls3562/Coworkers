@@ -18,6 +18,7 @@ export default function useTaskDetailTaskActions({
   onTaskCheckedChanged,
   onTaskDeleted,
   onTaskUpdated,
+  recurringId,
   taskId,
   taskListId,
   teamId,
@@ -92,6 +93,7 @@ export default function useTaskDetailTaskActions({
   const handleDeleteTask = async () => {
     try {
       await deleteTaskMutation.mutateAsync({
+        recurringId,
         taskId,
         taskListId,
         teamId,

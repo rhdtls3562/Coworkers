@@ -12,6 +12,7 @@ import type {
 import {
   formatHistoryTaskFrequency,
   toDateLabel,
+  toHistoryScheduleEditConfig,
   toHistoryTaskIdentityKey,
 } from '@/app/(service)/myhistory/utils/myHistoryShared';
 
@@ -26,6 +27,12 @@ export function getTaskMetaMap(
       taskList.tasks.forEach((task) => {
         taskMetaMap.set(task.id, {
           commentCount: task.commentCount,
+          scheduleEditConfig: toHistoryScheduleEditConfig({
+            frequency: task.frequency,
+            recurringId: task.recurringId,
+            startedAtRaw: task.date,
+            weekDays: task.weekDays,
+          }),
           taskDisplayIndex: task.displayIndex,
           taskIdentityKey: toHistoryTaskIdentityKey(task.id, task.recurringId),
           taskListDisplayIndex: taskList.displayIndex,
@@ -43,6 +50,12 @@ export function getTaskMetaMap(
     source.tasks.forEach((task) => {
       taskMetaMap.set(task.id, {
         commentCount: task.commentCount,
+        scheduleEditConfig: toHistoryScheduleEditConfig({
+          frequency: task.frequency,
+          recurringId: task.recurringId,
+          startedAtRaw: task.date,
+          weekDays: task.weekDays,
+        }),
         taskDisplayIndex: task.displayIndex,
         taskIdentityKey: toHistoryTaskIdentityKey(task.id, task.recurringId),
         taskListDisplayIndex: source.displayIndex,
@@ -70,6 +83,14 @@ export function toHistoryTask(
     frequency: formatHistoryTaskFrequency(task.frequency),
     id: String(task.id ?? `${task.name}-${task.doneAt}`),
     isCompleted: true,
+    scheduleEditConfig: toHistoryScheduleEditConfig({
+      frequency: task.frequency,
+      recurringId: meta?.scheduleEditConfig?.recurringId
+        ? Number(meta.scheduleEditConfig.recurringId)
+        : undefined,
+      startedAtRaw: task.date ?? meta?.scheduleEditConfig?.startedAtRaw,
+      weekDays: meta?.scheduleEditConfig?.weekDays,
+    }),
     startedAt: toDateLabel(task.date),
     taskListId: meta?.taskListId ?? '',
     teamId: meta?.teamId ?? '',

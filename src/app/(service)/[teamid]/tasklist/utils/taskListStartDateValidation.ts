@@ -2,22 +2,33 @@
  * 할 일 생성 시 시작 시각이 현재 한국 시간보다 이전인지 검증하는 유틸입니다.
  */
 
-function toMinuteTimestamp(dateTimeString: string) {
-  const parsedTime = new Date(dateTimeString).getTime();
+import {
+  getCurrentKoreaDateString,
+  getCurrentKoreaTimeString,
+} from '@/app/(service)/[teamid]/tasklist/utils/taskListDate';
 
-  if (Number.isNaN(parsedTime)) {
-    return Number.NaN;
+function toComparableMinuteString(dateTimeString: string) {
+  const matchedDateTime = dateTimeString.match(
+    /^(\d{4}-\d{2}-\d{2})T(\d{2}):(\d{2})/,
+  );
+
+  if (!matchedDateTime) {
+    return null;
   }
 
-  return Math.floor(parsedTime / (60 * 1000));
+  const [, date, hours, minutes] = matchedDateTime;
+
+  return `${date}T${hours}:${minutes}`;
 }
 
 export function isPastTaskListStartDate(startDateTimeString: string) {
-  const startMinuteTimestamp = toMinuteTimestamp(startDateTimeString);
+  const comparableStartDateTime = toComparableMinuteString(startDateTimeString);
 
-  if (Number.isNaN(startMinuteTimestamp)) {
+  if (!comparableStartDateTime) {
     return false;
   }
 
-  return startMinuteTimestamp < Math.floor(Date.now() / (60 * 1000));
+  const currentKoreaMinute = `${getCurrentKoreaDateString()}T${getCurrentKoreaTimeString()}`;
+
+  return comparableStartDateTime < currentKoreaMinute;
 }

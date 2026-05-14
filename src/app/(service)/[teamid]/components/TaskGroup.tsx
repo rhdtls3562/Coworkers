@@ -5,7 +5,7 @@ import { useModalState } from '@/app/(service)/[teamid]/hooks/useModalState';
 import { TaskProps } from '@/app/(service)/[teamid]/types';
 import { IcPlusSub } from '@/assets/index';
 
-export default function TaskGroup({ status, taskLists }: TaskProps) {
+export default function TaskGroup({ status, taskLists, allEmpty }: TaskProps) {
   const { open, close, is } = useModalState();
   return (
     <div className="flex flex-col gap-3 min-w-0 xl:flex-1 xl:gap:5">
@@ -37,7 +37,9 @@ export default function TaskGroup({ status, taskLists }: TaskProps) {
         ))}
 
         {taskLists.length === 0 && (
-          <div className="rounded-2xl px-6 py-8 text-center text-sm font-normal text-text-default block xl:hidden">
+          <div
+            className={`rounded-2xl px-6 py-8 text-center text-sm font-normal text-text-default${allEmpty ? ' xl:hidden' : ''}`}
+          >
             {EMPTY_MESSAGE[status]}
           </div>
         )}

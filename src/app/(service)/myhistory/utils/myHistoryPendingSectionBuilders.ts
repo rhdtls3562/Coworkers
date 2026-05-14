@@ -11,6 +11,7 @@ import type {
 import {
   formatHistoryTaskFrequency,
   toDateLabel,
+  toHistoryScheduleEditConfig,
   toHistoryTaskIdentityKey,
 } from '@/app/(service)/myhistory/utils/myHistoryShared';
 
@@ -27,6 +28,12 @@ function toPendingHistoryTask({ source, task }: PendingTaskSource) {
     frequency: formatHistoryTaskFrequency(task.frequency),
     id: task.id,
     isCompleted: false,
+    scheduleEditConfig: toHistoryScheduleEditConfig({
+      frequency: task.frequency,
+      recurringId: task.recurringId,
+      startedAtRaw: task.date,
+      weekDays: task.weekDays,
+    }),
     startedAt: toDateLabel(task.date),
     taskListId: source.taskListId,
     teamId: source.teamId,

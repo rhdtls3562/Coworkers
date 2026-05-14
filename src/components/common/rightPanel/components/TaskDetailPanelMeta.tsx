@@ -12,8 +12,13 @@ export default function TaskDetailPanelMeta({
   assigneeImage,
   assigneeName,
   frequency,
+  isEditing,
+  isScheduleEditable,
+  onEditSchedule,
   startedAt,
 }: TaskDetailPanelMetaProps) {
+  const scheduleValueClassName = 'min-w-0 truncate text-text-secondary';
+
   return (
     <div>
       <div className="flex items-center gap-2.5">
@@ -24,26 +29,50 @@ export default function TaskDetailPanelMeta({
       </div>
 
       <dl className="mt-4 flex flex-col gap-2.5 text-sm font-medium text-text-default md:gap-3">
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <IcCalendarSmall
             width={16}
             height={16}
-            className="size-4"
+            className="size-4 shrink-0"
             aria-hidden="true"
           />
           <dt>시작 날짜</dt>
-          <dd className="text-text-secondary">{startedAt}</dd>
+          {isEditing && isScheduleEditable ? (
+            <dd className="min-w-0">
+              <button
+                type="button"
+                className="inline-flex min-w-0 max-w-full items-center border-b border-background-tertiary pb-1 text-left"
+                onClick={onEditSchedule}
+              >
+                <span className={scheduleValueClassName}>{startedAt}</span>
+              </button>
+            </dd>
+          ) : (
+            <dd className={scheduleValueClassName}>{startedAt}</dd>
+          )}
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <IcRepeatSmall
             width={20}
             height={20}
-            className="size-4"
+            className="size-4 shrink-0"
             aria-hidden="true"
           />
           <dt>반복 설정</dt>
-          <dd className="text-text-secondary">{frequency}</dd>
+          {isEditing && isScheduleEditable ? (
+            <dd className="min-w-0">
+              <button
+                type="button"
+                className="inline-flex min-w-0 max-w-full items-center border-b border-background-tertiary pb-1 text-left"
+                onClick={onEditSchedule}
+              >
+                <span className={scheduleValueClassName}>{frequency}</span>
+              </button>
+            </dd>
+          ) : (
+            <dd className={scheduleValueClassName}>{frequency}</dd>
+          )}
         </div>
       </dl>
     </div>

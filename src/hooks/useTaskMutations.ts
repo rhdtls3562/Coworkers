@@ -12,7 +12,7 @@ import {
   createMutationOptions,
   type MutationOptionsOverrides,
 } from '@/api/queryOptions/factory';
-import { deleteTask, updateTask } from '@/api/taskApi';
+import { deleteRecurring, deleteTask, updateTask } from '@/api/taskApi';
 import type { TaskUpdateBody } from '@/api/types';
 import {
   invalidateTaskCheckedFollowups,
@@ -23,7 +23,9 @@ import type { GroupDetail } from '@/types/group';
 import type { TaskListDetail } from '@/types/task';
 
 type UpdateTaskData = Awaited<ReturnType<typeof updateTask>>;
-type DeleteTaskData = Awaited<ReturnType<typeof deleteTask>>;
+type DeleteTaskData =
+  | Awaited<ReturnType<typeof deleteRecurring>>
+  | Awaited<ReturnType<typeof deleteTask>>;
 
 type UpdateTaskVariables = {
   body: TaskUpdateBody;
@@ -34,6 +36,7 @@ type UpdateTaskVariables = {
 };
 
 type DeleteTaskVariables = {
+  recurringId?: QueryKeyId | null;
   taskId: QueryKeyId;
   taskListId: QueryKeyId;
   teamId: string;
@@ -114,11 +117,15 @@ export function useDeleteTaskMutation(
   return useMutation(
     createMutationOptions({
       mutationFn: ({
+        recurringId,
         taskId,
         taskListId,
         teamId,
         token,
-      }: DeleteTaskVariables) => deleteTask(teamId, taskListId, taskId, token),
+      }: DeleteTaskVariables) =>
+        recurringId
+          ? deleteRecurring(teamId, taskListId, taskId, recurringId, token)
+          : deleteTask(teamId, taskListId, taskId, token),
       options: {
         ...options,
         onMutate: async (variables, context) => {

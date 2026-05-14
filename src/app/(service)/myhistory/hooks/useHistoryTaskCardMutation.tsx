@@ -53,6 +53,7 @@ export default function useHistoryTaskCardMutation({
           description={task.description}
           frequency={task.frequency}
           initialMode="view"
+          scheduleEditConfig={task.scheduleEditConfig}
           startedAt={task.startedAt}
           taskId={task.id}
           taskListId={task.taskListId}
@@ -85,6 +86,7 @@ export default function useHistoryTaskCardMutation({
   const handleConfirmDelete = async () => {
     try {
       await deleteTaskMutation.mutateAsync({
+        recurringId: task.scheduleEditConfig?.recurringId,
         taskId: task.id,
         taskListId: task.taskListId,
         teamId: task.teamId,

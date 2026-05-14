@@ -47,6 +47,10 @@ export function useTaskListBoardQuery({
         task.weekDays && task.weekDays.length > 0
           ? task.weekDays
           : inferredRecurringWeekDays[String(task.recurringId)];
+      const recurringId =
+        typeof task.recurringId === 'number' && task.recurringId > 0
+          ? String(task.recurringId)
+          : null;
 
       return {
         assigneeImage: task.writer.image,
@@ -56,7 +60,7 @@ export function useTaskListBoardQuery({
         commentCount: task.commentCount,
         dueDateLabel: task.date.slice(0, 10),
         frequency: task.frequency,
-        recurringId: String(task.recurringId),
+        recurringId,
         repeatLabel: formatTaskListRepeatLabel(
           task.frequency,
           resolvedWeekDays,
@@ -64,6 +68,7 @@ export function useTaskListBoardQuery({
         sortOrder: task.displayIndex,
         assigneeName: task.writer.nickname,
         description: task.description ?? '',
+        startedAtRaw: task.date,
         startedAtLabel: task.date.slice(0, 10),
         taskListId: String(taskListId),
         teamId: groupId ?? '',
@@ -112,6 +117,7 @@ export function useTaskListBoardQuery({
     if (!taskPendingDelete || !groupId) return;
     try {
       await deleteTaskMutation.mutateAsync({
+        recurringId: taskPendingDelete.recurringId,
         taskId: taskPendingDelete.id,
         taskListId,
         teamId: groupId,

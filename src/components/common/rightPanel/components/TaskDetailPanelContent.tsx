@@ -8,7 +8,9 @@ import { useLayoutEffect, useRef, useState } from 'react';
 
 import { TaskDeleteConfirmModal } from '@/components/common/modal';
 import TaskDetailPanelContentLayout from '@/components/common/rightPanel/components/TaskDetailPanelContentLayout';
+import TaskDetailScheduleEditModal from '@/components/common/rightPanel/components/TaskDetailScheduleEditModal';
 import useTaskDetailPanel from '@/components/common/rightPanel/hooks/useTaskDetailPanel';
+import useTaskDetailScheduleEditor from '@/components/common/rightPanel/hooks/useTaskDetailScheduleEditor';
 import useUnsavedChangesToastGuard from '@/components/common/rightPanel/hooks/useUnsavedChangesToastGuard';
 import type { TaskDetailPanelContentProps } from '@/components/common/rightPanel/types';
 
@@ -24,6 +26,7 @@ export default function TaskDetailPanelContent({
   onTaskCheckedChanged,
   onTaskDeleted,
   onTaskUpdated,
+  scheduleEditConfig,
   startedAt,
   taskId,
   taskListId,
@@ -72,8 +75,28 @@ export default function TaskDetailPanelContent({
     onTaskCheckedChanged,
     onTaskDeleted,
     onTaskUpdated,
+    scheduleEditConfig,
     taskId,
     taskListId,
+  });
+  const {
+    displayFrequency,
+    displayStartedAt,
+    handleCloseScheduleEditModal,
+    handleOpenScheduleEditModal,
+    handleSubmitScheduleEdit,
+    hasScheduleEditCapability,
+    isScheduleEditModalOpen,
+    isScheduleSubmitting,
+    scheduleEditConfig: currentScheduleEditConfig,
+  } = useTaskDetailScheduleEditor({
+    currentDescription: description,
+    currentTitle: title,
+    initialFrequencyLabel: frequency,
+    initialStartedAtLabel: startedAt,
+    scheduleEditConfig,
+    taskListId,
+    teamId,
   });
 
   useUnsavedChangesToastGuard({
@@ -113,11 +136,12 @@ export default function TaskDetailPanelContent({
         completionActionLabel={completionActionLabel}
         currentUserImage={currentUserImage}
         description={description}
+        frequency={displayFrequency}
         draftCommentContent={draftCommentContent}
         draftDescription={draftDescription}
         draftTitle={draftTitle}
         editingCommentId={editingCommentId}
-        frequency={frequency}
+        hasScheduleEditCapability={hasScheduleEditCapability}
         hasTaskChanges={hasTaskChanges}
         isCommentSubmitting={isCommentSubmitting}
         isSubmittingNewComment={isSubmittingNewComment}
@@ -130,15 +154,25 @@ export default function TaskDetailPanelContent({
         onCreateComment={handleCreateComment}
         onDelete={handleOpenDeleteModal}
         onDeleteComment={handleDeleteComment}
+        onEditSchedule={handleOpenScheduleEditModal}
         onStartCommentEdit={handleStartCommentEdit}
         onStartEdit={handleStartTaskEdit}
         onSubmitCommentEdit={handleSubmitCommentEdit}
         onSubmitEdit={handleSubmitTaskEdit}
         onToggleCompletion={handleToggleCompletion}
         scrollContainerRef={scrollContainerRef}
-        startedAt={startedAt}
+        startedAt={displayStartedAt}
         title={title}
       />
+
+      {isScheduleEditModalOpen && currentScheduleEditConfig ? (
+        <TaskDetailScheduleEditModal
+          initialSchedule={currentScheduleEditConfig}
+          isSubmitting={isScheduleSubmitting}
+          onClose={handleCloseScheduleEditModal}
+          onSubmit={handleSubmitScheduleEdit}
+        />
+      ) : null}
 
       {isDeleteModalOpen && (
         <TaskDeleteConfirmModal

@@ -1,5 +1,32 @@
 import type { ReactNode, RefObject } from 'react';
 
+export type TaskDetailScheduleRepeatValue =
+  | 'once'
+  | 'daily'
+  | 'weekly'
+  | 'monthly';
+
+export type TaskDetailScheduleFrequencyType =
+  | 'ONCE'
+  | 'DAILY'
+  | 'WEEKLY'
+  | 'MONTHLY';
+
+export type TaskDetailScheduleEditConfig = {
+  frequencyType: TaskDetailScheduleFrequencyType;
+  recurringId?: string | null;
+  startedAtRaw: string;
+  weekDays?: number[];
+};
+
+export type TaskDetailScheduleFormValues = {
+  monthDay: number;
+  repeat: TaskDetailScheduleRepeatValue;
+  selectedDate: Date;
+  startTime: string;
+  weekDays: number[];
+};
+
 export type RightPanelComment = {
   authorId?: string;
   authorImage?: string;
@@ -67,6 +94,7 @@ export type TaskDetailPanelContentProps = {
   onTaskCheckedChanged?: (checked: boolean) => void;
   onTaskDeleted?: () => void;
   onTaskUpdated?: (title: string, description: string) => void;
+  scheduleEditConfig?: TaskDetailScheduleEditConfig;
   startedAt: string;
   taskId: string;
   taskListId: string;
@@ -82,11 +110,12 @@ export type TaskDetailPanelContentLayoutProps = {
   completionActionLabel?: string;
   currentUserImage?: string;
   description: string;
+  frequency: string;
   draftCommentContent: string;
   draftDescription: string;
   draftTitle: string;
   editingCommentId: string | null;
-  frequency: string;
+  hasScheduleEditCapability: boolean;
   hasTaskChanges: boolean;
   isCommentSubmitting: boolean;
   isSubmittingNewComment: boolean;
@@ -99,6 +128,7 @@ export type TaskDetailPanelContentLayoutProps = {
   onCreateComment: (content: string) => Promise<boolean>;
   onDelete: () => void;
   onDeleteComment: (commentId: string) => Promise<void> | void;
+  onEditSchedule: () => void;
   onStartCommentEdit: (comment: RightPanelComment) => void;
   onStartEdit: () => void;
   onSubmitCommentEdit: () => Promise<void> | void;
@@ -131,6 +161,9 @@ export type TaskDetailPanelMetaProps = {
   assigneeImage?: string | null;
   assigneeName: string;
   frequency: string;
+  isEditing: boolean;
+  isScheduleEditable: boolean;
+  onEditSchedule: () => void;
   startedAt: string;
 };
 
@@ -188,6 +221,7 @@ export type UseTaskDetailPanelParams = UseTaskDetailDraftStateParams &
     onTaskCheckedChanged?: (checked: boolean) => void;
     onTaskDeleted?: () => void;
     onTaskUpdated?: (title: string, description: string) => void;
+    scheduleEditConfig?: TaskDetailScheduleEditConfig;
     taskListId: string;
   };
 
@@ -199,7 +233,39 @@ export type UseTaskDetailTaskActionsParams = {
   onTaskCheckedChanged?: (checked: boolean) => void;
   onTaskDeleted?: () => void;
   onTaskUpdated?: (title: string, description: string) => void;
+  recurringId?: string | null;
   taskId: string;
   taskListId: string;
   teamId: string;
+};
+
+export type TaskDetailScheduleEditModalProps = {
+  initialSchedule: TaskDetailScheduleEditConfig;
+  isSubmitting: boolean;
+  onClose: () => void;
+  onSubmit: (values: TaskDetailScheduleFormValues) => Promise<boolean>;
+};
+
+export type UseTaskDetailScheduleEditorParams = {
+  currentDescription: string;
+  currentTitle: string;
+  initialFrequencyLabel: string;
+  initialStartedAtLabel: string;
+  scheduleEditConfig?: TaskDetailScheduleEditConfig;
+  taskListId: string;
+  teamId: string;
+};
+
+export type UseTaskDetailScheduleEditorReturn = {
+  displayFrequency: string;
+  displayStartedAt: string;
+  handleCloseScheduleEditModal: () => void;
+  handleOpenScheduleEditModal: () => void;
+  handleSubmitScheduleEdit: (
+    values: TaskDetailScheduleFormValues,
+  ) => Promise<boolean>;
+  hasScheduleEditCapability: boolean;
+  isScheduleEditModalOpen: boolean;
+  isScheduleSubmitting: boolean;
+  scheduleEditConfig?: TaskDetailScheduleEditConfig;
 };

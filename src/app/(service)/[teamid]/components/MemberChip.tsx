@@ -9,7 +9,7 @@ export default function MemberChip({
   return (
     <div className="border-background-tertiary border rounded-lg flex gap-2 h-8 pr-2 pl-3 justify-center items-center  ">
       <div className="flex flex-row">
-        {members.map((member) => (
+        {members.slice(0, 3).map((member) => (
           <div
             key={member.userId}
             className="border-background-tertiary bg-background-tertiary border rounded-lg flex h-6 w-6 overflow-hidden justify-center items-center -ml-2 "

@@ -7,9 +7,14 @@ import { useLayoutEffect, useMemo, useRef } from 'react';
 
 import {
   TASK_LIST_WEEK_DAY_CELL_CLASS,
+  TASK_LIST_WEEK_STRIP_EDGE_FADE_CLASS,
+  TASK_LIST_WEEK_STRIP_FADE_CONTAINER_CLASS,
+  TASK_LIST_WEEK_STRIP_LEFT_FADE_CLASS,
+  TASK_LIST_WEEK_STRIP_RIGHT_FADE_CLASS,
   TASK_LIST_WEEK_STRIP_SCROLL_ROW_CLASS,
 } from '@/app/(service)/[teamid]/tasklist/constants/taskListWeekStripConstants';
 import useTaskListDragScroll from '@/app/(service)/[teamid]/tasklist/hooks/useTaskListDragScroll';
+import useTaskListWeekStripFade from '@/app/(service)/[teamid]/tasklist/hooks/useTaskListWeekStripFade';
 import type { TaskListWeekStripProps } from '@/app/(service)/[teamid]/tasklist/types';
 import { formatWeekdayLabel } from '@/app/(service)/[teamid]/tasklist/utils/boardDate';
 import {
@@ -30,6 +35,7 @@ export default function TaskListWeekStrip({
     handlePointerDown,
     handlePointerMove,
   } = useTaskListDragScroll();
+  const { fadeState } = useTaskListWeekStripFade(containerRef);
 
   const year = selectedDate.getFullYear();
   const month = selectedDate.getMonth();
@@ -75,54 +81,73 @@ export default function TaskListWeekStrip({
   };
 
   return (
-    <ul
-      ref={containerRef}
-      className={cn(TASK_LIST_WEEK_STRIP_SCROLL_ROW_CLASS, className)}
-      role="tablist"
-      aria-label="월간 날짜 선택"
-      onClickCapture={handleClickCapture}
-      onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-    >
-      {stripDays.map((day) => {
-        const isInSelectedMonth =
-          day.getFullYear() === year && day.getMonth() === month;
-        const isMonthFirst = isInSelectedMonth && day.getDate() === 1;
-        const isSelected =
-          day.getFullYear() === selectedDate.getFullYear() &&
-          day.getMonth() === selectedDate.getMonth() &&
-          day.getDate() === selectedDate.getDate();
-        const label = formatWeekdayLabel(day);
+    <div className={cn(TASK_LIST_WEEK_STRIP_FADE_CONTAINER_CLASS, className)}>
+      <ul
+        ref={containerRef}
+        className={TASK_LIST_WEEK_STRIP_SCROLL_ROW_CLASS}
+        role="tablist"
+        aria-label="월간 날짜 선택"
+        onClickCapture={handleClickCapture}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+      >
+        {stripDays.map((day) => {
+          const isInSelectedMonth =
+            day.getFullYear() === year && day.getMonth() === month;
+          const isMonthFirst = isInSelectedMonth && day.getDate() === 1;
+          const isSelected =
+            day.getFullYear() === selectedDate.getFullYear() &&
+            day.getMonth() === selectedDate.getMonth() &&
+            day.getDate() === selectedDate.getDate();
+          const label = formatWeekdayLabel(day);
 
-        return (
-          <li
-            key={getTaskListCalendarDayKey(day)}
-            data-calendar-day-key={getTaskListCalendarDayKey(day)}
-            data-month-first={isMonthFirst ? 'true' : undefined}
-            className={TASK_LIST_WEEK_DAY_CELL_CLASS}
-          >
-            <button
-              type="button"
-              role="tab"
-              aria-selected={isSelected}
-              className={cn(
-                'flex h-12.25 w-full max-w-11.285 flex-col items-center justify-center gap-0 self-center rounded-xl border px-0.5 py-1 text-center transition-colors sm:h-auto sm:max-w-none sm:min-h-16 sm:self-stretch sm:gap-0.5 sm:px-1 sm:py-2',
-                isSelected
-                  ? 'border-text-primary bg-text-primary text-text-inverse'
-                  : isInSelectedMonth
-                    ? 'border-background-tertiary bg-background-primary text-text-primary hover:bg-background-secondary'
-                    : 'border-background-tertiary bg-background-primary text-text-secondary opacity-80 hover:bg-background-secondary hover:opacity-100',
-              )}
-              onClick={() => handleSelectDay(day)}
+          return (
+            <li
+              key={getTaskListCalendarDayKey(day)}
+              data-calendar-day-key={getTaskListCalendarDayKey(day)}
+              data-month-first={isMonthFirst ? 'true' : undefined}
+              className={TASK_LIST_WEEK_DAY_CELL_CLASS}
             >
-              <span className="text-sm font-medium opacity-90">{label}</span>
-              <span className="text-base font-semibold tabular-nums sm:text-lg">
-                {day.getDate()}
-              </span>
-            </button>
-          </li>
-        );
-      })}
-    </ul>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={isSelected}
+                className={cn(
+                  'flex h-12.25 w-full max-w-11.285 flex-col items-center justify-center gap-0 self-center rounded-xl border px-0.5 py-1 text-center transition-colors sm:h-auto sm:max-w-none sm:min-h-16 sm:self-stretch sm:gap-0.5 sm:px-1 sm:py-2',
+                  isSelected
+                    ? 'border-text-primary bg-text-primary text-text-inverse'
+                    : isInSelectedMonth
+                      ? 'border-background-tertiary bg-background-primary text-text-primary hover:bg-background-secondary'
+                      : 'border-background-tertiary bg-background-primary text-text-secondary opacity-80 hover:bg-background-secondary hover:opacity-100',
+                )}
+                onClick={() => handleSelectDay(day)}
+              >
+                <span className="text-sm font-medium opacity-90">{label}</span>
+                <span className="text-base font-semibold tabular-nums sm:text-lg">
+                  {day.getDate()}
+                </span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+
+      <div
+        aria-hidden="true"
+        className={cn(
+          TASK_LIST_WEEK_STRIP_EDGE_FADE_CLASS,
+          TASK_LIST_WEEK_STRIP_LEFT_FADE_CLASS,
+          fadeState.canScrollLeft ? 'opacity-100' : 'opacity-0',
+        )}
+      />
+      <div
+        aria-hidden="true"
+        className={cn(
+          TASK_LIST_WEEK_STRIP_EDGE_FADE_CLASS,
+          TASK_LIST_WEEK_STRIP_RIGHT_FADE_CLASS,
+          fadeState.canScrollRight ? 'opacity-100' : 'opacity-0',
+        )}
+      />
+    </div>
   );
 }

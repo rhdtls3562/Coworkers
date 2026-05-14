@@ -38,6 +38,17 @@ function toHistoryTaskListSummaryTask(task: unknown) {
     id: taskId,
     name: taskName,
     recurringId: toNumber(task.recurringId),
+    weekDays: Array.isArray(task.weekDays)
+      ? task.weekDays.reduce<number[]>((days, day) => {
+          const normalizedDay = toNumber(day);
+
+          if (typeof normalizedDay === 'number') {
+            days.push(normalizedDay);
+          }
+
+          return days;
+        }, [])
+      : undefined,
   } satisfies HistoryTaskListSummaryTask;
 }
 

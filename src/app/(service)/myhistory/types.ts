@@ -10,6 +10,7 @@ import type {
 
 import { MY_HISTORY_DATE_RANGE_MODES } from '@/app/(service)/myhistory/constants';
 import type { DatePickerRangeValue } from '@/components/common/form/types';
+import type { TaskDetailScheduleEditConfig } from '@/components/common/rightPanel/types';
 
 export type MyHistoryFilter = {
   count: number;
@@ -64,6 +65,7 @@ export type MyHistoryTask = {
   frequency: string;
   id: string;
   isCompleted: boolean;
+  scheduleEditConfig?: TaskDetailScheduleEditConfig;
   startedAt: string;
   taskListId: string;
   teamId: string;
@@ -120,6 +122,7 @@ export type HistoryTaskListSummaryTask = {
   id: string;
   name: string;
   recurringId?: number;
+  weekDays?: number[];
 };
 
 export type HistoryTeamDetail = {
@@ -139,6 +142,7 @@ export type HistoryTaskListTask = {
   id: string;
   name: string;
   recurringId?: number;
+  weekDays?: number[];
 };
 
 export type HistoryTaskListDetailSource = {
@@ -153,6 +157,7 @@ export type HistoryTaskListDetailSource = {
 
 export type HistoryTaskMeta = {
   commentCount: number;
+  scheduleEditConfig?: TaskDetailScheduleEditConfig;
   taskDisplayIndex: number;
   taskIdentityKey: string;
   taskListDisplayIndex: number;

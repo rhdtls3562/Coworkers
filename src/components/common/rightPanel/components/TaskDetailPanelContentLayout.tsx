@@ -16,11 +16,12 @@ export default function TaskDetailPanelContentLayout({
   completionActionLabel,
   currentUserImage,
   description,
+  frequency,
   draftCommentContent,
   draftDescription,
   draftTitle,
   editingCommentId,
-  frequency,
+  hasScheduleEditCapability,
   hasTaskChanges,
   isCommentSubmitting,
   isSubmittingNewComment,
@@ -33,6 +34,7 @@ export default function TaskDetailPanelContentLayout({
   onCreateComment,
   onDelete,
   onDeleteComment,
+  onEditSchedule,
   onStartCommentEdit,
   onStartEdit,
   onSubmitCommentEdit,
@@ -63,6 +65,9 @@ export default function TaskDetailPanelContentLayout({
               assigneeImage={assigneeImage}
               assigneeName={assigneeName}
               frequency={frequency}
+              isEditing={isTaskEditing}
+              isScheduleEditable={hasScheduleEditCapability}
+              onEditSchedule={onEditSchedule}
               startedAt={startedAt}
             />
           </div>

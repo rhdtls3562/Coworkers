@@ -3,9 +3,9 @@
 <!-- 🖼️ 서비스 로고 이미지 (추후 추가) -->
 <img src="./src/assets/logos/img_logo_full_large.svg" alt="Coworkers Logo" width="180" />
 
-### 익명 롤링페이퍼 & 팀 협업 플랫폼
+### 팀 협업 플랫폼 & 채용/홍보
 
-팀원들과 함께하는 익명 롤링페이퍼, 할 일 관리, 자유게시판 서비스
+함께 만들어가는 To do list, 할 일 관리, 채용/홍보 서비스
 
 <br>
 
@@ -56,12 +56,12 @@
 
 <br>
 
-| <img width="80" src="https://github.com/github.png" /> | <img width="80" src="https://github.com/github.png" /> | <img width="80" src="https://github.com/github.png" /> | <img width="80" src="https://github.com/github.png" /> |
+| <img width="80" src="https://github.com/rhdtls3562.png" /> | <img width="80" src="https://github.com/ziy1027.png" /> | <img width="80" src="https://github.com/ino0o0o0.png" /> | <img width="80" src="https://github.com/qorwhddls134.png" /> |
 |:---:|:---:|:---:|:---:|
 | **권새롬** | **김송현** | **강인영** | **백종인** |
 | 팀장 | 팀원 | 팀원 | 팀원 |
-| 랜딩/로그인회원가입/마이히스토리 | 계정설정/팀페이지 | 리스트페이지 | 채용홍보페이지 |
-| [@github](https://github.com) | [@github](https://github.com) | [@github](https://github.com) | [@github](https://github.com) |
+| 랜딩/로그인/마이히스토리 | 계정설정/팀페이지 | 리스트페이지 | 채용홍보페이지 |
+| [@rhdtls3562](https://github.com/rhdtls3562) | [@ziy1027](https://github.com/ziy1027) | [@ino0o0o0](https://github.com/ino0o0o0) | [@qorwhddls134](https://github.com/qorwhddls134) |
 
 <!-- 팀원 GitHub 아이디로 위 이미지 src와 링크를 교체하세요 -->
 <!-- 예: src="https://github.com/username.png" -->
@@ -74,7 +74,7 @@
 
 ### 💬 팀 한마디
 
-> _"각자의 강점을 살려 함께 만들어낸 프로젝트입니다."_
+> _"각자의 강점을 살려 피땀눈물로 함께 만들어낸 프로젝트입니다."_
 
 </div>
 
@@ -84,7 +84,7 @@
 
 ## 💡 서비스 소개
 
-**Coworkers**는 팀 기반의 익명 롤링페이퍼 작성, 할 일 관리, 자유게시판 기능을 제공하는 웹 서비스입니다.
+**Coworkers**는 팀 기반의 To do list 작성, 할 일 관리, 채용/홍보 게시판 기능을 제공하는 웹 서비스입니다.
 
 React Query를 활용한 효율적인 서버 상태 관리와 직관적인 UI/UX로 팀원 간의 소통과 협업을 도와줍니다.
 
@@ -305,8 +305,8 @@ src/
 
 ```bash
 # 저장소 클론
-git clone https://github.com/your-org/coworkers.git
-cd coworkers
+git clone https://github.com/part4-3team/Coworkers.git
+cd Coworkers
 
 # 패키지 설치
 npm install
