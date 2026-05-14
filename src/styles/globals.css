@@ -156,3 +156,10 @@ button:disabled,
     opacity: 1;
   }
 }
+
+/* 아이폰에서 메일을 자동 링크 효과 무력화 */
+a[x-apple-data-detectors] {
+  color: inherit !important;
+  text-decoration: none !important;
+  pointer-events: none;
+}
