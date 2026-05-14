@@ -39,7 +39,7 @@ export default function TaskListTaskRow({
 
       <div className="relative z-10 min-w-0 flex-1 pr-10 pointer-events-none sm:pr-11">
         <div className="flex min-w-0 items-center gap-2">
-          <span className="pointer-events-auto">
+          <span className="min-w-0 flex-1 pointer-events-auto">
             <TodoCheckUncheck
               label={task.title}
               checked={task.checked}
