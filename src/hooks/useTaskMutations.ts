@@ -16,8 +16,11 @@ import { deleteTask, updateTask } from '@/api/taskApi';
 import type { TaskUpdateBody } from '@/api/types';
 import {
   invalidateTaskCheckedFollowups,
+  syncDeletedTaskCaches,
   syncTaskCheckedCaches,
 } from '@/hooks/taskMutationCache';
+import type { GroupDetail } from '@/types/group';
+import type { TaskListDetail } from '@/types/task';
 
 type UpdateTaskData = Awaited<ReturnType<typeof updateTask>>;
 type DeleteTaskData = Awaited<ReturnType<typeof deleteTask>>;
@@ -104,6 +107,8 @@ export function useDeleteTaskMutation(
   options?: MutationOptionsOverrides<DeleteTaskData, DeleteTaskVariables>,
 ) {
   const queryClient = useQueryClient();
+  const handleError = options?.onError;
+  const handleMutate = options?.onMutate;
   const handleSuccess = options?.onSuccess;
 
   return useMutation(
@@ -116,14 +121,96 @@ export function useDeleteTaskMutation(
       }: DeleteTaskVariables) => deleteTask(teamId, taskListId, taskId, token),
       options: {
         ...options,
+        onMutate: async (variables, context) => {
+          const taskListIdString = String(variables.taskListId);
+
+          await Promise.all([
+            queryClient.cancelQueries({
+              queryKey: queryKeys.team.detail(variables.teamId),
+            }),
+            queryClient.cancelQueries({
+              queryKey: queryKeys.taskList.detail(
+                variables.teamId,
+                taskListIdString,
+              ),
+            }),
+            queryClient.cancelQueries({
+              queryKey: queryKeys.user.completedTasks(),
+            }),
+          ]);
+
+          const previousTeamDetail = queryClient.getQueryData<GroupDetail>(
+            queryKeys.team.detail(variables.teamId),
+          );
+          const previousTaskListDetails = queryClient.getQueriesData<
+            TaskListDetail | undefined
+          >({
+            queryKey: queryKeys.taskList.detail(
+              variables.teamId,
+              taskListIdString,
+            ),
+          });
+          const previousCompletedTasksQueries = queryClient.getQueriesData({
+            queryKey: queryKeys.user.completedTasks(),
+          });
+
+          syncDeletedTaskCaches({
+            queryClient,
+            taskId: variables.taskId,
+            taskListId: variables.taskListId,
+            teamId: variables.teamId,
+          });
+
+          const externalOnMutateResult = await handleMutate?.(
+            variables,
+            context,
+          );
+
+          return {
+            externalOnMutateResult,
+            previousCompletedTasksQueries,
+            previousTaskListDetails,
+            previousTeamDetail,
+          };
+        },
+        onError: async (error, variables, onMutateResult, context) => {
+          if (onMutateResult?.previousTeamDetail !== undefined) {
+            queryClient.setQueryData(
+              queryKeys.team.detail(variables.teamId),
+              onMutateResult.previousTeamDetail,
+            );
+          }
+
+          onMutateResult?.previousTaskListDetails?.forEach(
+            ([queryKey, previousTaskListDetail]) => {
+              queryClient.setQueryData(queryKey, previousTaskListDetail);
+            },
+          );
+
+          onMutateResult?.previousCompletedTasksQueries?.forEach(
+            ([queryKey, previousCompletedTasks]) => {
+              queryClient.setQueryData(queryKey, previousCompletedTasks);
+            },
+          );
+
+          await handleError?.(
+            error,
+            variables,
+            onMutateResult?.externalOnMutateResult,
+            context,
+          );
+        },
         onSuccess: async (data, variables, onMutateResult, context) => {
           await Promise.all([
-            queryClient.invalidateQueries({
+            queryClient.removeQueries({
               queryKey: queryKeys.task.detail(
                 variables.teamId,
                 variables.taskId,
                 variables.taskListId,
               ),
+            }),
+            queryClient.invalidateQueries({
+              queryKey: queryKeys.team.detail(variables.teamId),
             }),
             queryClient.invalidateQueries({
               queryKey: queryKeys.taskList.detail(
@@ -138,7 +225,12 @@ export function useDeleteTaskMutation(
               queryKey: queryKeys.user.completedTaskSummary(),
             }),
           ]);
-          await handleSuccess?.(data, variables, onMutateResult, context);
+          await handleSuccess?.(
+            data,
+            variables,
+            onMutateResult?.externalOnMutateResult,
+            context,
+          );
         },
       },
     }),

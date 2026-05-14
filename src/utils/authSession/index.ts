@@ -38,6 +38,22 @@ function emitAuthSessionChange(reason: AuthSessionChangeReason) {
   );
 }
 
+function persistAuthSession(
+  session: AuthSession,
+  reason: AuthSessionChangeReason,
+) {
+  if (!isBrowser()) {
+    return;
+  }
+
+  window.localStorage.setItem(
+    AUTH_SESSION_STORAGE_KEY,
+    JSON.stringify(session),
+  );
+  document.cookie = buildAccessTokenCookie(session.accessToken);
+  emitAuthSessionChange(reason);
+}
+
 export function getAuthSession() {
   if (!isBrowser()) {
     return null;
@@ -57,16 +73,7 @@ export function getAuthSession() {
 }
 
 export function saveAuthSession(session: AuthSession) {
-  if (!isBrowser()) {
-    return;
-  }
-
-  window.localStorage.setItem(
-    AUTH_SESSION_STORAGE_KEY,
-    JSON.stringify(session),
-  );
-  document.cookie = buildAccessTokenCookie(session.accessToken);
-  emitAuthSessionChange('saved');
+  persistAuthSession(session, 'saved');
 }
 
 export function clearAuthSession(reason: AuthSessionChangeReason = 'manual') {
@@ -106,7 +113,7 @@ export function setStoredAccessToken(accessToken: string) {
   const session = getAuthSession();
   if (!session) return;
 
-  saveAuthSession({ ...session, accessToken });
+  persistAuthSession({ ...session, accessToken }, 'refreshed');
 }
 
 export function hasAuthSession() {

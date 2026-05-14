@@ -14,21 +14,17 @@ export default function HistoryFilterTabs({
   const {
     containerRef,
     handleClickCapture,
-    handlePointerCancel,
     handlePointerDown,
     handlePointerMove,
-    handlePointerUp,
   } = useDragScroll();
 
   return (
     <ul
       ref={containerRef}
-      className="flex cursor-grab gap-1 overflow-x-auto select-none md:gap-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden active:cursor-grabbing"
       onClickCapture={handleClickCapture}
-      onPointerCancel={handlePointerCancel}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerUp}
+      className="flex cursor-grab gap-1 overflow-x-auto overscroll-x-contain select-none md:gap-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden active:cursor-grabbing"
     >
       {filters.map((filter) => {
         const isActive = activeFilterId === filter.id;
@@ -40,7 +36,7 @@ export default function HistoryFilterTabs({
               data-allow-unsaved="true"
               onClick={() => onSelectFilter(filter.id)}
               className={cn(
-                'flex h-8.25 shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-full border px-3 text-sm font-medium md:h-10.75 md:px-4 md:text-base',
+                'flex h-8.25 shrink-0 touch-manipulation items-center justify-center gap-1.5 whitespace-nowrap rounded-full border px-3 text-sm font-medium md:h-10.75 md:px-4 md:text-base',
                 isActive
                   ? 'border-brand-primary bg-brand-primary text-text-inverse'
                   : 'border-background-tertiary bg-background-inverse text-text-primary',

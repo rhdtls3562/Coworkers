@@ -7,7 +7,6 @@ import HistoryFilterTabs from '@/app/(service)/myhistory/components/HistoryFilte
 import HistoryMonthNavigator from '@/app/(service)/myhistory/components/HistoryMonthNavigator';
 import { MY_HISTORY_BOARD_STATUS_TEXT } from '@/app/(service)/myhistory/constants';
 import type { HistoryBoardProps } from '@/app/(service)/myhistory/types';
-import { cn } from '@/utils/cn';
 
 export default function HistoryBoard({
   activeFilterId,
@@ -26,14 +25,7 @@ export default function HistoryBoard({
   title,
 }: HistoryBoardProps) {
   return (
-    <section
-      className={cn(
-        'w-full rounded-[20px] bg-background-inverse px-4.5 py-8 min-[411px]:px-6 md:px-13 md:py-13 2xl:w-189.5 2xl:shrink-0 2xl:px-9 2xl:py-12',
-        !hasTasks &&
-          !isLoading &&
-          'flex min-h-162.5 flex-col md:min-h-230 2xl:min-h-192',
-      )}
-    >
+    <section className="w-full rounded-[20px] bg-background-inverse px-4.5 py-8 min-[411px]:px-6 md:px-13 md:py-13 2xl:w-189.5 2xl:shrink-0 2xl:px-9 2xl:py-12">
       <HistoryMonthNavigator
         title={title}
         selectedRange={selectedRange}

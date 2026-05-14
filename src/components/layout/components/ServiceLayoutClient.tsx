@@ -23,7 +23,7 @@ export default function ServiceLayoutClient({
         <Header />
         <div className="flex min-h-0 flex-1 overflow-x-clip bg-background-secondary">
           <Sidebar />
-          <main className="min-w-0 flex-1 md:pt-0">{children}</main>
+          <main className="min-w-0 flex-1 pt-13 md:pt-0">{children}</main>
           <ServiceRightPanelHost />
         </div>
       </div>

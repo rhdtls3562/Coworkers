@@ -1,5 +1,6 @@
 export type AuthSessionChangeReason =
   | 'saved'
+  | 'refreshed'
   | 'manual'
   | 'expired'
   | 'unauthorized';

@@ -26,8 +26,8 @@ export default function MobileSidebarDrawer({
     <>
       <div
         className={cn(
-          'md:hidden fixed inset-0 z-50 bg-text-primary/45 transition-opacity duration-300',
-          isVisible ? 'opacity-100' : 'opacity-0',
+          'md:hidden fixed inset-0 z-41 bg-text-primary/45 transition-opacity duration-300',
+          isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none',
         )}
         onClick={onClose}
         aria-hidden="true"
@@ -38,7 +38,7 @@ export default function MobileSidebarDrawer({
         aria-modal="true"
         aria-label="모바일 사이드바 메뉴"
         className={cn(
-          'md:hidden fixed inset-y-0 left-0 z-50 flex h-dvh w-56 flex-col bg-background-inverse text-text-default shadow-2xl transition-transform duration-300 will-change-transform',
+          'md:hidden fixed inset-y-0 left-0 z-42 flex h-dvh w-56 flex-col bg-background-inverse text-text-default shadow-2xl transition-transform duration-300 will-change-transform',
           isVisible ? 'translate-x-0' : '-translate-x-full',
         )}
       >

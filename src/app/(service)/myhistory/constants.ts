@@ -59,7 +59,7 @@ export const HISTORY_TASK_CARD_TEXT = {
   delete: '삭제하기',
   deleteError: '할 일 삭제에 실패했습니다.',
   deleteSuccess: '삭제되었습니다.',
-  edit: '수정하기',
+  edit: '상세보기',
 } as const;
 
 export const MY_HISTORY_API_TEAM_ID = process.env.NEXT_PUBLIC_TEAM_ID ?? '';

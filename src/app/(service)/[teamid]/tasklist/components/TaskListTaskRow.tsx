@@ -85,7 +85,7 @@ export default function TaskListTaskRow({
           className="shrink-0"
           items={[
             {
-              label: '수정하기',
+              label: '상세보기',
               onClick: () => {
                 handleOpenDetail();
               },

@@ -18,14 +18,15 @@ export default function TaskListRenameColumnModal({
   const isSubmittingRef = useRef(false);
 
   const trimmedName = useMemo(() => name.trim(), [name]);
-  const isAtLimit = name.length >= 15;
+  const isOver = trimmedName.length > 15;
   const isDisabled =
     trimmedName.length === 0 ||
     trimmedName === initialName.trim() ||
+    isOver ||
     isSubmitting;
 
   const handleRename = async () => {
-    if (isSubmittingRef.current || trimmedName.length === 0) return;
+    if (isSubmittingRef.current || trimmedName.length === 0 || isOver) return;
     isSubmittingRef.current = true;
     setIsSubmitting(true);
     try {
@@ -39,7 +40,7 @@ export default function TaskListRenameColumnModal({
   return (
     <Modal
       hasCloseButton
-      title="할 일 목록 수정"
+      title="할 일 목록"
       onClose={onClose}
       primaryButtonText="변경하기"
       isPrimaryButtonDisabled={isDisabled}
@@ -53,20 +54,8 @@ export default function TaskListRenameColumnModal({
           placeholder="목록 명을 입력해주세요."
           aria-label="목록 이름 변경"
           className="placeholder:text-interaction-inactive"
-          maxLength={15}
+          errorMessage={isOver ? '15자 이내로 작성해주세요.' : undefined}
         />
-        <div className="flex items-center justify-between mt-1">
-          {isAtLimit ? (
-            <p className="text-sm font-medium text-status-danger">
-              15자 이내로 작성해주세요.
-            </p>
-          ) : (
-            <span />
-          )}
-          <p className="text-right text-sm text-text-default">
-            {name.length}/15
-          </p>
-        </div>
       </div>
     </Modal>
   );

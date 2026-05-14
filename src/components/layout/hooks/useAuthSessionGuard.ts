@@ -4,7 +4,7 @@
 
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { usePathname, useRouter } from 'next/navigation';
 
@@ -21,10 +21,13 @@ import {
   subscribeAuthSessionChange,
 } from '@/utils/authSession';
 
+const REFRESH_BUFFER_MS = 60 * 1000;
+
 export default function useAuthSessionGuard() {
   const pathname = usePathname();
   const router = useRouter();
   const { showToast } = useToast();
+  const [sessionVersion, setSessionVersion] = useState(0);
 
   useEffect(() => {
     if (isPublicServicePath(pathname)) {
@@ -60,19 +63,7 @@ export default function useAuthSessionGuard() {
       return;
     }
 
-    const remainingTime = expirationTime - Date.now();
-
-    if (remainingTime <= 0) {
-      clearAuthSession('expired');
-      router.replace(
-        buildLoginPath({
-          redirectTo,
-        }),
-      );
-      return;
-    }
-
-    const timeoutId = window.setTimeout(async () => {
+    const handleRefreshOrSignOut = async () => {
       const refreshToken = getStoredRefreshToken();
 
       if (refreshToken) {
@@ -91,7 +82,7 @@ export default function useAuthSessionGuard() {
 
             if (data.accessToken) {
               setStoredAccessToken(data.accessToken);
-              return;
+              return true;
             }
           }
         } catch (error) {
@@ -106,15 +97,32 @@ export default function useAuthSessionGuard() {
           redirectTo,
         }),
       );
+      return false;
+    };
+
+    const remainingTime = expirationTime - Date.now() - REFRESH_BUFFER_MS;
+
+    if (remainingTime <= 0) {
+      void handleRefreshOrSignOut();
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      void handleRefreshOrSignOut();
     }, remainingTime);
 
     return () => {
       window.clearTimeout(timeoutId);
     };
-  }, [pathname, router, showToast]);
+  }, [pathname, router, sessionVersion, showToast]);
 
   useEffect(() => {
-    const unsubscribe = subscribeAuthSessionChange(() => {
+    const unsubscribe = subscribeAuthSessionChange((reason) => {
+      if (reason === 'saved' || reason === 'refreshed') {
+        setSessionVersion((previousVersion) => previousVersion + 1);
+        return;
+      }
+
       router.refresh();
     });
 
