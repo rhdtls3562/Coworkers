@@ -58,6 +58,42 @@ export function syncCheckedTaskToTaskListDetail(
   };
 }
 
+export function removeTaskFromGroupDetail(
+  groupDetail: GroupDetail | undefined,
+  taskListId: string,
+  taskId: string,
+) {
+  if (!groupDetail) {
+    return groupDetail;
+  }
+
+  return {
+    ...groupDetail,
+    taskLists: groupDetail.taskLists.map((taskList) =>
+      String(taskList.id) === taskListId
+        ? {
+            ...taskList,
+            tasks: taskList.tasks.filter((task) => String(task.id) !== taskId),
+          }
+        : taskList,
+    ),
+  };
+}
+
+export function removeTaskFromTaskListDetail(
+  taskListDetail: TaskListDetail | undefined,
+  taskId: string,
+) {
+  if (!taskListDetail) {
+    return taskListDetail;
+  }
+
+  return {
+    ...taskListDetail,
+    tasks: taskListDetail.tasks.filter((task) => String(task.id) !== taskId),
+  };
+}
+
 export function removeTaskListFromGroupDetail(
   groupDetail: GroupDetail | undefined,
   taskListId: string,
