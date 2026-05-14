@@ -22,8 +22,8 @@ export function ModalTaskAdd({ onClose }: ModalTaskProps) {
   const [taskListName, setTaskListName] = useState('');
 
   const trimmed = taskListName.trim();
-  const isOver = trimmed.length > 15;
-  const isDisabled = trimmed.length === 0 || isOver;
+  const isAtLimit = taskListName.length >= 15;
+  const isDisabled = trimmed.length === 0;
 
   const handleTaskAdd = async () => {
     if (isDisabled || isCreateTaskListPending) return;
@@ -55,13 +55,21 @@ export function ModalTaskAdd({ onClose }: ModalTaskProps) {
       <Input
         placeholder="할 일 목록 명을 입력해주세요."
         disabled={isCreateTaskListPending}
+        maxLength={15}
         onChange={(e) => setTaskListName(e.target.value)}
       />
-      {isOver && (
-        <p className="mt-2 text-sm font-medium text-status-danger">
-          15자 이내로 작성해주세요.
+      <div className="flex items-center justify-between">
+        {isAtLimit ? (
+          <p className="mt-2 text-left text-sm font-medium text-status-danger">
+            15자 이내로 작성해주세요.
+          </p>
+        ) : (
+          <span />
+        )}
+        <p className="mt-1 text-right text-sm text-text-default">
+          {taskListName.length}/15
         </p>
-      )}
+      </div>
     </Modal>
   );
 }
@@ -80,9 +88,9 @@ export function ModalTaskEdit({
   const [taskListName, setTaskListName] = useState(initialTitle ?? '');
 
   const trimmed = taskListName.trim();
-  const isOver = trimmed.length > 15;
+  const isAtLimit = taskListName.length >= 15;
   const isDisabled =
-    trimmed.length === 0 || trimmed === (initialTitle ?? '').trim() || isOver;
+    trimmed.length === 0 || trimmed === (initialTitle ?? '').trim();
 
   const handleTaskEdit = async () => {
     if (!taskListId || isDisabled || isUpdateTaskListPending) return;
@@ -115,13 +123,21 @@ export function ModalTaskEdit({
       <Input
         value={taskListName}
         disabled={isUpdateTaskListPending}
+        maxLength={15}
         onChange={(e) => setTaskListName(e.target.value)}
       />
-      {isOver && (
-        <p className="mt-2 text-left text-sm font-medium text-status-danger">
-          15자 이내로 작성해주세요.
+      <div className="flex items-center justify-between">
+        {isAtLimit ? (
+          <p className="mt-2 text-left text-sm font-medium text-status-danger">
+            15자 이내로 작성해주세요.
+          </p>
+        ) : (
+          <span />
+        )}
+        <p className="mt-1 text-right text-sm text-text-default">
+          {taskListName.length}/15
         </p>
-      )}
+      </div>
     </Modal>
   );
 }

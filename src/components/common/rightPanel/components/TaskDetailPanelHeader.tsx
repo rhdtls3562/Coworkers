@@ -14,14 +14,30 @@ export default function TaskDetailPanelHeader({
   title,
 }: TaskDetailPanelHeaderProps) {
   if (isEditing) {
+    const isAtLimit = draftTitle.length >= 30;
     return (
-      <TitleInput
-        value={draftTitle}
-        placeholder="제목을 입력해주세요."
-        onChange={(event) => {
-          onChangeDraftTitle(event.target.value);
-        }}
-      />
+      <>
+        <TitleInput
+          value={draftTitle}
+          placeholder="제목을 입력해주세요."
+          maxLength={30}
+          onChange={(event) => {
+            onChangeDraftTitle(event.target.value);
+          }}
+        />
+        <div className="flex items-center justify-between mt-1">
+          {isAtLimit ? (
+            <p className="text-sm font-medium text-status-danger">
+              30자 이내로 작성해주세요.
+            </p>
+          ) : (
+            <span />
+          )}
+          <p className="text-right text-sm text-text-default">
+            {draftTitle.length}/30
+          </p>
+        </div>
+      </>
     );
   }
 

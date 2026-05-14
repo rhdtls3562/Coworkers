@@ -33,15 +33,29 @@ export default function TaskListCreateTaskModalTextFields({
         >
           할 일 제목
         </label>
-
-        <div className={CREATE_TASK_FIELD_SHELL_CLASS}>
-          <Input
-            id={`${formId}-title`}
-            value={title}
-            onChange={(event) => onTitleChange(event.target.value)}
-            placeholder="할 일 제목을 입력해주세요."
-            className={cn(CREATE_TASK_TITLE_INPUT_INNER_CLASS, 'px-4')}
-          />
+        <div className="flex flex-col gap-2">
+          <div className={CREATE_TASK_FIELD_SHELL_CLASS}>
+            <Input
+              id={`${formId}-title`}
+              value={title}
+              onChange={(event) => onTitleChange(event.target.value)}
+              placeholder="할 일 제목을 입력해주세요."
+              maxLength={30}
+              className={cn(CREATE_TASK_TITLE_INPUT_INNER_CLASS, 'px-4')}
+            />
+          </div>
+          <div className="flex items-center justify-between">
+            {title.length >= 30 ? (
+              <p className="text-sm font-medium text-status-danger">
+                30자 이내로 작성해주세요.
+              </p>
+            ) : (
+              <span />
+            )}
+            <p className="text-right text-sm text-text-default">
+              {title.length}/30
+            </p>
+          </div>
         </div>
       </div>
 
@@ -55,16 +69,31 @@ export default function TaskListCreateTaskModalTextFields({
           할 일 메모
         </label>
 
-        <div className={CREATE_TASK_MEMO_SHELL_CLASS}>
-          <div className={CREATE_TASK_MEMO_INNER_WRAPPER_CLASS}>
-            <textarea
-              id={`${formId}-memo`}
-              value={memo}
-              onChange={(event) => onMemoChange(event.target.value)}
-              placeholder="메모를 입력해주세요."
-              autoComplete="off"
-              className={CREATE_TASK_MEMO_TEXTAREA_CLASS}
-            />
+        <div className="flex flex-col gap-2">
+          <div className={CREATE_TASK_MEMO_SHELL_CLASS}>
+            <div className={CREATE_TASK_MEMO_INNER_WRAPPER_CLASS}>
+              <textarea
+                id={`${formId}-memo`}
+                value={memo}
+                onChange={(event) => onMemoChange(event.target.value)}
+                placeholder="메모를 입력해주세요."
+                autoComplete="off"
+                maxLength={255}
+                className={CREATE_TASK_MEMO_TEXTAREA_CLASS}
+              />
+            </div>
+          </div>
+          <div className="flex items-center justify-between">
+            {memo.length >= 255 ? (
+              <p className="text-sm font-medium text-status-danger">
+                255자 이내로 작성해주세요.
+              </p>
+            ) : (
+              <span />
+            )}
+            <p className="text-right text-sm text-text-default">
+              {memo.length}/255
+            </p>
           </div>
         </div>
       </div>

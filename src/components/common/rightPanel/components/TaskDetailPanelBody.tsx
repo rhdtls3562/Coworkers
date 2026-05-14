@@ -24,14 +24,29 @@ export default function TaskDetailPanelBody({
   return (
     <>
       {isTaskEditing ? (
-        <ContentTextarea
-          value={draftDescription}
-          placeholder="내용을 입력하세요."
-          className="min-h-24 md:min-h-28"
-          onChange={(event) => {
-            onChangeDraftDescription(event.target.value);
-          }}
-        />
+        <>
+          <ContentTextarea
+            value={draftDescription}
+            placeholder="내용을 입력하세요."
+            className="min-h-24 md:min-h-28"
+            maxLength={255}
+            onChange={(event) => {
+              onChangeDraftDescription(event.target.value);
+            }}
+          />
+          <div className="flex items-center justify-between mt-1">
+            {draftDescription.length >= 255 ? (
+              <p className="text-sm font-medium text-status-danger">
+                255자 이내로 작성해주세요.
+              </p>
+            ) : (
+              <span />
+            )}
+            <p className="text-right text-sm text-text-default">
+              {draftDescription.length}/255
+            </p>
+          </div>
+        </>
       ) : (
         <p className="text-sm font-medium leading-6 text-text-secondary md:text-base">
           {description}

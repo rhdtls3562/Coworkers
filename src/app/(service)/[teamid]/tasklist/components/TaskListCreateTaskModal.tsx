@@ -64,6 +64,8 @@ export default function TaskListCreateTaskModal({
   return (
     <Modal
       bodyClassName="mt-6"
+      frameClassName="max-h-[calc(100dvh-2rem)]"
+      mobilePosition="center"
       onClose={onClose}
       title="할 일 만들기"
       description={
