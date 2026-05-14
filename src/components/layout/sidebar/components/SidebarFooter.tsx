@@ -32,6 +32,10 @@ function getServerSnapshot() {
   return false;
 }
 
+function getDisplayEmail(email: string) {
+  return email.length > 13 ? `${email.slice(0, 13)}...` : email;
+}
+
 export default function SidebarFooter({ isExpanded }: SidebarFooterProps) {
   const { handleSidebarInteraction } = useSidebar();
   const pathname = usePathname();
@@ -82,13 +86,16 @@ export default function SidebarFooter({ isExpanded }: SidebarFooterProps) {
               </span>
 
               {isExpanded ? (
-                <span className="animate-fadeIn flex min-w-0 flex-col [animation-delay:150ms] [animation-fill-mode:both]">
+                <span className="animate-fadeIn flex min-w-0 flex-1 flex-col [animation-delay:150ms] [animation-fill-mode:both]">
                   <span className="truncate text-base font-semibold text-text-primary">
                     {layoutAuthState.currentUser.name}
                   </span>
                   {layoutAuthState.currentUser.email ? (
-                    <span className="truncate text-sm font-medium text-text-default">
-                      {layoutAuthState.currentUser.email}
+                    <span
+                      title={layoutAuthState.currentUser.email}
+                      className="block min-w-0 text-sm font-medium text-text-default"
+                    >
+                      {getDisplayEmail(layoutAuthState.currentUser.email)}
                     </span>
                   ) : null}
                 </span>
