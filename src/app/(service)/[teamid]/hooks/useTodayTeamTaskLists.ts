@@ -9,7 +9,7 @@ import { useMemo } from 'react';
 import { useQueries } from '@tanstack/react-query';
 
 import { taskQueryOptions } from '@/api/queryOptions';
-import { getCurrentKoreaDateString } from '@/app/(service)/[teamid]/tasklist/utils/taskListDate';
+import { getCurrentDateString } from '@/app/(service)/[teamid]/tasklist/utils/taskListDate';
 import type { TeamDetailData } from '@/app/(service)/[teamid]/types';
 import { toTodayTeamTaskLists } from '@/app/(service)/[teamid]/utils/todayTeamTaskLists';
 
@@ -22,7 +22,7 @@ export default function useTodayTeamTaskLists({
   teamData,
   teamId,
 }: UseTodayTeamTaskListsParams) {
-  const todayDateString = useMemo(() => getCurrentKoreaDateString(), []);
+  const todayDateString = useMemo(() => getCurrentDateString(), []);
   const taskListDetailQueries = useQueries({
     queries: (teamData?.taskLists ?? []).map((taskList) =>
       taskQueryOptions.taskListDetail(

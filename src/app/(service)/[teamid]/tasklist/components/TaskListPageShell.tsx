@@ -19,16 +19,13 @@ import TaskListRenameColumnModal from '@/app/(service)/[teamid]/tasklist/compone
 import TaskListSidebar from '@/app/(service)/[teamid]/tasklist/components/TaskListSidebar';
 import useTaskListPageShellQuery from '@/app/(service)/[teamid]/tasklist/hooks/useTaskListPageShellQuery';
 import type { TaskListPageShellProps } from '@/app/(service)/[teamid]/tasklist/types';
-import { getCurrentKoreaCalendarDate } from '@/app/(service)/[teamid]/tasklist/utils/taskListDate';
 import { ROUTES } from '@/constants/ROUTES';
 
 export default function TaskListPageShell({
   teamId,
   taskId,
 }: TaskListPageShellProps) {
-  const [selectedDate, setSelectedDate] = useState(() =>
-    getCurrentKoreaCalendarDate(),
-  );
+  const [selectedDate, setSelectedDate] = useState(() => new Date());
   const router = useRouter();
 
   const {
@@ -121,7 +118,6 @@ export default function TaskListPageShell({
         <TaskListColumnDeleteModal
           onClose={() => setColumnPendingDelete(null)}
           onConfirm={handleConfirmDeleteColumnWithNavigation}
-          taskListTitle={columnPendingDelete.title}
         />
       )}
 

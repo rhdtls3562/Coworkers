@@ -4,7 +4,7 @@
 
 const DATE_PART_LENGTH = 2;
 const KOREA_TIME_ZONE = 'Asia/Seoul';
-const KOREA_UTC_OFFSET = '+09:00';
+const KOREA_UTC_OFFSET = 'Z';
 
 type KoreaDateParts = {
   day: number;
@@ -13,23 +13,6 @@ type KoreaDateParts = {
   month: number;
   seconds: number;
   year: number;
-};
-type KoreaFormatterParts = {
-  day: number;
-  hour: number;
-  minute: number;
-  month: number;
-  second: number;
-  year: number;
-};
-
-type KoreaDateStringParts = {
-  day: string;
-  hour: string;
-  minute: string;
-  month: string;
-  second: string;
-  year: string;
 };
 
 function getKoreaDateParts(date: Date): KoreaDateParts {
@@ -48,7 +31,14 @@ function getKoreaDateParts(date: Date): KoreaDateParts {
       .formatToParts(date)
       .filter((part) => part.type !== 'literal')
       .map((part) => [part.type, Number(part.value)]),
-  ) as KoreaFormatterParts;
+  ) as {
+    day: number;
+    hour: number;
+    minute: number;
+    month: number;
+    second: number;
+    year: number;
+  };
 
   return {
     day: parts.day,
@@ -60,91 +50,66 @@ function getKoreaDateParts(date: Date): KoreaDateParts {
   };
 }
 
-function getKoreaDateStringParts(date: Date) {
-  return Object.fromEntries(
-    new Intl.DateTimeFormat('en-CA', {
-      day: '2-digit',
-      hour: '2-digit',
-      hour12: false,
-      minute: '2-digit',
-      month: '2-digit',
-      second: '2-digit',
-      timeZone: KOREA_TIME_ZONE,
-      year: 'numeric',
-    })
-      .formatToParts(date)
-      .filter((part) => part.type !== 'literal')
-      .map((part) => [part.type, part.value]),
-  ) as KoreaDateStringParts;
+function padDate(n: number) {
+  return String(n).padStart(DATE_PART_LENGTH, '0');
 }
 
-function formatTaskListDateParts(
-  parts: Pick<KoreaDateParts, 'day' | 'month' | 'year'>,
-) {
-  return [
-    parts.year,
-    String(parts.month).padStart(DATE_PART_LENGTH, '0'),
-    String(parts.day).padStart(DATE_PART_LENGTH, '0'),
-  ].join('-');
-}
-
-function formatTaskListTimeParts(
+function formatTimeParts(
   parts: Pick<KoreaDateParts, 'hours' | 'minutes' | 'seconds'>,
 ) {
-  return `${String(parts.hours).padStart(DATE_PART_LENGTH, '0')}:${String(parts.minutes).padStart(DATE_PART_LENGTH, '0')}:${String(parts.seconds).padStart(DATE_PART_LENGTH, '0')}`;
+  return `${padDate(parts.hours)}:${padDate(parts.minutes)}:${padDate(parts.seconds)}`;
 }
 
 /**
- * 달력 선택 상태에만 사용하는 "오늘(한국 날짜 기준)" Date입니다.
- * 절대 시각 비교 용도가 아니라 YYYY-MM-DD 캘린더 값을 맞추기 위한 값입니다.
+ * 오늘(한국 날짜 기준) Date를 반환합니다.
  */
-export function getCurrentKoreaCalendarDate() {
-  const currentKoreaDateParts = getKoreaDateParts(new Date());
-  return new Date(
-    currentKoreaDateParts.year,
-    currentKoreaDateParts.month - 1,
-    currentKoreaDateParts.day,
-  );
+export function getCurrentCalendarDate() {
+  const p = getKoreaDateParts(new Date());
+  return new Date(p.year, p.month - 1, p.day);
 }
 
-export function getCurrentKoreaDateString() {
-  return formatTaskListDateParts(getKoreaDateParts(new Date()));
+/**
+ * 오늘 한국 날짜를 YYYY-MM-DD 문자열로 반환합니다.
+ */
+export function getCurrentDateString() {
+  return toTaskListDateString(new Date());
 }
 
-export function getCurrentKoreaTimeString() {
+/**
+ * 현재 한국 시간을 HH:mm 문자열로 반환합니다.
+ */
+export function getCurrentTimeString() {
   const { hours, minutes } = getKoreaDateParts(new Date());
-  return `${String(hours).padStart(DATE_PART_LENGTH, '0')}:${String(minutes).padStart(DATE_PART_LENGTH, '0')}`;
+  return `${padDate(hours)}:${padDate(minutes)}`;
 }
 
-export function getCurrentKoreaDateTimeString() {
-  const currentKoreaDateParts = getKoreaDateParts(new Date());
-  return `${formatTaskListDateParts(currentKoreaDateParts)}T${formatTaskListTimeParts(currentKoreaDateParts)}${KOREA_UTC_OFFSET}`;
-}
-
+/**
+ * Date를 한국 시간 기준 YYYY-MM-DD 문자열로 변환합니다.
+ */
 export function toTaskListDateString(date: Date) {
-  return [
-    date.getFullYear(),
-    String(date.getMonth() + 1).padStart(DATE_PART_LENGTH, '0'),
-    String(date.getDate()).padStart(DATE_PART_LENGTH, '0'),
-  ].join('-');
+  const p = getKoreaDateParts(date);
+  return `${p.year}-${padDate(p.month)}-${padDate(p.day)}`;
 }
 
+/**
+ * Date를 한국 시간대 ISO 8601 문자열로 변환합니다.
+ * 예: 2026-05-15T15:30:00+09:00
+ */
 export function toTaskListDateTimeString(date: Date) {
-  return `${toTaskListDateString(date)}T${formatTaskListTimeParts({
-    hours: date.getHours(),
-    minutes: date.getMinutes(),
-    seconds: date.getSeconds(),
-  })}${KOREA_UTC_OFFSET}`;
+  const p = getKoreaDateParts(date);
+  return `${p.year}-${padDate(p.month)}-${padDate(p.day)}T${formatTimeParts(p)}${KOREA_UTC_OFFSET}`;
 }
 
-export function toTaskListKoreaDateKey(dateString: string) {
+/**
+ * 백엔드 날짜 문자열에서 한국 시간 기준 YYYY-MM-DD를 추출합니다.
+ */
+export function toTaskListDateKey(dateString: string) {
   const parsedDate = new Date(dateString);
 
   if (Number.isNaN(parsedDate.getTime())) {
     return dateString.slice(0, 10);
   }
 
-  const koreaDateParts = getKoreaDateStringParts(parsedDate);
-
-  return `${koreaDateParts.year}-${koreaDateParts.month}-${koreaDateParts.day}`;
+  const p = getKoreaDateParts(parsedDate);
+  return `${p.year}-${padDate(p.month)}-${padDate(p.day)}`;
 }
