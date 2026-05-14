@@ -10,7 +10,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch } from 'react-hook-form';
 
 import useAccountDirtyState from '@/app/(service)/mypage/hook/useAccountDirtyState';
-import useAccountUnsavedChangesGuard from '@/app/(service)/mypage/hook/useAccountUnsavedChangesGuard';
 import { accountSchema } from '@/app/(service)/mypage/schemas/accountSchema';
 import type {
   AccountFormValues,
@@ -44,28 +43,17 @@ export function useAccountForm({
     },
     [reset],
   );
-  const {
-    baseImageRef,
-    baseNameRef,
-    checkIsDirty,
-    handleDiscardChanges,
-    imageRef,
-    imageResetKey,
-  } = useAccountDirtyState({
-    initialImage,
-    initialName,
-    isDirty,
-    onDirtyChange,
-    resetName,
-  });
+  const { baseImageRef, baseNameRef, checkIsDirty, imageRef, imageResetKey } =
+    useAccountDirtyState({
+      initialImage,
+      initialName,
+      isDirty,
+      onDirtyChange,
+      resetName,
+    });
   const name = useWatch({
     control,
     name: 'nickname',
-  });
-
-  useAccountUnsavedChangesGuard({
-    hasUnsavedChanges: isDirty,
-    onDiscardChanges: handleDiscardChanges,
   });
 
   const handleImageChange = async (file: File | null) => {

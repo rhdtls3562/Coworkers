@@ -7,6 +7,7 @@ import { useState } from 'react';
 
 import AccountForm from '@/app/(service)/mypage/components/AccountForm';
 import WithdrawModal from '@/app/(service)/mypage/components/WithdrawModal';
+import useAccountUnsavedChangesGuard from '@/app/(service)/mypage/hook/useAccountUnsavedChangesGuard';
 import { useSocialLoginState } from '@/app/(service)/mypage/hook/useSocialLoginState';
 import { IcLogout } from '@/assets/index';
 import { PrimaryButton } from '@/components/common/button';
@@ -21,9 +22,15 @@ export default function MyPage() {
   const { data: me } = useMeQuery();
   const { isSocialLogin } = useSocialLoginState();
 
+  const { dismissUnsavedToast } = useAccountUnsavedChangesGuard({
+    hasUnsavedChanges: isDirty,
+    onDiscardChanges: () => setIsDirty(false),
+  });
+
   const { mutateAsync: updateProfile } = useUpdateMeMutation({
     onSuccess: () => {
       setSubmitError(null);
+      dismissUnsavedToast();
       showToast('변경되었습니다.', 'success');
     },
     onError: (error) => {

@@ -4,7 +4,7 @@
  * 계정 설정 페이지에서 저장하지 않은 변경사항이 있을 때 이탈 시도를 막는 훅입니다.
  */
 
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 import { useToast } from '@/components/common/toast';
 
@@ -23,7 +23,8 @@ export default function useAccountUnsavedChangesGuard({
   hasUnsavedChanges,
   onDiscardChanges,
 }: UseAccountUnsavedChangesGuardParams) {
-  const { showToast } = useToast();
+  const { showToast, removeToast } = useToast();
+  const toastIdRef = useRef<string | null>(null);
   const isToastVisibleRef = useRef(false);
   const isBlockedPointerDownRef = useRef(false);
   const toastTimeoutRef = useRef<number | null>(null);
@@ -36,6 +37,18 @@ export default function useAccountUnsavedChangesGuard({
     };
   }, []);
 
+  const dismissUnsavedToast = useCallback(() => {
+    if (toastIdRef.current) {
+      removeToast(toastIdRef.current);
+      toastIdRef.current = null;
+    }
+    isToastVisibleRef.current = false;
+    if (toastTimeoutRef.current) {
+      window.clearTimeout(toastTimeoutRef.current);
+      toastTimeoutRef.current = null;
+    }
+  }, [removeToast]);
+
   useEffect(() => {
     if (!hasUnsavedChanges) {
       return;
@@ -47,16 +60,22 @@ export default function useAccountUnsavedChangesGuard({
       }
 
       isToastVisibleRef.current = true;
-      showToast('저장하지 않은 변경사항이 있어요!', 'error', {
-        hideCloseButton: true,
-        label: '변경사항 취소하기',
-        onClick: onDiscardChanges,
-        textClassName: 'text-status-danger',
-      });
+      toastIdRef.current = showToast(
+        '저장하지 않은 변경사항이 있어요!',
+        'error',
+        {
+          hideCloseButton: true,
+          label: '변경사항 취소하기',
+          onClick: onDiscardChanges,
+          textClassName: 'text-status-danger',
+        },
+      );
 
       toastTimeoutRef.current = window.setTimeout(() => {
         isToastVisibleRef.current = false;
         toastTimeoutRef.current = null;
+        // toastIdRef.current = null 제거 ← 여기가 핵심
+        // 3초 뒤에도 toast가 화면에 남아있기 때문에 id를 유지해야 함
       }, ACCOUNT_UNSAVED_TOAST_DURATION);
     };
 
@@ -111,4 +130,6 @@ export default function useAccountUnsavedChangesGuard({
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, [hasUnsavedChanges, onDiscardChanges, showToast]);
+
+  return { dismissUnsavedToast };
 }

@@ -20,7 +20,6 @@ export default function TeamTaskList({ taskLists }: TeamDetailData) {
             key={status}
             status={status}
             taskLists={classified[status]}
-            allEmpty={taskLists.length === 0}
           />
         ))}
       </div>
