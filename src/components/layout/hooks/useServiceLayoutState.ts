@@ -4,7 +4,7 @@
 
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 import { usePathname } from 'next/navigation';
 
@@ -17,13 +17,9 @@ import useLockBodyScroll from '@/components/layout/hooks/useLockBodyScroll';
 import type { ServiceLayoutContextValue } from '@/components/layout/types';
 
 const OVERLAY_ANIMATION_DURATION = 300;
-const SIDEBAR_VISIBLE_MEDIA_QUERY = '(min-width: 768px)';
-
 export default function useServiceLayoutState(): ServiceLayoutContextValue {
   const pathname = usePathname();
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
-  const [isSidebarVisibleViewport, setIsSidebarVisibleViewport] =
-    useState(false);
   const [rightPanelContent, setRightPanelContent] =
     useState<RightPanelContent | null>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
@@ -43,21 +39,6 @@ export default function useServiceLayoutState(): ServiceLayoutContextValue {
   } = useAnimatedVisibility({
     duration: OVERLAY_ANIMATION_DURATION,
   });
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia(SIDEBAR_VISIBLE_MEDIA_QUERY);
-
-    const updateViewportState = () => {
-      setIsSidebarVisibleViewport(mediaQuery.matches);
-    };
-
-    updateViewportState();
-    mediaQuery.addEventListener('change', updateViewportState);
-
-    return () => {
-      mediaQuery.removeEventListener('change', updateViewportState);
-    };
-  }, []);
 
   const closeRightPanel = useCallback(() => {
     const unsavedGuard = getRightPanelUnsavedGuard();
@@ -130,6 +111,11 @@ export default function useServiceLayoutState(): ServiceLayoutContextValue {
   const openRightPanel = useCallback(
     (content: RightPanelContent) => {
       setRightPanelContent(content);
+      setIsSidebarExpanded(false);
+
+      if (isMobileSidebarVisible) {
+        closeMobileSidebar();
+      }
 
       if (isRightPanelVisible) {
         return;
@@ -137,7 +123,12 @@ export default function useServiceLayoutState(): ServiceLayoutContextValue {
 
       openRightPanelAnimated();
     },
-    [isRightPanelVisible, openRightPanelAnimated],
+    [
+      closeMobileSidebar,
+      isMobileSidebarVisible,
+      isRightPanelVisible,
+      openRightPanelAnimated,
+    ],
   );
 
   useLayoutMediaSync({
@@ -154,9 +145,7 @@ export default function useServiceLayoutState(): ServiceLayoutContextValue {
   });
 
   useLockBodyScroll({
-    isScrollLocked:
-      isMobileSidebarRendered ||
-      (isRightPanelVisible && !isSidebarVisibleViewport),
+    isScrollLocked: isMobileSidebarRendered || isRightPanelVisible,
   });
 
   return {

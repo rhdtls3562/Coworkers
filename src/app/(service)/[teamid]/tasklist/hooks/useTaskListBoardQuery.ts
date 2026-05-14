@@ -4,18 +4,20 @@
 
 import { useCallback, useMemo, useState } from 'react';
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
+import { queryKeys } from '@/api/queryKeys';
 import { taskQueryOptions } from '@/api/queryOptions';
 import useTaskListRecurringWeekDaysQuery from '@/app/(service)/[teamid]/tasklist/hooks/useTaskListRecurringWeekDaysQuery';
 import type {
   TaskListBoardTask,
   UseTaskListBoardQueryParams,
 } from '@/app/(service)/[teamid]/tasklist/types';
+import { deleteTaskListBoardTask } from '@/app/(service)/[teamid]/tasklist/utils/deleteTaskListBoardTask';
 import { toTaskListDateString } from '@/app/(service)/[teamid]/tasklist/utils/taskListDate';
 import { formatTaskListRepeatLabel } from '@/app/(service)/[teamid]/tasklist/utils/taskListRepeatLabel';
 import { useToast } from '@/components/common/toast';
-import { useDeleteTaskMutation, useUpdateTaskMutation } from '@/hooks/useTask';
+import { useUpdateTaskMutation } from '@/hooks/useTask';
 
 export function useTaskListBoardQuery({
   groupId,
@@ -23,8 +25,8 @@ export function useTaskListBoardQuery({
   taskListId,
 }: UseTaskListBoardQueryParams) {
   const { showToast } = useToast();
+  const queryClient = useQueryClient();
   const updateTaskMutation = useUpdateTaskMutation();
-  const deleteTaskMutation = useDeleteTaskMutation();
   const dateString = toTaskListDateString(selectedDate);
 
   const { data: taskListDetail } = useQuery({
@@ -111,17 +113,33 @@ export function useTaskListBoardQuery({
   const handleConfirmDelete = useCallback(async () => {
     if (!taskPendingDelete || !groupId) return;
     try {
-      await deleteTaskMutation.mutateAsync({
-        taskId: taskPendingDelete.id,
-        taskListId,
-        teamId: groupId,
-      });
+      await deleteTaskListBoardTask(groupId, taskListId, taskPendingDelete);
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.taskList.detail(groupId, taskListId, {
+            date: dateString,
+          }),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.taskList.all(groupId),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.team.detail(groupId),
+        }),
+      ]);
       setTaskPendingDelete(null);
       showToast('삭제되었습니다.', 'error');
     } catch {
       // TODO: 에러 처리
     }
-  }, [deleteTaskMutation, groupId, showToast, taskListId, taskPendingDelete]);
+  }, [
+    dateString,
+    taskPendingDelete,
+    groupId,
+    taskListId,
+    queryClient,
+    showToast,
+  ]);
 
   return {
     handleCloseDeleteModal,

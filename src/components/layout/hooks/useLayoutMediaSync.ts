@@ -1,10 +1,6 @@
 'use client';
 
-/**
- * 뷰포트 크기에 따라 사이드바 기본 펼침 상태를 동기화하는 훅입니다.
- */
-
-import { useEffect, useLayoutEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 
 import { SIDEBAR_DESKTOP_MEDIA_QUERY } from '@/components/layout/sidebar/constants';
@@ -29,7 +25,7 @@ export default function useLayoutMediaSync({
     desktopSidebarExpandedRef.current = isSidebarExpanded;
   }, [isSidebarExpanded]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const sidebarMediaQuery = window.matchMedia(SIDEBAR_DESKTOP_MEDIA_QUERY);
 
     const syncInitialSidebarState = () => {
