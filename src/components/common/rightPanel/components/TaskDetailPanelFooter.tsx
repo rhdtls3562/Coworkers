@@ -5,6 +5,7 @@ import type { TaskDetailPanelFooterProps } from '@/components/common/rightPanel/
 
 export default function TaskDetailPanelFooter({
   completionActionLabel = '완료하기',
+  hasTaskChanges,
   isEditing,
   isSubmitting,
   onToggleCompletion,
@@ -16,7 +17,7 @@ export default function TaskDetailPanelFooter({
         <button
           data-allow-unsaved="true"
           type="button"
-          disabled={isSubmitting}
+          disabled={isSubmitting || !hasTaskChanges}
           className="inline-flex h-11 items-center gap-1.5 rounded-full bg-brand-primary px-5 text-sm font-semibold text-text-inverse disabled:bg-interaction-inactive md:h-12 md:px-6 md:text-base"
           onClick={onSubmitEdit}
         >

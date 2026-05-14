@@ -87,6 +87,7 @@ export type TaskDetailPanelContentLayoutProps = {
   draftTitle: string;
   editingCommentId: string | null;
   frequency: string;
+  hasTaskChanges: boolean;
   isCommentSubmitting: boolean;
   isSubmittingNewComment: boolean;
   isSubmittingTaskAction: boolean;
@@ -110,6 +111,7 @@ export type TaskDetailPanelContentLayoutProps = {
 
 export type TaskDetailPanelFooterProps = {
   completionActionLabel?: string;
+  hasTaskChanges: boolean;
   isEditing: boolean;
   isSubmitting: boolean;
   onToggleCompletion: () => Promise<boolean> | void;

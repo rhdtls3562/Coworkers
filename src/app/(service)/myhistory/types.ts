@@ -209,10 +209,8 @@ export type UseHistoryTaskListSourcesQueryParams = {
 export type UseDragScrollReturn = {
   containerRef: RefObject<HTMLUListElement | null>;
   handleClickCapture: (event: ReactMouseEvent<HTMLElement>) => void;
-  handlePointerCancel: (event: ReactPointerEvent<HTMLElement>) => void;
   handlePointerDown: (event: ReactPointerEvent<HTMLElement>) => void;
   handlePointerMove: (event: ReactPointerEvent<HTMLElement>) => void;
-  handlePointerUp: (event: ReactPointerEvent<HTMLElement>) => void;
 };
 
 export type HistoryMonthNavigatorProps = {

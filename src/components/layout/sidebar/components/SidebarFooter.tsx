@@ -86,9 +86,9 @@ export default function SidebarFooter({ isExpanded }: SidebarFooterProps) {
                   <span className="truncate text-base font-semibold text-text-primary">
                     {layoutAuthState.currentUser.name}
                   </span>
-                  {layoutAuthState.profileTeamName ? (
+                  {layoutAuthState.currentUser.email ? (
                     <span className="truncate text-sm font-medium text-text-default">
-                      {layoutAuthState.profileTeamName}
+                      {layoutAuthState.currentUser.email}
                     </span>
                   ) : null}
                 </span>

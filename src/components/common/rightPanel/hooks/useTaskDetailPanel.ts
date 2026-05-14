@@ -101,6 +101,7 @@ export default function useTaskDetailPanel({
     draftDescription: draftState.draftDescription,
     draftTitle: draftState.draftTitle,
     editingCommentId: draftState.editingCommentId,
+    hasTaskChanges: hasUnsavedTaskChanges,
     handleCancelCommentEdit: draftState.handleCancelCommentEdit,
     handleCreateComment: commentsState.handleCreateComment,
     handleDeleteComment,

@@ -52,6 +52,7 @@ export default function TaskDetailPanelContent({
     handleSubmitTaskEdit,
     handleToggleCompletion,
     hasUnsavedChanges,
+    hasTaskChanges,
     isCommentSubmitting,
     isSubmittingNewComment,
     isTaskActionSubmitting,
@@ -117,6 +118,7 @@ export default function TaskDetailPanelContent({
         draftTitle={draftTitle}
         editingCommentId={editingCommentId}
         frequency={frequency}
+        hasTaskChanges={hasTaskChanges}
         isCommentSubmitting={isCommentSubmitting}
         isSubmittingNewComment={isSubmittingNewComment}
         isSubmittingTaskAction={isTaskActionSubmitting}

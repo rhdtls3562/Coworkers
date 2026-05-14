@@ -16,7 +16,6 @@ import ProfileMenuDropdown from '@/components/layout/components/ProfileMenuDropd
 import MobileSidebarDrawer from '@/components/layout/header/components/MobileSidebarDrawer';
 import useMobileSidebar from '@/components/layout/header/hooks/useMobileSidebar';
 import useLayoutAuthState from '@/components/layout/hooks/useLayoutAuthState';
-import useRightPanel from '@/components/layout/hooks/useRightPanel';
 import { ROUTES } from '@/constants/ROUTES';
 
 function subscribeMounted(callback: () => void) {
@@ -124,7 +123,6 @@ function MobileHeaderBar({
 export default function Header() {
   const pathname = usePathname();
   const layoutAuthState = useLayoutAuthState(pathname);
-  const { isRightPanelVisible } = useRightPanel();
 
   const { handleClose, handleToggle, isRendered, isVisible, menuButtonRef } =
     useMobileSidebar();
@@ -145,7 +143,7 @@ export default function Header() {
 
   return (
     <>
-      <div className="md:hidden sticky top-0 z-40">
+      <div className="md:hidden fixed top-0 left-0 right-0 z-41">
         <MobileHeaderBar
           canShowAuthUi={canShowAuthUi}
           currentUserImage={layoutAuthState.currentUser.image}
@@ -156,20 +154,6 @@ export default function Header() {
           pathname={pathname}
         />
       </div>
-
-      {isRightPanelVisible && (
-        <div className="md:hidden fixed inset-x-0 top-0 z-60">
-          <MobileHeaderBar
-            canShowAuthUi={canShowAuthUi}
-            currentUserImage={layoutAuthState.currentUser.image}
-            isVisible={isVisible}
-            logoHref={logoHref}
-            menuButtonRef={menuButtonRef}
-            onToggle={handleToggle}
-            pathname={pathname}
-          />
-        </div>
-      )}
 
       <MobileSidebarDrawer
         isRendered={isRendered}

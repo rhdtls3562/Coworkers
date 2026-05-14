@@ -21,6 +21,7 @@ export default function TaskDetailPanelContentLayout({
   draftTitle,
   editingCommentId,
   frequency,
+  hasTaskChanges,
   isCommentSubmitting,
   isSubmittingNewComment,
   isSubmittingTaskAction,
@@ -91,6 +92,7 @@ export default function TaskDetailPanelContentLayout({
 
         <TaskDetailPanelFooter
           completionActionLabel={completionActionLabel}
+          hasTaskChanges={hasTaskChanges}
           isEditing={isTaskEditing}
           isSubmitting={isSubmittingTaskAction}
           onToggleCompletion={onToggleCompletion}

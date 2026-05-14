@@ -57,17 +57,23 @@ export default function MyHistorySummary({
                 >
                   <div className="overflow-hidden">
                     <ul className="w-67.5 rounded-xl border border-background-tertiary bg-background-inverse py-3">
-                      {item.details.map((detail) => (
-                        <li
-                          key={detail.id}
-                          className="flex items-center justify-between px-5 py-1.5 text-sm font-medium text-text-primary"
-                        >
-                          <span>{detail.title}</span>
-                          <span className="text-brand-primary">
-                            {detail.countText}
-                          </span>
+                      {item.details.length === 0 ? (
+                        <li className="px-5 py-1.5 text-sm font-medium text-text-secondary">
+                          할일이 없습니다.
                         </li>
-                      ))}
+                      ) : (
+                        item.details.map((detail) => (
+                          <li
+                            key={detail.id}
+                            className="flex items-center justify-between px-5 py-1.5 text-sm font-medium text-text-primary"
+                          >
+                            <span>{detail.title}</span>
+                            <span className="text-brand-primary">
+                              {detail.countText}
+                            </span>
+                          </li>
+                        ))
+                      )}
                     </ul>
                   </div>
                 </div>
