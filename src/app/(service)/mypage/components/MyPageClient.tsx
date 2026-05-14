@@ -3,7 +3,7 @@
  */
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import AccountForm from '@/app/(service)/mypage/components/AccountForm';
 import WithdrawModal from '@/app/(service)/mypage/components/WithdrawModal';
@@ -21,10 +21,11 @@ export default function MyPage() {
   const { showToast } = useToast();
   const { data: me } = useMeQuery();
   const { isSocialLogin } = useSocialLoginState();
+  const handleDiscardChanges = useCallback(() => setIsDirty(false), []);
 
   const { dismissUnsavedToast } = useAccountUnsavedChangesGuard({
     hasUnsavedChanges: isDirty,
-    onDiscardChanges: () => setIsDirty(false),
+    onDiscardChanges: handleDiscardChanges,
   });
 
   const { mutateAsync: updateProfile } = useUpdateMeMutation({
