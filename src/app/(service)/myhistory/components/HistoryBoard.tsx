@@ -75,7 +75,7 @@ export default function HistoryBoard({
           </p>
         </div>
       ) : (
-        <div className="flex flex-1 items-center justify-center py-50">
+        <div className="flex min-h-80 flex-1 items-center justify-center">
           <div className="text-center text-sm font-normal text-text-default">
             <p>{emptyTitle}</p>
             <p>{emptyDescription}</p>
