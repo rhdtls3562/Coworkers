@@ -3,25 +3,22 @@
 /**
  * 오른쪽 패널의 시작 날짜/반복 설정 수정 모달 상태와 mutation 흐름을 관리합니다.
  */
-
 import { useState } from 'react';
 
-import { useQueryClient } from '@tanstack/react-query';
-
-import { queryKeys } from '@/api/queryKeys';
 import { buildTaskListRecurringBody } from '@/app/(service)/[teamid]/tasklist/utils/taskListCreateTaskPayload';
+import {
+  createNextTaskDetailScheduleEditConfig,
+  getTaskDetailScheduleDisplayValues,
+  hasTaskDetailScheduleEditCapability,
+} from '@/components/common/rightPanel/hooks/useTaskDetailScheduleEditor.utils';
+import useTaskDetailScheduleRecurringMutation from '@/components/common/rightPanel/hooks/useTaskDetailScheduleRecurringMutation';
 import type {
   TaskDetailScheduleEditConfig,
   TaskDetailScheduleFormValues,
   UseTaskDetailScheduleEditorParams,
   UseTaskDetailScheduleEditorReturn,
 } from '@/components/common/rightPanel/types';
-import {
-  formatTaskDetailFrequency,
-  formatTaskDetailStartedAt,
-} from '@/components/common/rightPanel/utils/taskDetailSchedule';
 import { useToast } from '@/components/common/toast';
-import { useUpdateRecurringMutation } from '@/hooks/useRecurring';
 
 export default function useTaskDetailScheduleEditor({
   currentDescription,
@@ -32,7 +29,6 @@ export default function useTaskDetailScheduleEditor({
   taskListId,
   teamId,
 }: UseTaskDetailScheduleEditorParams): UseTaskDetailScheduleEditorReturn {
-  const queryClient = useQueryClient();
   const { showToast } = useToast();
   const [isScheduleEditModalOpen, setIsScheduleEditModalOpen] = useState(false);
   const [currentScheduleEditConfig, setCurrentScheduleEditConfig] = useState<
@@ -44,30 +40,12 @@ export default function useTaskDetailScheduleEditor({
   const [displayFrequency, setDisplayFrequency] = useState(
     initialFrequencyLabel,
   );
-
-  const updateRecurringMutation = useUpdateRecurringMutation({
-    onSuccess: async () => {
-      await Promise.all([
-        queryClient.invalidateQueries({
-          queryKey: queryKeys.team.detail(teamId),
-        }),
-        queryClient.invalidateQueries({
-          queryKey: queryKeys.taskList.detail(teamId, taskListId),
-        }),
-        queryClient.invalidateQueries({
-          queryKey: queryKeys.user.completedTasks(),
-        }),
-        queryClient.invalidateQueries({
-          queryKey: queryKeys.user.completedTaskSummary(),
-        }),
-      ]);
-    },
+  const updateRecurringMutation = useTaskDetailScheduleRecurringMutation({
+    taskListId,
+    teamId,
   });
-
-  const hasScheduleEditCapability = Boolean(
-    currentScheduleEditConfig?.recurringId &&
-    (currentScheduleEditConfig.frequencyType !== 'WEEKLY' ||
-      (currentScheduleEditConfig.weekDays?.length ?? 0) > 0),
+  const hasScheduleEditCapability = hasTaskDetailScheduleEditCapability(
+    currentScheduleEditConfig,
   );
 
   const handleOpenScheduleEditModal = () => {
@@ -107,26 +85,18 @@ export default function useTaskDetailScheduleEditor({
         teamId,
       });
 
-      const nextStartedAtRaw = recurringBody.startDate;
-      const nextFrequencyType =
-        values.repeat === 'daily'
-          ? 'DAILY'
-          : values.repeat === 'monthly'
-            ? 'MONTHLY'
-            : values.repeat === 'weekly'
-              ? 'WEEKLY'
-              : 'ONCE';
-
-      const nextScheduleEditConfig = {
-        frequencyType: nextFrequencyType,
-        recurringId: currentScheduleEditConfig.recurringId,
-        startedAtRaw: nextStartedAtRaw,
-        weekDays: values.repeat === 'weekly' ? values.weekDays : undefined,
-      } satisfies TaskDetailScheduleEditConfig;
+      const nextScheduleEditConfig = createNextTaskDetailScheduleEditConfig(
+        currentScheduleEditConfig,
+        values,
+        recurringBody.startDate,
+      );
+      const nextDisplayValues = getTaskDetailScheduleDisplayValues(
+        nextScheduleEditConfig,
+      );
 
       setCurrentScheduleEditConfig(nextScheduleEditConfig);
-      setDisplayStartedAt(formatTaskDetailStartedAt(nextStartedAtRaw));
-      setDisplayFrequency(formatTaskDetailFrequency(nextScheduleEditConfig));
+      setDisplayStartedAt(nextDisplayValues.startedAt);
+      setDisplayFrequency(nextDisplayValues.frequency);
       setIsScheduleEditModalOpen(false);
       showToast('할 일이 수정되었습니다.', 'success');
       return true;

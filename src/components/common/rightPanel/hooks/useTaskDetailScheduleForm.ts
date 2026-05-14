@@ -4,23 +4,17 @@
  * 오른쪽 패널 일정 수정 모달의 날짜/시간/반복 draft 상태를 관리합니다.
  */
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import useTaskListCalendarPopover from '@/app/(service)/[teamid]/tasklist/hooks/useTaskListCalendarPopover';
-import {
-  clampTaskListMonthDay,
-  DEFAULT_TASK_LIST_WEEKLY_REPEAT_DAYS,
-} from '@/app/(service)/[teamid]/tasklist/utils/taskListCreateTaskFormUtils';
 import type { UseTaskDetailScheduleFormReturn } from '@/components/common/rightPanel/hooks/useTaskDetailScheduleForm.types';
 import {
   getTaskDetailScheduleFormInitialValues,
   hasTaskDetailScheduleChanges,
 } from '@/components/common/rightPanel/hooks/useTaskDetailScheduleForm.utils';
+import useTaskDetailScheduleFormState from '@/components/common/rightPanel/hooks/useTaskDetailScheduleFormState';
 import useTaskDetailTimePopover from '@/components/common/rightPanel/hooks/useTaskDetailTimePopover';
-import type {
-  TaskDetailScheduleEditConfig,
-  TaskDetailScheduleRepeatValue,
-} from '@/components/common/rightPanel/types';
+import type { TaskDetailScheduleEditConfig } from '@/components/common/rightPanel/types';
 
 export default function useTaskDetailScheduleForm(
   initialSchedule: TaskDetailScheduleEditConfig,
@@ -29,16 +23,20 @@ export default function useTaskDetailScheduleForm(
     () => getTaskDetailScheduleFormInitialValues(initialSchedule),
     [initialSchedule],
   );
-
-  const [selectedDate, setSelectedDate] = useState(initialValues.selectedDate);
-  const [startTime, setStartTime] = useState(initialValues.startTime);
-  const [repeat, setRepeat] = useState<TaskDetailScheduleRepeatValue>(
-    initialValues.repeat,
-  );
-  const [weekDays, setWeekDays] = useState<number[]>(initialValues.weekDays);
-  const [monthDayInput, setMonthDayInput] = useState(
-    String(initialValues.monthDay),
-  );
+  const {
+    handleMonthDayBlur,
+    handleMonthDayChange,
+    handleRepeatChange,
+    monthDay,
+    monthDayInput,
+    repeat,
+    selectedDate,
+    setSelectedDate,
+    setStartTime,
+    startTime,
+    toggleWeekDay,
+    weekDays,
+  } = useTaskDetailScheduleFormState(initialValues);
 
   const {
     calendarButtonRef,
@@ -60,42 +58,7 @@ export default function useTaskDetailScheduleForm(
       setSelectedDate(date);
       closeCalendar();
     },
-    [closeCalendar],
-  );
-
-  const toggleWeekDay = useCallback((dayIndex: number) => {
-    setWeekDays((previousWeekDays) =>
-      previousWeekDays.includes(dayIndex)
-        ? previousWeekDays.filter((day) => day !== dayIndex)
-        : [...previousWeekDays, dayIndex].sort(
-            (firstDay, secondDay) => firstDay - secondDay,
-          ),
-    );
-  }, []);
-
-  const handleMonthDayChange = useCallback((value: string) => {
-    if (!/^\d{0,2}$/.test(value)) {
-      return;
-    }
-
-    setMonthDayInput(value);
-  }, []);
-
-  const handleMonthDayBlur = useCallback(() => {
-    setMonthDayInput((previousValue) =>
-      String(clampTaskListMonthDay(Number(previousValue))),
-    );
-  }, []);
-
-  const handleRepeatChange = useCallback(
-    (value: TaskDetailScheduleRepeatValue) => {
-      setRepeat(value);
-
-      if (value === 'weekly' && weekDays.length === 0) {
-        setWeekDays([...DEFAULT_TASK_LIST_WEEKLY_REPEAT_DAYS]);
-      }
-    },
-    [weekDays.length],
+    [closeCalendar, setSelectedDate],
   );
 
   const handleOpenTime = useCallback(() => {
@@ -110,11 +73,6 @@ export default function useTaskDetailScheduleForm(
     closeTimePopover();
     toggleCalendar();
   }, [closeTimePopover, toggleCalendar]);
-
-  const monthDay = useMemo(
-    () => clampTaskListMonthDay(Number(monthDayInput)),
-    [monthDayInput],
-  );
   const hasScheduleChanges = hasTaskDetailScheduleChanges({
     initialValues,
     monthDayInput,
