@@ -36,8 +36,10 @@ export default function TaskGroup({ status, taskLists, allEmpty }: TaskProps) {
           />
         ))}
 
-        {taskLists.length === 0 && !allEmpty && (
-          <div className="rounded-2xl px-6 py-8 text-center text-sm font-normal text-text-default block ">
+        {taskLists.length === 0 && (
+          <div
+            className={`rounded-2xl px-6 py-8 text-center text-sm font-normal text-text-default${allEmpty ? ' xl:hidden' : ''}`}
+          >
             {EMPTY_MESSAGE[status]}
           </div>
         )}
