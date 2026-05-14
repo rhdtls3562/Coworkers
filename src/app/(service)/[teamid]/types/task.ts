@@ -35,6 +35,7 @@ export type TaskList = {
 export type TaskProps = {
   status: (typeof STATUS)[number];
   taskLists: TaskList[];
+  allEmpty?: boolean;
 };
 
 /** 태스크 아이템 컴포넌트 Props - 개별 태스크 리스트 행 */

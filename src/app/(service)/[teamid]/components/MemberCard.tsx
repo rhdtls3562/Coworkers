@@ -17,7 +17,7 @@ export default function MemberCard({
         <p className="font-semibold text-text-primary text-base text-left">
           {name}
         </p>
-        <p className="truncate font-normal text-text-secondary text-sm text-left">
+        <p className="truncate font-normal text-text-secondary text-sm text-left no-underline">
           {email}
         </p>
       </div>
