@@ -35,7 +35,6 @@ export default function TaskDetailPanelContent({
 }: TaskDetailPanelContentProps) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const startedTimeAtLabelText = '시작 시각';
   const startedAtLabelText =
     scheduleEditConfig?.frequencyType &&
     scheduleEditConfig.frequencyType !== 'ONCE'
@@ -88,7 +87,6 @@ export default function TaskDetailPanelContent({
   const {
     displayFrequency,
     displayStartedAt,
-    displayStartTime,
     handleCloseScheduleEditModal,
     handleOpenScheduleEditModal,
     handleSubmitScheduleEdit,
@@ -170,7 +168,6 @@ export default function TaskDetailPanelContent({
         scrollContainerRef={scrollContainerRef}
         startedAt={displayStartedAt}
         startedAtLabelText={startedAtLabelText}
-        startTime={displayStartTime}
         title={title}
       />
 

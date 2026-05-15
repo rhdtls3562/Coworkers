@@ -40,6 +40,7 @@ export default function TaskListCreateTaskModal({
     setStartTime,
     setTitle,
     startTime,
+    timePopoverButtonRef,
     timePopoverContainerRef,
     title,
     toggleWeekDay,
@@ -93,6 +94,7 @@ export default function TaskListCreateTaskModal({
           onOpenTime={handleOpenTime}
           selectedDate={selected}
           startTime={startTime}
+          timePopoverButtonRef={timePopoverButtonRef}
           timePopoverContainerRef={timePopoverContainerRef}
           onStartTimeChange={setStartTime}
         />

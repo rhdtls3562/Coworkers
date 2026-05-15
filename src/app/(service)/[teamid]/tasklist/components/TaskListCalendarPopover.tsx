@@ -28,6 +28,7 @@ export default function TaskListCalendarPopover({
       ref={calendarRef}
       role="dialog"
       aria-label="날짜 선택 달력"
+      tabIndex={-1}
       className={cn(
         isAnchored && TASK_LIST_CALENDAR_ANCHORED_WRAPPER_CLASS,
         isInlineExpand && TASK_LIST_CALENDAR_INLINE_EXPAND_WRAPPER_CLASS,

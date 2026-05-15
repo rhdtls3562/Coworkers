@@ -34,6 +34,7 @@ export default function TaskDetailScheduleEditModal({
     selectedDate,
     setStartTime,
     startTime,
+    timePopoverButtonRef,
     timePopoverContainerRef,
     toggleWeekDay,
     weekDays,
@@ -72,6 +73,7 @@ export default function TaskDetailScheduleEditModal({
           onStartTimeChange={setStartTime}
           selectedDate={selectedDate}
           startTime={startTime}
+          timePopoverButtonRef={timePopoverButtonRef}
           timePopoverContainerRef={timePopoverContainerRef}
         />
 

@@ -2,50 +2,36 @@
  * 할 일 보드 달력 팝오버 열림·닫힘 및 바깥 클릭 처리입니다.
  */
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+
+import useClickOutside from '@/hooks/useClickOutside';
 
 export default function useTaskListCalendarPopover() {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const calendarButtonRef = useRef<HTMLDivElement | null>(null);
   const calendarRef = useRef<HTMLDivElement>(null);
 
+  const closeCalendar = useCallback(() => {
+    setIsCalendarOpen(false);
+  }, []);
+
+  useClickOutside({
+    onClickOutside: closeCalendar,
+    refs: [calendarRef, calendarButtonRef],
+    detectScroll: true,
+  });
+
+  // 열릴 때 포커스 이동 (calendarRef 요소에 tabIndex={-1} 필요)
   useEffect(() => {
     if (!isCalendarOpen) return;
-
-    const handlePointerDown = (event: PointerEvent) => {
-      if (
-        event.target instanceof Node &&
-        (calendarRef.current?.contains(event.target) ||
-          calendarButtonRef.current?.contains(event.target))
-      ) {
-        return;
-      }
-
-      setIsCalendarOpen(false);
-    };
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== 'Escape') return;
-
-      setIsCalendarOpen(false);
-    };
-
-    document.addEventListener('pointerdown', handlePointerDown);
-    document.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      document.removeEventListener('pointerdown', handlePointerDown);
-      document.removeEventListener('keydown', handleKeyDown);
-    };
+    requestAnimationFrame(() => {
+      calendarRef.current?.focus();
+    });
   }, [isCalendarOpen]);
 
-  const closeCalendar = () => {
-    setIsCalendarOpen(false);
-  };
-
-  const toggleCalendar = () => {
+  const toggleCalendar = useCallback(() => {
     setIsCalendarOpen((prev) => !prev);
-  };
+  }, []);
 
   return {
     calendarButtonRef,
