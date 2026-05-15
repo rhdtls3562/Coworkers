@@ -49,6 +49,7 @@ export default function TaskListCreateTaskModalRepeatSection({
           className={REPEAT_TRIGGER_LAYOUT_CLASS}
           buttonClassName={REPEAT_DROPDOWN_BUTTON_CLASS}
           variant="inlineExpand"
+          closeOnSelectOnly
         />
 
         {repeat === 'weekly' ? (

@@ -371,6 +371,8 @@ export type TaskListSelectDropdownVariant = 'overlay' | 'inlineExpand';
 export type TaskListSelectDropdownProps<T extends string> = {
   buttonClassName?: string;
   className?: string;
+  /** true이면 항목 선택 시에만 닫히고 바깥 클릭으로는 닫히지 않습니다. */
+  closeOnSelectOnly?: boolean;
   items: TaskListSelectDropdownItem<T>[];
   menuClassName?: string;
   onChange: (value: T) => void;

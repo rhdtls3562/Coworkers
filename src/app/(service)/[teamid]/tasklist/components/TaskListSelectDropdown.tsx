@@ -15,9 +15,12 @@ export default function TaskListSelectDropdown<T extends string>({
   className,
   buttonClassName,
   menuClassName,
+  closeOnSelectOnly = false,
   variant = 'overlay',
 }: TaskListSelectDropdownProps<T>) {
-  const { isOpen, toggle, close, containerRef } = useDropdown();
+  const { isOpen, toggle, close, containerRef } = useDropdown([], {
+    disableOutsideClose: closeOnSelectOnly,
+  });
   const isInlineExpand = variant === 'inlineExpand';
 
   const selectedLabel =
