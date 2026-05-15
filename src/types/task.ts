@@ -10,6 +10,7 @@ export type Task = {
   name: string;
   description: string | null;
   date: string;
+  startDate?: string;
   doneAt: string | null;
   updatedAt: string;
   deletedAt: string | null;

@@ -55,11 +55,6 @@ export type Comment = {
   writer: CommentWriter;
 };
 
-export type CommentListResponse = {
-  nextCursor: number | null;
-  list: Comment[];
-};
-
 export type BoardDetailCommentsProps = {
   commentCount: number;
   userProfile: UserProfileResponse | null;

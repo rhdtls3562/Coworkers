@@ -87,6 +87,7 @@ export default function TaskDetailPanelContent({
   const {
     displayFrequency,
     displayStartedAt,
+    displayStartTime,
     handleCloseScheduleEditModal,
     handleOpenScheduleEditModal,
     handleSubmitScheduleEdit,
@@ -168,6 +169,7 @@ export default function TaskDetailPanelContent({
         scrollContainerRef={scrollContainerRef}
         startedAt={displayStartedAt}
         startedAtLabelText={startedAtLabelText}
+        startTime={displayStartTime}
         title={title}
       />
 

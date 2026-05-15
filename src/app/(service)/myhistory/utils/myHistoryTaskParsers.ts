@@ -34,6 +34,7 @@ export function toCompletedTaskRecords(data: unknown) {
         ? String(task.id)
         : undefined,
     name: typeof task.name === 'string' ? task.name : undefined,
+    startDate: typeof task.startDate === 'string' ? task.startDate : undefined,
   }));
 }
 
@@ -86,6 +87,8 @@ export function toHistoryTaskListDetailSource(
         id: taskId,
         name: taskName,
         recurringId: toNumber(task.recurringId),
+        startDate:
+          typeof task.startDate === 'string' ? task.startDate : undefined,
         weekDays: Array.isArray(task.weekDays)
           ? task.weekDays.reduce<number[]>((days, day) => {
               const normalizedDay = toNumber(day);

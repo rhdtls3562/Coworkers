@@ -17,15 +17,15 @@ export default function BoardBestCard({ post }: { post: Post }) {
       href={ROUTES.BOARD_DETAIL(post.id.toString())}
       className="p-5 bg-background-primary rounded-[20px] block border border-border-primary"
     >
-      <div className="flex items-center gap-1 bg-background-secondary rounded-full px-3 py-1.5 w-18 h-7.5">
+      <div className="inline-flex shrink-0 items-center gap-1 bg-background-secondary rounded-full px-3 py-1.5 h-7.5 whitespace-nowrap">
         <IcBoardBest
           width={18}
           height={18}
-          className="fill-brand-primary"
+          className="shrink-0 fill-brand-primary"
           role="img"
           aria-label="베스트 게시글 따봉 모양 아이콘"
         />
-        <p className="text-brand-primary text-sm font-bold leading-4.25">
+        <p className="shrink-0 text-brand-primary text-sm font-bold leading-4.25">
           인기
         </p>
       </div>

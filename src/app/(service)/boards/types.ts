@@ -1,6 +1,6 @@
 import {
   BOARD_DEVICE_TYPE,
-  BOARD_ORDER_BY,
+  BOARD_SORT_VALUE,
 } from '@/app/(service)/boards/constants';
 
 export type ArticleSubmitAction = 'create' | 'update';
@@ -24,17 +24,14 @@ export type Post = {
   updatedAt: string;
 };
 
-export type PostListResponse = {
-  totalCount: number;
-  list: Post[];
-};
+export type BoardListSortValue =
+  (typeof BOARD_SORT_VALUE)[keyof typeof BOARD_SORT_VALUE];
 
 export type BoardListProps = {
   isSearchMode: boolean;
   keyword?: string;
+  listSort: BoardListSortValue;
 };
-
-export type OrderBy = (typeof BOARD_ORDER_BY)[keyof typeof BOARD_ORDER_BY];
 
 export type BoardDeviceType =
   (typeof BOARD_DEVICE_TYPE)[keyof typeof BOARD_DEVICE_TYPE];

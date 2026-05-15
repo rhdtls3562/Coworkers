@@ -21,6 +21,7 @@ export type TaskListTaskComment = {
   authorImage: string | null;
   content: string;
   meta: string;
+  createdAt: string;
 };
 
 export type TaskListBoardTask = {
@@ -36,6 +37,7 @@ export type TaskListBoardTask = {
   recurringId: string | null;
   repeatLabel: string;
   sortOrder: number;
+  startDate?: string;
   startedAtRaw: string;
   startedAtLabel: string;
   taskListId: string;

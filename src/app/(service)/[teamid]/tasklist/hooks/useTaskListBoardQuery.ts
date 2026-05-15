@@ -71,12 +71,14 @@ export function useTaskListBoardQuery({
         sortOrder: task.displayIndex,
         assigneeName: task.writer.nickname,
         description: task.description ?? '',
+        startDate: task.startDate,
         startedAtRaw: task.date,
         startedAtLabel: toTaskListDateKey(task.date),
         taskListId: String(taskListId),
         teamId: groupId ?? '',
         comments: [],
         weekDays: resolvedWeekDays,
+        updatedAt: task.updatedAt,
       };
     });
   }, [groupId, inferredRecurringWeekDays, taskListDetail, taskListId]);

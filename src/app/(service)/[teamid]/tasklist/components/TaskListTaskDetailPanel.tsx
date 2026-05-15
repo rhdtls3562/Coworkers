@@ -25,7 +25,7 @@ export default function TaskListTaskDetailPanel({
       scheduleEditConfig={{
         frequencyType: task.frequency,
         recurringId: task.recurringId,
-        startedAtRaw: task.startedAtRaw,
+        startedAtRaw: task.startDate ?? task.startedAtRaw,
         weekDays: task.weekDays,
       }}
       startedAt={task.startedAtLabel}

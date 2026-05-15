@@ -27,6 +27,7 @@ export function getTaskMetaMap(
       taskList.tasks.forEach((task) => {
         taskMetaMap.set(task.id, {
           commentCount: task.commentCount,
+          description: task.description,
           scheduleEditConfig: toHistoryScheduleEditConfig({
             frequency: task.frequency,
             recurringId: task.recurringId,
@@ -50,12 +51,14 @@ export function getTaskMetaMap(
     source.tasks.forEach((task) => {
       taskMetaMap.set(task.id, {
         commentCount: task.commentCount,
+        description: task.description,
         scheduleEditConfig: toHistoryScheduleEditConfig({
           frequency: task.frequency,
           recurringId: task.recurringId,
-          startedAtRaw: task.date,
+          startedAtRaw: task.startDate ?? task.date,
           weekDays: task.weekDays,
         }),
+        startDate: task.startDate,
         taskDisplayIndex: task.displayIndex,
         taskIdentityKey: toHistoryTaskIdentityKey(task.id, task.recurringId),
         taskListDisplayIndex: source.displayIndex,
@@ -77,7 +80,7 @@ export function toHistoryTask(
 ) {
   return {
     commentCount: meta?.commentCount ?? 0,
-    description: task.description ?? '',
+    description: task.description || meta?.description || '',
     doneAt: toDateLabel(task.doneAt),
     dueDate: toDateLabel(task.date),
     frequency: formatHistoryTaskFrequency(task.frequency),
@@ -88,9 +91,10 @@ export function toHistoryTask(
       recurringId: meta?.scheduleEditConfig?.recurringId
         ? Number(meta.scheduleEditConfig.recurringId)
         : undefined,
-      startedAtRaw: task.date ?? meta?.scheduleEditConfig?.startedAtRaw,
+      startedAtRaw: meta?.scheduleEditConfig?.startedAtRaw ?? task.date,
       weekDays: meta?.scheduleEditConfig?.weekDays,
     }),
+    startDate: meta?.startDate ?? task.startDate,
     startedAt: toDateLabel(task.date),
     taskListId: meta?.taskListId ?? '',
     teamId: meta?.teamId ?? '',

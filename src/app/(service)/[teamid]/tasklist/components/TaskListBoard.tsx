@@ -60,7 +60,6 @@ export default function TaskListBoard({
     },
     [openRightPanel, teamId],
   );
-
   return (
     <section
       className={cn(TASK_LIST_BOARD_CARD_SHELL_CLASS, className)}

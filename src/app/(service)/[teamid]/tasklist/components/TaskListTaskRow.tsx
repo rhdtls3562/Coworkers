@@ -2,16 +2,32 @@
  * 할 일 보드의 단일 할 일 행(체크·제목·메타·더보기)입니다.
  */
 
+'use client';
+
 import TaskListTaskRowOptionsMenu from '@/app/(service)/[teamid]/tasklist/components/TaskListTaskRowOptionsMenu';
 import type { TaskListTaskRowProps } from '@/app/(service)/[teamid]/tasklist/types';
 import {
   IcCalendarSmall,
+  IcClockSmall,
   IcComment,
   IcMoreVerticalSmall,
   IcRepeatSmall,
 } from '@/assets';
 import TodoCheckUncheck from '@/components/common/todo/TodoCheckUncheck';
 import { cn } from '@/utils/cn';
+
+const KST_TIME_FORMAT = new Intl.DateTimeFormat('en-CA', {
+  hour: '2-digit',
+  hour12: false,
+  minute: '2-digit',
+  timeZone: 'Asia/Seoul',
+});
+
+function formatKSTTime(dateString: string) {
+  const date = new Date(dateString);
+  if (Number.isNaN(date.getTime())) return null;
+  return KST_TIME_FORMAT.format(date);
+}
 
 export default function TaskListTaskRow({
   task,
@@ -22,6 +38,8 @@ export default function TaskListTaskRow({
   const handleOpenDetail = () => {
     onOpenDetail(task, 'view');
   };
+
+  const startTime = task.startDate ? formatKSTTime(task.startDate) : null;
 
   return (
     <article
@@ -68,6 +86,18 @@ export default function TaskListTaskRow({
             <IcCalendarSmall width={16} height={16} aria-hidden="true" />
             {task.dueDateLabel}
           </span>
+
+          {startTime && (
+            <>
+              <span aria-hidden="true" className="text-border-secondary">
+                |
+              </span>
+              <span className="flex items-center gap-2">
+                <IcClockSmall width={16} height={16} aria-hidden="true" />
+                {startTime}
+              </span>
+            </>
+          )}
 
           <span aria-hidden="true" className="text-border-secondary">
             |

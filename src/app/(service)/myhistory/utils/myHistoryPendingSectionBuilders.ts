@@ -35,6 +35,7 @@ function toPendingHistoryTask({ source, task }: PendingTaskSource) {
       startedAtRaw: task.date,
       weekDays: task.weekDays,
     }),
+    startDate: task.startDate,
     startedAt: toDateLabel(task.date),
     taskListId: source.taskListId,
     teamId: source.teamId,

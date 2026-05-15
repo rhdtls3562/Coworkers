@@ -32,13 +32,7 @@ export function toHistoryCalendarDate(dateString?: string | null) {
 export function toHistoryDateLabel(dateString?: string | null) {
   const dateKey = toHistoryDateKey(dateString);
 
-  if (!dateKey) {
-    return '-';
-  }
-
-  const [year, month, day] = dateKey.split('-');
-
-  return `${Number(year)}년 ${Number(month)}월 ${Number(day)}일`;
+  return dateKey ?? '-';
 }
 
 export function getCurrentHistoryCalendarDate() {

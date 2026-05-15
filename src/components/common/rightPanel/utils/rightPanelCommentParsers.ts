@@ -30,6 +30,27 @@ function toCommentMeta(createdAt: unknown, updatedAt: unknown) {
   }).format(parsedDate);
 }
 
+export function formatCommentTime(createdAt: string | null): string {
+  if (!createdAt) return '';
+
+  const date = new Date(createdAt);
+  if (Number.isNaN(date.getTime())) return '';
+
+  const diffMs = Date.now() - date.getTime();
+  const diffMinutes = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMs / 3600000);
+
+  if (diffMinutes < 1) return '방금 전';
+  if (diffHours < 1) return `${diffMinutes}분 전`;
+  if (diffHours < 24) return `${diffHours}시간 전`;
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+}
+
 export function toRightPanelComments(
   data: unknown,
   currentUserId?: string,
@@ -37,7 +58,7 @@ export function toRightPanelComments(
   if (!Array.isArray(data)) {
     return [];
   }
-
+  console.log('commentdata', data);
   return data.reduce<RightPanelComment[]>((comments, comment) => {
     if (!isRecord(comment)) {
       return comments;
@@ -67,6 +88,8 @@ export function toRightPanelComments(
       id: commentId,
       isMine: Boolean(authorId && currentUserId && authorId === currentUserId),
       meta: toCommentMeta(comment.createdAt, comment.updatedAt),
+      createdAt:
+        typeof comment.createdAt === 'string' ? comment.createdAt : null,
     });
 
     return comments;

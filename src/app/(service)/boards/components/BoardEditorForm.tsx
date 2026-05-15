@@ -15,7 +15,7 @@ type BoardEditorFormProps = {
   formData: { content: string; image: string | null; title: string };
   heading: string;
   imageButtonAriaLabel: string;
-  innerClassName: string;
+  innerClassName?: string;
   isLoading: boolean;
   isSubmitDisabled: boolean;
   onContentBlur: () => void;

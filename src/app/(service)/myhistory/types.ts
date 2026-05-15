@@ -66,6 +66,7 @@ export type MyHistoryTask = {
   id: string;
   isCompleted: boolean;
   scheduleEditConfig?: TaskDetailScheduleEditConfig;
+  startDate?: string;
   startedAt: string;
   taskListId: string;
   teamId: string;
@@ -80,6 +81,7 @@ export type MyHistoryCompletedTaskRecord = {
   frequency?: string;
   id?: string;
   name?: string;
+  startDate?: string;
 };
 
 export type MyHistoryTaskGroup = {
@@ -142,6 +144,7 @@ export type HistoryTaskListTask = {
   id: string;
   name: string;
   recurringId?: number;
+  startDate?: string;
   weekDays?: number[];
 };
 
@@ -157,7 +160,9 @@ export type HistoryTaskListDetailSource = {
 
 export type HistoryTaskMeta = {
   commentCount: number;
+  description?: string;
   scheduleEditConfig?: TaskDetailScheduleEditConfig;
+  startDate?: string;
   taskDisplayIndex: number;
   taskIdentityKey: string;
   taskListDisplayIndex: number;

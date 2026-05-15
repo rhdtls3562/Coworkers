@@ -9,6 +9,7 @@ import { ListDropdown } from '@/components/common/dropdown';
 import RightPanelAvatar from '@/components/common/rightPanel/components/RightPanelAvatar';
 import TaskDetailCommentActions from '@/components/common/rightPanel/components/TaskDetailCommentActions';
 import type { TaskDetailCommentItemProps } from '@/components/common/rightPanel/types';
+import { formatCommentTime } from '@/components/common/rightPanel/utils/rightPanelCommentParsers';
 
 export default function TaskDetailCommentItem({
   comment,
@@ -21,6 +22,7 @@ export default function TaskDetailCommentItem({
   onStartEdit,
   onSubmitEdit,
 }: TaskDetailCommentItemProps) {
+  console.log('comment', comment);
   if (isEditing) {
     return (
       <li className="bg-background-secondary py-4 first:pt-4 last:pb-4">
@@ -109,7 +111,7 @@ export default function TaskDetailCommentItem({
           </div>
 
           <div className="mt-2 text-sm font-medium text-interaction-inactive mb-5">
-            {comment.meta}
+            {formatCommentTime(comment.createdAt)}
           </div>
         </div>
       </div>

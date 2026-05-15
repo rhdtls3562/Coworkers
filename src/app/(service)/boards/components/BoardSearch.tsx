@@ -1,10 +1,15 @@
 'use client';
 
 import useBoardSearch from '@/app/(service)/boards/hooks/useBoardSearch';
+import type { BoardListSortValue } from '@/app/(service)/boards/types';
 import { IcSearchXlarge } from '@/assets';
 
-export default function BoardSearch() {
-  const { keyword, handleChange, handleSubmit } = useBoardSearch();
+type BoardSearchProps = {
+  listSort: BoardListSortValue;
+};
+
+export default function BoardSearch({ listSort }: BoardSearchProps) {
+  const { keyword, handleChange, handleSubmit } = useBoardSearch({ listSort });
 
   return (
     <form onSubmit={handleSubmit} className="relative w-full md:max-w-105">
