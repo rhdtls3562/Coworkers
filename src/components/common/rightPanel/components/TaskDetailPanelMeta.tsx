@@ -17,6 +17,7 @@ export default function TaskDetailPanelMeta({
   onEditSchedule,
   startedAt,
   startedAtLabelText,
+  startedTimeAtLabelText,
   startTime,
 }: TaskDetailPanelMetaProps) {
   const scheduleValueClassName = 'min-w-0 truncate text-text-secondary';
@@ -56,7 +57,7 @@ export default function TaskDetailPanelMeta({
         <div className="flex flex-wrap items-center gap-2">
           <dt className="flex flex-wrap items-center gap-2">
             <IcClockSmall width={16} height={16} aria-hidden="true" />
-            시작 시각
+            {startedTimeAtLabelText}
           </dt>
           {startTime && (
             <dd className="flex items-center gap-1.5 text-text-secondary">

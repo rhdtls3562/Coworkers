@@ -138,6 +138,7 @@ export type TaskDetailPanelContentLayoutProps = {
   scrollContainerRef: RefObject<HTMLDivElement | null>;
   startedAt: string;
   startedAtLabelText: string;
+  startedTimeAtLabelText: string;
   startTime: string | null;
   title: string;
 };
@@ -169,6 +170,7 @@ export type TaskDetailPanelMetaProps = {
   onEditSchedule: () => void;
   startedAt: string;
   startedAtLabelText: string;
+  startedTimeAtLabelText: string;
   startTime: string | null;
 };
 

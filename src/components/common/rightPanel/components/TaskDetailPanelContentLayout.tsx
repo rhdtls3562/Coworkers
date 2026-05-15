@@ -43,6 +43,7 @@ export default function TaskDetailPanelContentLayout({
   scrollContainerRef,
   startedAt,
   startedAtLabelText,
+  startedTimeAtLabelText,
   startTime,
   title,
 }: TaskDetailPanelContentLayoutProps) {
@@ -73,6 +74,7 @@ export default function TaskDetailPanelContentLayout({
               startedAt={startedAt}
               startedAtLabelText={startedAtLabelText}
               startTime={startTime}
+              startedTimeAtLabelText={startedTimeAtLabelText}
             />
           </div>
         </div>
