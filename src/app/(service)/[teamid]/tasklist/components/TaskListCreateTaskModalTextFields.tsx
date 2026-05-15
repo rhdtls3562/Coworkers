@@ -79,7 +79,7 @@ export default function TaskListCreateTaskModalTextFields({
                 onChange={(event) => onMemoChange(event.target.value)}
                 placeholder="메모를 입력해주세요."
                 autoComplete="off"
-                maxLength={255}
+                maxLength={MEMO_TEXT_LIMIT}
                 className={CREATE_TASK_MEMO_TEXTAREA_CLASS}
               />
             </div>
