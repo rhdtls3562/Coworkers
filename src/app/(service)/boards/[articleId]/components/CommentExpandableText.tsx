@@ -1,6 +1,6 @@
 'use client';
 
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { cn } from '@/utils/cn';
 
@@ -15,7 +15,7 @@ export default function CommentExpandableText({
   const [isExpanded, setIsExpanded] = useState(false);
   const [hasOverflow, setHasOverflow] = useState(false);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const el = textRef.current;
     if (!el) {
       return;
