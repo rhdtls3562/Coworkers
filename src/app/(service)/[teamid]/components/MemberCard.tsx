@@ -10,7 +10,7 @@ export default function MemberCard({
 }: MemberCardProps) {
   return (
     <div className="flex gap-3 items-center cursor-default w-full">
-      <div className="overflow-hidden w-9 h-9 rounded-xl bg-background-tertiary flex items-center justify-center shrink-0">
+      <div className="overflow-hidden w-9 h-9 rounded-xl bg-background-tertiary flex items-center justify-center shrink-0 border border-border-secondary">
         <UserAvatar userImage={userImage} userName={name} size={36} />
       </div>
       <div className="flex-1 w-[calc(100%-76px)]">
