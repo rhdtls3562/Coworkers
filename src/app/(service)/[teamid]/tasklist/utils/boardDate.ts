@@ -82,3 +82,11 @@ export function startOfWeekMonday(date: Date): Date {
 export function formatWeekdayLabel(date: Date): string {
   return TASKLIST_WEEKDAY_LABELS[date.getDay()] ?? '';
 }
+
+/** 반복 요일 선택 시 마지막 요일 해제 방지 */
+export function canRemoveWeekday(
+  selectedDays: number[],
+  dayIndex: number,
+): boolean {
+  return !(selectedDays.includes(dayIndex) && selectedDays.length === 1);
+}

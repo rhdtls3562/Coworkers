@@ -30,19 +30,42 @@ export default function useTaskDetailTimePopover(): UseTaskDetailTimePopoverRetu
       return;
     }
 
-    const handleOutsideClick = (event: PointerEvent) => {
-      if (
-        timePopoverContainerRef.current &&
-        !timePopoverContainerRef.current.contains(event.target as Node)
-      ) {
-        setIsTimePopoverOpen(false);
-      }
+    requestAnimationFrame(() => {
+      timePopoverContainerRef.current?.focus();
+    });
+
+    const isInsidePopover = (target: EventTarget | null) =>
+      target instanceof Node &&
+      timePopoverContainerRef.current?.contains(target);
+
+    const handleMouseDown = (event: MouseEvent) => {
+      if (isInsidePopover(event.target)) return;
+      setIsTimePopoverOpen(false);
     };
 
-    document.addEventListener('pointerdown', handleOutsideClick);
+    let touchStartY = 0;
+
+    const handleTouchStart = (event: TouchEvent) => {
+      touchStartY = event.touches[0]?.clientY ?? 0;
+    };
+
+    const handleTouchEnd = (event: TouchEvent) => {
+      const touchEndY = event.changedTouches[0]?.clientY ?? 0;
+      if (Math.abs(touchEndY - touchStartY) > 10) return;
+      if (isInsidePopover(event.target)) return;
+      setIsTimePopoverOpen(false);
+    };
+
+    document.addEventListener('mousedown', handleMouseDown);
+    document.addEventListener('touchstart', handleTouchStart, {
+      passive: true,
+    });
+    document.addEventListener('touchend', handleTouchEnd);
 
     return () => {
-      document.removeEventListener('pointerdown', handleOutsideClick);
+      document.removeEventListener('mousedown', handleMouseDown);
+      document.removeEventListener('touchstart', handleTouchStart);
+      document.removeEventListener('touchend', handleTouchEnd);
     };
   }, [isTimePopoverOpen]);
 

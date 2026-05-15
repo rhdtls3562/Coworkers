@@ -2,8 +2,14 @@
  * 할 일 만들기 모달 — 반복 요일(일~토 한 글자). 피그마 date picker-요일 스펙.
  */
 
+'use client';
+
 import type { TaskListRepeatWeekdayPickerProps } from '@/app/(service)/[teamid]/tasklist/types';
-import { TASKLIST_WEEKDAY_LABELS } from '@/app/(service)/[teamid]/tasklist/utils/boardDate';
+import {
+  canRemoveWeekday,
+  TASKLIST_WEEKDAY_LABELS,
+} from '@/app/(service)/[teamid]/tasklist/utils/boardDate';
+import { useToast } from '@/components/common/toast';
 import { cn } from '@/utils/cn';
 
 export default function TaskListRepeatWeekdayPicker({
@@ -11,6 +17,16 @@ export default function TaskListRepeatWeekdayPicker({
   onToggleDay,
   className,
 }: TaskListRepeatWeekdayPickerProps) {
+  const { showToast } = useToast();
+
+  const handleToggleDay = (dayIndex: number) => {
+    if (!canRemoveWeekday(selectedDays, dayIndex)) {
+      showToast('반복 요일이 1개 이상 있어야 합니다.', 'error');
+      return;
+    }
+    onToggleDay(dayIndex);
+  };
+
   return (
     <div
       className={cn(
@@ -33,7 +49,7 @@ export default function TaskListRepeatWeekdayPicker({
                 ? 'bg-brand-primary text-white'
                 : 'border border-background-tertiary bg-background-primary text-text-primary hover:bg-background-secondary',
             )}
-            onClick={() => onToggleDay(dayIndex)}
+            onClick={() => handleToggleDay(dayIndex)}
           >
             {label}
           </button>
