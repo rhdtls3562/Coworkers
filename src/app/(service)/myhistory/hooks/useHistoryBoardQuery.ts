@@ -67,8 +67,8 @@ export default function useHistoryBoardQuery(
     viewMode,
   });
   const datedHistorySections = useMemo(
-    () => buildVisibleHistorySections(historySections, selectedRange, viewMode),
-    [historySections, selectedRange, viewMode],
+    () => buildVisibleHistorySections(historySections, selectedRange),
+    [historySections, selectedRange],
   );
   const emptyState = MY_HISTORY_EMPTY_STATE_BY_VIEW_MODE[viewMode];
 
