@@ -7,8 +7,10 @@ import type {
   BoardDetailProps,
   UserProfileResponse,
 } from '@/app/(service)/boards/[articleId]/types';
-import { getBoardHeaderAvatarImage } from '@/app/(service)/boards/[articleId]/utils/getBoardHeaderAvatarImage';
-import { formatDateToYmdHm, getLikeCount } from '@/app/(service)/boards/utils/boardDisplayUtils';
+import {
+  formatDateToYmdHm,
+  getLikeCount,
+} from '@/app/(service)/boards/utils/boardDisplayUtils';
 import { IcHeartFilledRed, IcHeartSmall, IcMoreVerticalLarge } from '@/assets';
 import { ListDropdown } from '@/components/common/dropdown';
 import Modal from '@/components/common/modal';
