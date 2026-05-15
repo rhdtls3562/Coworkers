@@ -15,22 +15,7 @@ import { ListDropdown } from '@/components/common/dropdown';
 import { TaskDeleteConfirmModal } from '@/components/common/modal';
 import TodoCheckUncheck from '@/components/common/todo/TodoCheckUncheck';
 import { cn } from '@/utils/cn';
-
-const KST_TIME_FORMAT = new Intl.DateTimeFormat('en-CA', {
-  hour: '2-digit',
-  hour12: false,
-  minute: '2-digit',
-  timeZone: 'Asia/Seoul',
-});
-
-const DATE_ONLY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
-
-function formatKSTTime(dateString?: string) {
-  if (!dateString || DATE_ONLY_PATTERN.test(dateString)) return null;
-  const date = new Date(dateString);
-  if (Number.isNaN(date.getTime())) return null;
-  return KST_TIME_FORMAT.format(date);
-}
+import { formatKSTTime } from '@/utils/formatDate';
 
 export default function HistoryTaskCard({ task }: HistoryTaskCardProps) {
   const {
@@ -42,7 +27,6 @@ export default function HistoryTaskCard({ task }: HistoryTaskCardProps) {
   } = useHistoryTaskCardMutation({ task });
 
   const startTime = formatKSTTime(task.startDate);
-  console.log('task', task);
   return (
     <article
       className={cn(

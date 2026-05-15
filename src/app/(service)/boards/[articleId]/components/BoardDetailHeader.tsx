@@ -7,10 +7,8 @@ import type {
   BoardDetailProps,
   UserProfileResponse,
 } from '@/app/(service)/boards/[articleId]/types';
-import {
-  formatDateToYmd,
-  getLikeCount,
-} from '@/app/(service)/boards/utils/boardDisplayUtils';
+import { getBoardHeaderAvatarImage } from '@/app/(service)/boards/[articleId]/utils/getBoardHeaderAvatarImage';
+import { formatDateToYmdHm, getLikeCount } from '@/app/(service)/boards/utils/boardDisplayUtils';
 import { IcHeartFilledRed, IcHeartSmall, IcMoreVerticalLarge } from '@/assets';
 import { ListDropdown } from '@/components/common/dropdown';
 import Modal from '@/components/common/modal';
@@ -82,7 +80,7 @@ export default function BoardDetailHeader({
             |
           </span>
           <span className="text-interaction-inactive text-sm font-medium leading-4 shrink-0 md:text-base">
-            {formatDateToYmd(boardDetail.createdAt)}
+            {formatDateToYmdHm(boardDetail.createdAt)}
           </span>
         </div>
         <div className="flex shrink-0 items-center gap-1">

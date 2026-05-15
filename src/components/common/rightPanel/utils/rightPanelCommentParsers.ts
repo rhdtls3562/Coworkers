@@ -3,6 +3,7 @@
  */
 
 import type { RightPanelComment } from '@/components/common/rightPanel/types';
+import { formatRelativeTime } from '@/utils/formatDate';
 
 type CommentRecord = Record<string, unknown>;
 
@@ -31,24 +32,7 @@ function toCommentMeta(createdAt: unknown, updatedAt: unknown) {
 }
 
 export function formatCommentTime(createdAt: string | null): string {
-  if (!createdAt) return '';
-
-  const date = new Date(createdAt);
-  if (Number.isNaN(date.getTime())) return '';
-
-  const diffMs = Date.now() - date.getTime();
-  const diffMinutes = Math.floor(diffMs / 60000);
-  const diffHours = Math.floor(diffMs / 3600000);
-
-  if (diffMinutes < 1) return '방금 전';
-  if (diffHours < 1) return `${diffMinutes}분 전`;
-  if (diffHours < 24) return `${diffHours}시간 전`;
-
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-
-  return `${year}-${month}-${day}`;
+  return formatRelativeTime(createdAt);
 }
 
 export function toRightPanelComments(
@@ -58,7 +42,6 @@ export function toRightPanelComments(
   if (!Array.isArray(data)) {
     return [];
   }
-  console.log('commentdata', data);
   return data.reduce<RightPanelComment[]>((comments, comment) => {
     if (!isRecord(comment)) {
       return comments;
