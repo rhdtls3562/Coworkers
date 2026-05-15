@@ -20,6 +20,7 @@ import {
   getLatestHistoryTaskDate,
   toCompletedTaskRecords,
 } from '@/app/(service)/myhistory/utils/myHistoryData';
+import { getCurrentHistoryCalendarDate } from '@/app/(service)/myhistory/utils/myHistoryKoreaDate';
 import { useCompletedTasksQuery } from '@/hooks/useUser';
 
 export default function useHistoryBoardQuery(
@@ -33,7 +34,9 @@ export default function useHistoryBoardQuery(
     [data],
   );
   const defaultAnchorDate = useMemo(
-    () => getLatestHistoryTaskDate(completedTasks) ?? new Date(),
+    () =>
+      getLatestHistoryTaskDate(completedTasks) ??
+      getCurrentHistoryCalendarDate(),
     [completedTasks],
   );
   const {

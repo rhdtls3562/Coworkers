@@ -3,6 +3,7 @@
  */
 
 import type { HistoryTaskFrequency } from '@/app/(service)/myhistory/types';
+import { toHistoryDateLabel } from '@/app/(service)/myhistory/utils/myHistoryKoreaDate';
 import type {
   TaskDetailScheduleEditConfig,
   TaskDetailScheduleFrequencyType,
@@ -27,17 +28,7 @@ export function toNumber(value: unknown) {
 }
 
 export function toDateLabel(dateString?: string) {
-  if (!dateString) {
-    return '-';
-  }
-
-  const date = new Date(dateString);
-
-  if (Number.isNaN(date.getTime())) {
-    return '-';
-  }
-
-  return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
+  return toHistoryDateLabel(dateString);
 }
 
 export function formatHistoryTaskFrequency(frequency?: HistoryTaskFrequency) {

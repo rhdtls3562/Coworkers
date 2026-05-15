@@ -8,6 +8,7 @@ import type {
   MyHistoryTask,
   PendingTaskSource,
 } from '@/app/(service)/myhistory/types';
+import { toHistoryDateKey } from '@/app/(service)/myhistory/utils/myHistoryKoreaDate';
 import {
   formatHistoryTaskFrequency,
   toDateLabel,
@@ -16,7 +17,7 @@ import {
 } from '@/app/(service)/myhistory/utils/myHistoryShared';
 
 function toPendingTaskDateKey(source: PendingTaskSource) {
-  return source.task.date.slice(0, 10) || source.source.dateKey;
+  return toHistoryDateKey(source.task.date) ?? source.source.dateKey;
 }
 
 function toPendingHistoryTask({ source, task }: PendingTaskSource) {

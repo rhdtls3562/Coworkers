@@ -9,6 +9,10 @@ import type {
   MyHistoryDateRange,
 } from '@/app/(service)/myhistory/types';
 import { addDays } from '@/app/(service)/myhistory/utils/formatHistoryDate';
+import {
+  getCurrentHistoryDateKey,
+  toHistoryDateKey,
+} from '@/app/(service)/myhistory/utils/myHistoryKoreaDate';
 import { toSectionDateKey } from '@/app/(service)/myhistory/utils/myHistoryTaskDateHelpers';
 
 export function getCompletedDateKeys(
@@ -17,21 +21,20 @@ export function getCompletedDateKeys(
   return Array.from(
     new Set(
       completedTasks
-        .map((task) => (task.date ?? task.doneAt)?.slice(0, 10))
+        .map((task) => toHistoryDateKey(task.date ?? task.doneAt))
         .filter((dateKey): dateKey is string => Boolean(dateKey)),
     ),
   );
 }
 
 export function sortHistoryDateKeysByRecency(dateKeys: readonly string[]) {
-  return [...dateKeys].sort((firstDateKey, secondDateKey) => {
-    return new Date(secondDateKey).getTime() - new Date(firstDateKey).getTime();
-  });
+  return [...dateKeys].sort((firstDateKey, secondDateKey) =>
+    secondDateKey.localeCompare(firstDateKey),
+  );
 }
 
 export function getTodayHistoryDateKey() {
-  const today = new Date();
-  return formatHistoryDateKey(today);
+  return getCurrentHistoryDateKey();
 }
 
 function formatHistoryDateKey(date: Date) {
@@ -69,8 +72,8 @@ export function getTeamTaskDateKeys(teamDetails: readonly HistoryTeamDetail[]) {
       teamDetails.flatMap((teamDetail) =>
         teamDetail.taskLists.flatMap((taskList) =>
           taskList.tasks
-            .map((task) => task.date.slice(0, 10))
-            .filter((dateKey) => Boolean(dateKey)),
+            .map((task) => toHistoryDateKey(task.date))
+            .filter((dateKey): dateKey is string => Boolean(dateKey)),
         ),
       ),
     ),

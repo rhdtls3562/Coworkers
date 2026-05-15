@@ -7,45 +7,37 @@ import type {
   MyHistoryDateRange,
 } from '@/app/(service)/myhistory/types';
 import { isDateWithinHistoryRange } from '@/app/(service)/myhistory/utils/formatHistoryDate';
+import {
+  toHistoryCalendarDate,
+  toHistoryDateKey,
+} from '@/app/(service)/myhistory/utils/myHistoryKoreaDate';
 
 export function toTaskDate(task: MyHistoryCompletedTaskRecord) {
-  const baseDate = task.date ?? task.doneAt;
-
-  if (!baseDate) {
-    return null;
-  }
-
-  const date = new Date(baseDate);
-
-  return Number.isNaN(date.getTime()) ? null : date;
+  return toHistoryCalendarDate(task.date ?? task.doneAt);
 }
 
 export function toSectionDateKey(task: MyHistoryCompletedTaskRecord) {
-  const baseDate = task.date ?? task.doneAt;
-
-  return baseDate ? baseDate.slice(0, 10) : null;
+  return toHistoryDateKey(task.date ?? task.doneAt);
 }
 
 export function getLatestHistoryTaskDate(
   tasks: readonly MyHistoryCompletedTaskRecord[],
 ) {
-  const latestTimestamp = tasks.reduce<number | null>((latest, task) => {
-    const date = toTaskDate(task);
+  const latestDateKey = tasks.reduce<string | null>((latest, task) => {
+    const dateKey = toSectionDateKey(task);
 
-    if (!date) {
+    if (!dateKey) {
       return latest;
     }
 
-    const timestamp = date.getTime();
-
-    if (latest === null || timestamp > latest) {
-      return timestamp;
+    if (!latest || dateKey > latest) {
+      return dateKey;
     }
 
     return latest;
   }, null);
 
-  return latestTimestamp === null ? null : new Date(latestTimestamp);
+  return latestDateKey ? toHistoryCalendarDate(latestDateKey) : null;
 }
 
 export function getCompletedTasksInRange(
