@@ -202,6 +202,7 @@ export type UseHistoryBoardDataParams = {
 
 export type UseHistorySelectedRangeParams = {
   defaultAnchorDate: Date;
+  viewMode: MyHistoryViewMode;
 };
 
 export type UseHistoryTaskListSourcesQueryParams = {

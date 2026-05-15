@@ -17,7 +17,6 @@ import {
 } from '@/app/(service)/myhistory/utils/getHistorySections';
 import {
   getCompletedTasksInRange,
-  getLatestHistoryTaskDate,
   toCompletedTaskRecords,
 } from '@/app/(service)/myhistory/utils/myHistoryData';
 import { getCurrentHistoryCalendarDate } from '@/app/(service)/myhistory/utils/myHistoryKoreaDate';
@@ -33,12 +32,7 @@ export default function useHistoryBoardQuery(
     () => toCompletedTaskRecords(data),
     [data],
   );
-  const defaultAnchorDate = useMemo(
-    () =>
-      getLatestHistoryTaskDate(completedTasks) ??
-      getCurrentHistoryCalendarDate(),
-    [completedTasks],
-  );
+  const defaultAnchorDate = useMemo(() => getCurrentHistoryCalendarDate(), []);
   const {
     handleApplyRange,
     handleMoveMonth,
@@ -48,6 +42,7 @@ export default function useHistoryBoardQuery(
     title,
   } = useHistorySelectedRange({
     defaultAnchorDate,
+    viewMode,
   });
   const completedTasksInRange = useMemo(
     () =>
@@ -72,8 +67,8 @@ export default function useHistoryBoardQuery(
     viewMode,
   });
   const datedHistorySections = useMemo(
-    () => buildVisibleHistorySections(historySections, selectedRange),
-    [historySections, selectedRange],
+    () => buildVisibleHistorySections(historySections, selectedRange, viewMode),
+    [historySections, selectedRange, viewMode],
   );
   const emptyState = MY_HISTORY_EMPTY_STATE_BY_VIEW_MODE[viewMode];
 

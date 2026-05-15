@@ -43,6 +43,14 @@ export function createHistoryMonthRange(
   };
 }
 
+export function createHistoryMonthRangeFromToday(date: Date) {
+  return {
+    endDate: getMonthEndDate(date),
+    mode: MY_HISTORY_DATE_RANGE_MODES.MONTH,
+    startDate: date,
+  } satisfies MyHistoryDateRange;
+}
+
 export function createHistoryAllRange(date: Date): MyHistoryDateRange {
   return {
     endDate: date,
@@ -77,7 +85,7 @@ function isSameHistoryDay(firstDate: Date, secondDate: Date) {
 
 export function getHistoryRangeTitleParts(range: MyHistoryDateRange) {
   if (range.mode === MY_HISTORY_DATE_RANGE_MODES.ALL) {
-    return ['전체'] as const;
+    return ['이달의 전체'] as const;
   }
 
   if (
