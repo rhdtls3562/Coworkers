@@ -23,7 +23,7 @@ export function ModalTaskAdd({ onClose }: ModalTaskProps) {
   const [taskListName, setTaskListName] = useState('');
 
   const trimmed = taskListName.trim();
-  const isAtLimit = taskListName.length > TASKLIST_TEXT_LIMIT;
+  const isAtLimit = taskListName.length >= TASKLIST_TEXT_LIMIT;
   const isDisabled = trimmed.length === 0;
 
   const handleTaskAdd = async () => {
@@ -89,7 +89,7 @@ export function ModalTaskEdit({
   const [taskListName, setTaskListName] = useState(initialTitle ?? '');
 
   const trimmed = taskListName.trim();
-  const isAtLimit = taskListName.length > TASKLIST_TEXT_LIMIT;
+  const isAtLimit = taskListName.length >= TASKLIST_TEXT_LIMIT;
   const isDisabled =
     trimmed.length === 0 || trimmed === (initialTitle ?? '').trim();
 

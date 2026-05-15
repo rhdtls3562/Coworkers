@@ -15,7 +15,7 @@ export default function TaskDetailPanelHeader({
   title,
 }: TaskDetailPanelHeaderProps) {
   if (isEditing) {
-    const isAtLimit = draftTitle.length >= 30;
+    const isAtLimit = draftTitle.length >= TITLE_TEXT_LIMIT;
     return (
       <>
         <TitleInput

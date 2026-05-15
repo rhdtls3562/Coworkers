@@ -19,11 +19,10 @@ export default function TaskListRenameColumnModal({
   const isSubmittingRef = useRef(false);
 
   const trimmedName = useMemo(() => name.trim(), [name]);
-  const isAtLimit = name.length >= 15;
+  const isAtLimit = name.length >= TASKLIST_TEXT_LIMIT;
   const isDisabled =
     trimmedName.length === 0 ||
     trimmedName === initialName.trim() ||
-    name.length > 15 ||
     isSubmitting;
 
   const handleRename = async () => {
