@@ -17,7 +17,7 @@ export default function TodoCheckUncheck({
   onChange,
 }: TodoCheckUncheckProps) {
   return (
-    <label className="inline-flex cursor-pointer items-center gap-2 md:gap-2.5">
+    <label className="flex min-w-0 cursor-pointer items-center gap-2 md:gap-2.5">
       <input
         type="checkbox"
         checked={checked}
@@ -42,7 +42,7 @@ export default function TodoCheckUncheck({
       )}
 
       <span
-        className={`text-sm font-medium leading-none truncate w-full md:text-base ${
+        className={`min-w-0 truncate text-sm font-medium leading-none md:text-base ${
           checked
             ? 'text-interaction-inactive line-through'
             : 'text-text-primary'

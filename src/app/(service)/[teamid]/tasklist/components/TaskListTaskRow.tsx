@@ -39,28 +39,28 @@ export default function TaskListTaskRow({
 
       <div className="relative z-10 min-w-0 flex-1 pr-10 pointer-events-none sm:pr-11">
         <div className="flex min-w-0 items-center gap-2">
-          <span className="pointer-events-auto">
+          <span className="flex min-w-0 flex-1 pointer-events-auto items-center gap-2">
             <TodoCheckUncheck
               label={task.title}
               checked={task.checked}
               onChange={(checked) => onToggleChecked(task.id, checked)}
             />
-          </span>
 
-          <button
-            type="button"
-            className="pointer-events-auto mb-1 flex shrink-0 items-center gap-1 text-sm font-medium text-text-default md:text-base"
-            aria-label={`${task.title} 댓글 ${task.commentCount}개 보기`}
-            onClick={handleOpenDetail}
-          >
-            <IcComment
-              width={22}
-              height={22}
-              className="size-5.5"
-              aria-hidden="true"
-            />
-            {task.commentCount}
-          </button>
+            <button
+              type="button"
+              className="pointer-events-auto mb-0.5 flex shrink-0 items-center gap-1 text-sm font-medium text-text-default md:text-base"
+              aria-label={`${task.title} 댓글 ${task.commentCount}개 보기`}
+              onClick={handleOpenDetail}
+            >
+              <IcComment
+                width={22}
+                height={22}
+                className="size-5.5"
+                aria-hidden="true"
+              />
+              {task.commentCount}
+            </button>
+          </span>
         </div>
 
         <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-normal text-text-default md:mt-2 md:text-base">
