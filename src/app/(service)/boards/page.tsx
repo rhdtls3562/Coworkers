@@ -11,21 +11,17 @@ import BoardHeader from '@/app/(service)/boards/components/BoardHeader';
 import BoardList from '@/app/(service)/boards/components/BoardList';
 import BoardWriteFloatingButton from '@/app/(service)/boards/components/BoardWriteFloatingButton';
 import { BOARD_URL_QUERY_FLAG_ENABLED } from '@/app/(service)/boards/constants';
-import {
-  isSearchMode,
-  parseBoardListSortFromQueryParam,
-} from '@/app/(service)/boards/utils/boardListUtils';
+import { isSearchMode } from '@/app/(service)/boards/utils/boardListUtils';
 import { ROUTES } from '@/constants/ROUTES';
 import { buildLoginPath } from '@/utils/authRedirect';
 
 export default async function BoardsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ keyword?: string; sort?: string; write?: string }>;
+  searchParams: Promise<{ keyword?: string; write?: string }>;
 }) {
   const parsedParams = await searchParams;
   const keyword = parsedParams.keyword;
-  const listSort = parseBoardListSortFromQueryParam(parsedParams.sort);
   const isSearchModeValue = isSearchMode(keyword);
   const isWriteMode = parsedParams.write === BOARD_URL_QUERY_FLAG_ENABLED;
 
@@ -50,15 +46,11 @@ export default async function BoardsPage({
       ) : (
         <>
           <div className="bg-white min-h-full w-full">
-            <BoardHeader listSort={listSort} />
+            <BoardHeader />
 
             {!isSearchModeValue && <BoardBestList />}
 
-            <BoardList
-              isSearchMode={isSearchModeValue}
-              keyword={keyword}
-              listSort={listSort}
-            />
+            <BoardList isSearchMode={isSearchModeValue} keyword={keyword} />
 
             <BoardWriteFloatingButton />
           </div>

@@ -40,6 +40,11 @@ export default function useTaskDetailScheduleEditor({
   const [displayFrequency, setDisplayFrequency] = useState(
     initialFrequencyLabel,
   );
+  const [displayStartTime, setDisplayStartTime] = useState<string | null>(
+    scheduleEditConfig
+      ? getTaskDetailScheduleDisplayValues(scheduleEditConfig).startTime
+      : null,
+  );
   const updateRecurringMutation = useTaskDetailScheduleRecurringMutation({
     taskListId,
     teamId,
@@ -97,6 +102,7 @@ export default function useTaskDetailScheduleEditor({
       setCurrentScheduleEditConfig(nextScheduleEditConfig);
       setDisplayStartedAt(nextDisplayValues.startedAt);
       setDisplayFrequency(nextDisplayValues.frequency);
+      setDisplayStartTime(nextDisplayValues.startTime);
       setIsScheduleEditModalOpen(false);
       showToast('할 일이 수정되었습니다.', 'success');
       return true;
@@ -112,6 +118,7 @@ export default function useTaskDetailScheduleEditor({
   return {
     displayFrequency,
     displayStartedAt,
+    displayStartTime,
     handleCloseScheduleEditModal,
     handleOpenScheduleEditModal,
     handleSubmitScheduleEdit,

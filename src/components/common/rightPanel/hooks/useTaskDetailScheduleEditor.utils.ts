@@ -10,6 +10,7 @@ import type {
 import {
   formatTaskDetailFrequency,
   formatTaskDetailStartedAt,
+  toTaskDetailScheduleTime,
 } from '@/components/common/rightPanel/utils/taskDetailSchedule';
 
 const REPEAT_TO_FREQUENCY_TYPE = {
@@ -51,5 +52,6 @@ export function getTaskDetailScheduleDisplayValues(
   return {
     frequency: formatTaskDetailFrequency(scheduleEditConfig),
     startedAt: formatTaskDetailStartedAt(scheduleEditConfig.startedAtRaw),
+    startTime: toTaskDetailScheduleTime(scheduleEditConfig.startedAtRaw),
   };
 }

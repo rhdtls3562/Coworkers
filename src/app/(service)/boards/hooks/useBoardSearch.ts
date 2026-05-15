@@ -1,22 +1,14 @@
 'use client';
 
 /**
- * 게시판 검색어 상태와 제출 시 keyword 쿼리로 라우팅하는 훅 모음
+ * 게시판 검색어 상태와 제출 시 keyword 쿼리로 라우팅하는 훅입니다.
  */
 
 import { useState } from 'react';
 
 import { useRouter } from 'next/navigation';
 
-import type { BoardListSortValue } from '@/app/(service)/boards/types';
-import { buildBoardListQueryString } from '@/app/(service)/boards/utils/boardListUtils';
-import { ROUTES } from '@/constants/ROUTES';
-
-type UseBoardSearchParams = {
-  listSort: BoardListSortValue;
-};
-
-export default function useBoardSearch({ listSort }: UseBoardSearchParams) {
+export default function useBoardSearch() {
   const [keyword, setKeyword] = useState('');
   const router = useRouter();
 
@@ -28,18 +20,11 @@ export default function useBoardSearch({ listSort }: UseBoardSearchParams) {
     e.preventDefault();
 
     if (!keyword.trim()) {
-      router.push(
-        `${ROUTES.BOARDS}${buildBoardListQueryString({ sort: listSort })}`,
-      );
+      router.push('/boards');
       return;
     }
 
-    router.push(
-      `${ROUTES.BOARDS}${buildBoardListQueryString({
-        keyword,
-        sort: listSort,
-      })}`,
-    );
+    router.push(`/boards?keyword=${encodeURIComponent(keyword)}`);
   };
 
   return {

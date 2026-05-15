@@ -38,8 +38,6 @@ export default function useBoardEditForm({
   const updateArticleMutation = useUpdateArticleMutation();
   const uploadImageMutation = useUploadImageMutation();
   const [isLoading, setIsLoading] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const isSubmittingRef = useRef(false);
 
   const {
     contentErrorMessage,
@@ -73,7 +71,7 @@ export default function useBoardEditForm({
 
   const isMutationPending =
     uploadImageMutation.isPending || updateArticleMutation.isPending;
-  const isSubmitBusy = isSubmitting || isLoading || isMutationPending;
+  const isSubmitBusy = isLoading || isMutationPending;
   const isSubmitDisabled = isSubmitBusy || !isSubmittable;
 
   const handleCancel = () => {
@@ -83,23 +81,23 @@ export default function useBoardEditForm({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    if (isSubmittingRef.current) {
-      return;
-    }
-    isSubmittingRef.current = true;
-    setIsSubmitting(true);
     setIsSubmitted(true);
 
-    try {
-      if (!isSubmittable) {
-        return;
-      }
+    if (!isSubmittable) {
+      return;
+    }
 
-      if (!TEAM_ID) {
-        showToast('팀 정보가 설정되지 않았습니다.', 'error');
-        return;
-      }
+    if (!TEAM_ID) {
+      showToast('팀 정보가 설정되지 않았습니다.', 'error');
+      return;
+    }
+
+    if (isSubmitBusy) {
+      return;
+    }
+
+    try {
+      setIsLoading(true);
 
       const token = getStoredAccessToken();
 
@@ -108,30 +106,23 @@ export default function useBoardEditForm({
         return;
       }
 
-      setIsLoading(true);
+      await executeBoardArticleEdit({
+        articleId,
+        formData,
+        imageFile,
+        teamId: TEAM_ID,
+        token,
+        updateArticleMutateAsync: updateArticleMutation.mutateAsync,
+        uploadImageMutateAsync: uploadImageMutation.mutateAsync,
+      });
 
-      try {
-        await executeBoardArticleEdit({
-          articleId,
-          formData,
-          imageFile,
-          teamId: TEAM_ID,
-          token,
-          updateArticleMutateAsync: updateArticleMutation.mutateAsync,
-          uploadImageMutateAsync: uploadImageMutation.mutateAsync,
-        });
-
-        savedSuccessfullyRef.current = true;
-        showToast('게시글이 성공적으로 수정되었습니다.', 'success');
-        router.replace(ROUTES.BOARD_DETAIL(String(articleId)));
-      } catch (error: unknown) {
-        showToast(getArticleSubmitErrorMessage(error, 'update'), 'error');
-      } finally {
-        setIsLoading(false);
-      }
+      savedSuccessfullyRef.current = true;
+      showToast('게시글이 성공적으로 수정되었습니다.', 'success');
+      router.replace(ROUTES.BOARD_DETAIL(String(articleId)));
+    } catch (error: unknown) {
+      showToast(getArticleSubmitErrorMessage(error, 'update'), 'error');
     } finally {
-      isSubmittingRef.current = false;
-      setIsSubmitting(false);
+      setIsLoading(false);
     }
   };
 

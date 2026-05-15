@@ -4,7 +4,7 @@
 
 'use client';
 
-import { IcCalendarSmall, IcRepeatSmall } from '@/assets';
+import { IcCalendarSmall, IcClockSmall, IcRepeatSmall } from '@/assets';
 import RightPanelAvatar from '@/components/common/rightPanel/components/RightPanelAvatar';
 import type { TaskDetailPanelMetaProps } from '@/components/common/rightPanel/types';
 
@@ -17,6 +17,7 @@ export default function TaskDetailPanelMeta({
   onEditSchedule,
   startedAt,
   startedAtLabelText,
+  startTime,
 }: TaskDetailPanelMetaProps) {
   const scheduleValueClassName = 'min-w-0 truncate text-text-secondary';
 
@@ -52,7 +53,17 @@ export default function TaskDetailPanelMeta({
             <dd className={scheduleValueClassName}>{startedAt}</dd>
           )}
         </div>
-
+        <div className="flex flex-wrap items-center gap-2">
+          <dt className="flex flex-wrap items-center gap-2">
+            <IcClockSmall width={16} height={16} aria-hidden="true" />
+            시작 시각
+          </dt>
+          {startTime && (
+            <dd className="flex items-center gap-1.5 text-text-secondary">
+              {startTime}
+            </dd>
+          )}
+        </div>
         <div className="flex flex-wrap items-center gap-2">
           <IcRepeatSmall
             width={20}

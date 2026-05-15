@@ -58,42 +58,17 @@ export const normalizeArticleImageUrl = (
   return value;
 };
 
-type BuildArticleMutationBodyOptions = {
-  /** true면 이미지가 없을 때도 `image: null`을 넣어 PATCH에서 기존 이미지를 제거할 수 있게 합니다. */
-  includeNullImage?: boolean;
-};
-
-export function buildArticleMutationBody(
-  params: {
-    title: string;
-    content: string;
-    image: string | null | undefined;
-  },
-  options?: BuildArticleMutationBodyOptions,
-): ArticleBody {
+export function buildArticleMutationBody(params: {
+  title: string;
+  content: string;
+  image: string | null | undefined;
+}): ArticleBody {
   const { title, content, image } = params;
   const normalizedImage = normalizeArticleImageUrl(image);
-  const trimmedTitle = title.trim();
-  const trimmedContent = content.trim();
-
-  if (normalizedImage != null) {
-    return {
-      content: trimmedContent,
-      title: trimmedTitle,
-      image: normalizedImage,
-    };
-  }
-
-  if (options?.includeNullImage) {
-    return {
-      content: trimmedContent,
-      title: trimmedTitle,
-      image: null,
-    };
-  }
 
   return {
-    content: trimmedContent,
-    title: trimmedTitle,
+    content: content.trim(),
+    title: title.trim(),
+    ...(normalizedImage != null ? { image: normalizedImage } : {}),
   };
 }

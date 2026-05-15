@@ -137,6 +137,7 @@ export type TaskDetailPanelContentLayoutProps = {
   scrollContainerRef: RefObject<HTMLDivElement | null>;
   startedAt: string;
   startedAtLabelText: string;
+  startTime: string | null;
   title: string;
 };
 
@@ -167,6 +168,7 @@ export type TaskDetailPanelMetaProps = {
   onEditSchedule: () => void;
   startedAt: string;
   startedAtLabelText: string;
+  startTime: string | null;
 };
 
 export type TaskDetailCommentsSectionProps = {
@@ -261,6 +263,7 @@ export type UseTaskDetailScheduleEditorParams = {
 export type UseTaskDetailScheduleEditorReturn = {
   displayFrequency: string;
   displayStartedAt: string;
+  displayStartTime: string | null;
   handleCloseScheduleEditModal: () => void;
   handleOpenScheduleEditModal: () => void;
   handleSubmitScheduleEdit: (

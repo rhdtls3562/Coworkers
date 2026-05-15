@@ -4,7 +4,7 @@
 
 const DATE_PART_LENGTH = 2;
 const KOREA_TIME_ZONE = 'Asia/Seoul';
-const KOREA_UTC_OFFSET = 'Z';
+const KOREA_UTC_OFFSET = '+09:00';
 
 type KoreaDateParts = {
   day: number;

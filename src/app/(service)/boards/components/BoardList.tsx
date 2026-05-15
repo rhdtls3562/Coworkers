@@ -1,12 +1,9 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-
 import BoardListCard from '@/app/(service)/boards/components/BoardListCard';
 import {
   BOARD_LIST_LOAD_MORE_ELEMENT_ID,
   BOARD_LIST_LOAD_MORE_ROOT_MARGIN,
-  BOARD_LIST_LOADING_MESSAGE,
   BOARD_MAIN_LIST_PARAMS,
   BOARD_SORT_OPTIONS,
   TEAM_ID,
@@ -15,21 +12,12 @@ import { useInfinitePages } from '@/app/(service)/boards/hooks/useInfinitePages'
 import { useInfiniteScrollObserver } from '@/app/(service)/boards/hooks/useInfiniteScrollObserver';
 import useSortedBoardPostsMemo from '@/app/(service)/boards/hooks/useSortedBoardPostsMemo';
 import type { BoardListProps, Post } from '@/app/(service)/boards/types';
-import {
-  buildBoardListQueryString,
-  hasPosts,
-} from '@/app/(service)/boards/utils/boardListUtils';
+import { hasPosts } from '@/app/(service)/boards/utils/boardListUtils';
 import SelectDropdown from '@/components/common/dropdown/components/SelectDropdown';
-import { ROUTES } from '@/constants/ROUTES';
 import { useArticleInfiniteListQuery } from '@/hooks/useArticle';
 
-export default function BoardList({
-  isSearchMode,
-  keyword,
-  listSort,
-}: BoardListProps) {
-  const router = useRouter();
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isPending } =
+export default function BoardList({ isSearchMode, keyword }: BoardListProps) {
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useArticleInfiniteListQuery({
       params: {
         ...BOARD_MAIN_LIST_PARAMS,
@@ -46,21 +34,10 @@ export default function BoardList({
     isFetchingNextPage,
     rootMargin: BOARD_LIST_LOAD_MORE_ROOT_MARGIN,
   });
-  const { sortedPosts } = useSortedBoardPostsMemo({
+  const { sortedPosts, sort, setSort } = useSortedBoardPostsMemo({
     boardPosts,
-    sort: listSort,
   });
   const hasPostsValue = hasPosts(sortedPosts);
-
-  const handleSortChange = (value: string) => {
-    const nextSort = value as typeof listSort;
-    router.replace(
-      `${ROUTES.BOARDS}${buildBoardListQueryString({
-        keyword,
-        sort: nextSort,
-      })}`,
-    );
-  };
 
   return (
     <section className="max-w-324.5 px-4 mt-7.25 pb-12.25 md:mt-7 md:px-6.5 lg:px-22.25 lg:mt-11.25">
@@ -73,22 +50,13 @@ export default function BoardList({
             label: option.label,
             value: option.value,
           }))}
-          value={listSort}
-          onChange={handleSortChange}
+          value={sort}
+          onChange={(value) => setSort(value as typeof sort)}
           className="w-23.5 md:w-30"
         />
       </div>
 
-      {isPending ? (
-        <div
-          className="mt-5 items-center px-6 py-12 text-center md:mt-6 md:py-16"
-          role="status"
-        >
-          <span className="text-text-default text-sm font-regular md:text-sm">
-            {BOARD_LIST_LOADING_MESSAGE}
-          </span>
-        </div>
-      ) : !hasPostsValue ? (
+      {!hasPostsValue ? (
         <div
           className="mt-5 items-center px-6 py-12 text-center md:mt-6 md:py-16"
           role="status"
@@ -107,7 +75,7 @@ export default function BoardList({
         </div>
       )}
 
-      {!isPending && hasPostsValue ? (
+      {hasPostsValue ? (
         <div
           ref={sentinelRef}
           id={BOARD_LIST_LOAD_MORE_ELEMENT_ID}

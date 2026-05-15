@@ -36,6 +36,7 @@ export type TaskListBoardTask = {
   recurringId: string | null;
   repeatLabel: string;
   sortOrder: number;
+  startDate?: string;
   startedAtRaw: string;
   startedAtLabel: string;
   taskListId: string;
