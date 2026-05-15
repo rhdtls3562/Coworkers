@@ -12,6 +12,7 @@ export default function TaskListTaskDetailMeta({
   assigneeName,
   frequency,
   startedAtLabel,
+  startedAtLabelText,
 }: TaskListTaskDetailMetaProps) {
   return (
     <div>
@@ -42,7 +43,7 @@ export default function TaskListTaskDetailMeta({
             className="size-4 shrink-0"
             aria-hidden="true"
           />
-          <dt>시작 날짜</dt>
+          <dt>{startedAtLabelText}</dt>
           <dd className="text-text-secondary">{startedAtLabel}</dd>
         </div>
 

@@ -84,6 +84,9 @@ export default function TaskListTaskDetailPanelContent({
           assigneeName={task.assigneeName}
           frequency={task.repeatLabel}
           startedAtLabel={task.startedAtLabel}
+          startedAtLabelText={
+            task.frequency === 'ONCE' ? '시작 날짜' : '일정 날짜'
+          }
         />
       </div>
 

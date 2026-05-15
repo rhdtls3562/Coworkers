@@ -35,6 +35,11 @@ export default function TaskDetailPanelContent({
 }: TaskDetailPanelContentProps) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const startedAtLabelText =
+    scheduleEditConfig?.frequencyType &&
+    scheduleEditConfig.frequencyType !== 'ONCE'
+      ? '일정 날짜'
+      : '시작 날짜';
   const {
     assigneeImage: editableAssigneeImage,
     comments: editableComments,
@@ -162,6 +167,7 @@ export default function TaskDetailPanelContent({
         onToggleCompletion={handleToggleCompletion}
         scrollContainerRef={scrollContainerRef}
         startedAt={displayStartedAt}
+        startedAtLabelText={startedAtLabelText}
         title={title}
       />
 

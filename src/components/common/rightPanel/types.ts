@@ -136,6 +136,7 @@ export type TaskDetailPanelContentLayoutProps = {
   onToggleCompletion: () => Promise<boolean> | void;
   scrollContainerRef: RefObject<HTMLDivElement | null>;
   startedAt: string;
+  startedAtLabelText: string;
   title: string;
 };
 
@@ -165,6 +166,7 @@ export type TaskDetailPanelMetaProps = {
   isScheduleEditable: boolean;
   onEditSchedule: () => void;
   startedAt: string;
+  startedAtLabelText: string;
 };
 
 export type TaskDetailCommentsSectionProps = {

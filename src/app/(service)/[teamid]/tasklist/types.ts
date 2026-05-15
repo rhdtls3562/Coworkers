@@ -205,6 +205,7 @@ export type TaskListTaskDetailMetaProps = {
   assigneeName: string;
   frequency: string;
   startedAtLabel: string;
+  startedAtLabelText: string;
 };
 
 export type TaskListBoardEmptyTaskRowProps = {

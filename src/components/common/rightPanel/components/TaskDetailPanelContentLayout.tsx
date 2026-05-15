@@ -42,6 +42,7 @@ export default function TaskDetailPanelContentLayout({
   onToggleCompletion,
   scrollContainerRef,
   startedAt,
+  startedAtLabelText,
   title,
 }: TaskDetailPanelContentLayoutProps) {
   return (
@@ -69,6 +70,7 @@ export default function TaskDetailPanelContentLayout({
               isScheduleEditable={hasScheduleEditCapability}
               onEditSchedule={onEditSchedule}
               startedAt={startedAt}
+              startedAtLabelText={startedAtLabelText}
             />
           </div>
         </div>

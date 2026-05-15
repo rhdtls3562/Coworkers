@@ -16,6 +16,7 @@ export default function TaskDetailPanelMeta({
   isScheduleEditable,
   onEditSchedule,
   startedAt,
+  startedAtLabelText,
 }: TaskDetailPanelMetaProps) {
   const scheduleValueClassName = 'min-w-0 truncate text-text-secondary';
 
@@ -36,7 +37,7 @@ export default function TaskDetailPanelMeta({
             className="size-4 shrink-0"
             aria-hidden="true"
           />
-          <dt>시작 날짜</dt>
+          <dt>{startedAtLabelText}</dt>
           {isEditing && isScheduleEditable ? (
             <dd className="min-w-0">
               <button
