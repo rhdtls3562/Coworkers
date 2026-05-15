@@ -48,7 +48,11 @@ export const BOARD_SORT_VALUE = {
   LIKES: BOARD_SORT_OPTIONS[1].value,
 } as const;
 
+export const BOARD_SORT_QUERY_KEY = 'sort';
+
 export const ARTICLE_SUBMIT_FALLBACK = {
   create: '등록 중 오류가 발생했습니다.',
   update: '수정 중 오류가 발생했습니다.',
 } satisfies Record<'create' | 'update', string>;
+
+export const BOARD_LIST_LOADING_MESSAGE = '데이터를 불러오고 있습니다.';

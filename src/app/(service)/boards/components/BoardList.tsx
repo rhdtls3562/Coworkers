@@ -1,9 +1,12 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+
 import BoardListCard from '@/app/(service)/boards/components/BoardListCard';
 import {
   BOARD_LIST_LOAD_MORE_ELEMENT_ID,
   BOARD_LIST_LOAD_MORE_ROOT_MARGIN,
+  BOARD_LIST_LOADING_MESSAGE,
   BOARD_MAIN_LIST_PARAMS,
   BOARD_SORT_OPTIONS,
   TEAM_ID,
@@ -12,12 +15,21 @@ import { useInfinitePages } from '@/app/(service)/boards/hooks/useInfinitePages'
 import { useInfiniteScrollObserver } from '@/app/(service)/boards/hooks/useInfiniteScrollObserver';
 import useSortedBoardPostsMemo from '@/app/(service)/boards/hooks/useSortedBoardPostsMemo';
 import type { BoardListProps, Post } from '@/app/(service)/boards/types';
-import { hasPosts } from '@/app/(service)/boards/utils/boardListUtils';
+import {
+  buildBoardListQueryString,
+  hasPosts,
+} from '@/app/(service)/boards/utils/boardListUtils';
 import SelectDropdown from '@/components/common/dropdown/components/SelectDropdown';
+import { ROUTES } from '@/constants/ROUTES';
 import { useArticleInfiniteListQuery } from '@/hooks/useArticle';
 
-export default function BoardList({ isSearchMode, keyword }: BoardListProps) {
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+export default function BoardList({
+  isSearchMode,
+  keyword,
+  listSort,
+}: BoardListProps) {
+  const router = useRouter();
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isPending } =
     useArticleInfiniteListQuery({
       params: {
         ...BOARD_MAIN_LIST_PARAMS,
@@ -34,10 +46,21 @@ export default function BoardList({ isSearchMode, keyword }: BoardListProps) {
     isFetchingNextPage,
     rootMargin: BOARD_LIST_LOAD_MORE_ROOT_MARGIN,
   });
-  const { sortedPosts, sort, setSort } = useSortedBoardPostsMemo({
+  const { sortedPosts } = useSortedBoardPostsMemo({
     boardPosts,
+    sort: listSort,
   });
   const hasPostsValue = hasPosts(sortedPosts);
+
+  const handleSortChange = (value: string) => {
+    const nextSort = value as typeof listSort;
+    router.replace(
+      `${ROUTES.BOARDS}${buildBoardListQueryString({
+        keyword,
+        sort: nextSort,
+      })}`,
+    );
+  };
 
   return (
     <section className="max-w-324.5 px-4 mt-7.25 pb-12.25 md:mt-7 md:px-6.5 lg:px-22.25 lg:mt-11.25">
@@ -50,13 +73,22 @@ export default function BoardList({ isSearchMode, keyword }: BoardListProps) {
             label: option.label,
             value: option.value,
           }))}
-          value={sort}
-          onChange={(value) => setSort(value as typeof sort)}
+          value={listSort}
+          onChange={handleSortChange}
           className="w-23.5 md:w-30"
         />
       </div>
 
-      {!hasPostsValue ? (
+      {isPending ? (
+        <div
+          className="mt-5 items-center px-6 py-12 text-center md:mt-6 md:py-16"
+          role="status"
+        >
+          <span className="text-text-default text-sm font-regular md:text-sm">
+            {BOARD_LIST_LOADING_MESSAGE}
+          </span>
+        </div>
+      ) : !hasPostsValue ? (
         <div
           className="mt-5 items-center px-6 py-12 text-center md:mt-6 md:py-16"
           role="status"
@@ -75,7 +107,7 @@ export default function BoardList({ isSearchMode, keyword }: BoardListProps) {
         </div>
       )}
 
-      {hasPostsValue ? (
+      {!isPending && hasPostsValue ? (
         <div
           ref={sentinelRef}
           id={BOARD_LIST_LOAD_MORE_ELEMENT_ID}

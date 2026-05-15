@@ -6,6 +6,7 @@ import {
   BOARD_BEST_LIST_PARAMS,
   BOARD_DEVICE_TYPE,
   BOARD_DEVICE_TYPE_LIMIT,
+  BOARD_LIST_LOADING_MESSAGE,
   TEAM_ID,
 } from '@/app/(service)/boards/constants';
 import useBestPostsMemo from '@/app/(service)/boards/hooks/useBestPostsMemo';
@@ -22,7 +23,7 @@ export default function BoardBestList() {
   const deviceType = useDeviceType();
   const pageSize =
     BOARD_DEVICE_TYPE_LIMIT[deviceType ?? BOARD_DEVICE_TYPE.MOBILE];
-  const { data } = useArticleListQuery({
+  const { data, isPending } = useArticleListQuery({
     params: BOARD_BEST_LIST_PARAMS,
     teamId: TEAM_ID,
   });
@@ -55,7 +56,13 @@ export default function BoardBestList() {
           베스트 게시글
         </p>
 
-        {emptyMessage ? (
+        {isPending ? (
+          <div className="px-2 py-8 text-center md:py-10" role="status">
+            <p className="text-text-default text-sm leading-5 md:text-sm">
+              {BOARD_LIST_LOADING_MESSAGE}
+            </p>
+          </div>
+        ) : emptyMessage ? (
           <div className="px-2 py-8 text-center md:py-10" role="status">
             <p className="text-text-default text-sm leading-5 md:text-sm">
               {emptyMessage}

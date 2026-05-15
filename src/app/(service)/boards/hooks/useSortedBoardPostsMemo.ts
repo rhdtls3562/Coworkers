@@ -1,21 +1,19 @@
-'use client';
-
 /**
- * 게시판 정렬 옵션 상태와 최신순·좋아요순 정렬된 게시글 목록을 메모이제이션하는 훅입니다.
+ * 게시판 정렬 값에 따라 최신순·좋아요순으로 정렬된 게시글 목록을 메모이제이션하는 훅입니다.
  */
 
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 import { BOARD_SORT_VALUE } from '@/app/(service)/boards/constants';
-import type { Post } from '@/app/(service)/boards/types';
+import type { BoardListSortValue, Post } from '@/app/(service)/boards/types';
 
 export default function useSortedBoardPostsMemo({
   boardPosts,
+  sort,
 }: {
   boardPosts: Post[];
+  sort: BoardListSortValue;
 }) {
-  const [sort, setSort] = useState(BOARD_SORT_VALUE.LATEST);
-
   const sortedPosts = useMemo(() => {
     const postsCopy = [...boardPosts];
 
@@ -35,7 +33,5 @@ export default function useSortedBoardPostsMemo({
 
   return {
     sortedPosts,
-    sort,
-    setSort,
   };
 }

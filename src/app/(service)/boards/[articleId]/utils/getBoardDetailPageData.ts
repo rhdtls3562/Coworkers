@@ -5,6 +5,7 @@
 import { teamEndpoint } from '@/api/apiClient';
 import { TEAM_ID } from '@/app/(service)/boards/[articleId]/constants';
 import type { UserProfileResponse } from '@/app/(service)/boards/[articleId]/types';
+import { fetchArticleDetailWithOptionalAuth } from '@/app/(service)/boards/[articleId]/utils/fetchArticleDetailWithOptionalAuth';
 import { fetchWithAuth } from '@/app/(service)/boards/[articleId]/utils/fetchWithAuth';
 import type { Post } from '@/app/(service)/boards/types';
 
@@ -25,7 +26,7 @@ export async function getBoardDetailPageData({
 
   try {
     const [boardDetailData, userProfileData] = await Promise.all([
-      fetchWithAuth(teamEndpoint(`/articles/${articleId}`, TEAM_ID)),
+      fetchArticleDetailWithOptionalAuth(articleId, TEAM_ID),
       fetchWithAuth(teamEndpoint('/user', TEAM_ID))
         .then((data) => data as UserProfileResponse)
         .catch(() => null),

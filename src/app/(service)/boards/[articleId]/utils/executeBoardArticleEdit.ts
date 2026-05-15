@@ -48,11 +48,14 @@ export async function executeBoardArticleEdit(params: {
 
   await updateArticleMutateAsync({
     articleId,
-    body: buildArticleMutationBody({
-      content: formData.content,
-      image: uploadedImage?.url ?? formData.image,
-      title: formData.title,
-    }),
+    body: buildArticleMutationBody(
+      {
+        content: formData.content,
+        image: uploadedImage?.url ?? formData.image,
+        title: formData.title,
+      },
+      { includeNullImage: true },
+    ),
     teamId,
     token,
   });

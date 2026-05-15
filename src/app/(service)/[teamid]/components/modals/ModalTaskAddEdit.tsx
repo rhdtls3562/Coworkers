@@ -8,7 +8,6 @@ import { ModalTaskProps } from '@/app/(service)/[teamid]/types';
 import { Input } from '@/components/common/form';
 import Modal from '@/components/common/modal';
 import { useToast } from '@/components/common/toast';
-import { TASKLIST_TEXT_LIMIT } from '@/constants/TEXT_LIMIT';
 import {
   useCreateTaskListMutation,
   useUpdateTaskListMutation,
@@ -23,8 +22,8 @@ export function ModalTaskAdd({ onClose }: ModalTaskProps) {
   const [taskListName, setTaskListName] = useState('');
 
   const trimmed = taskListName.trim();
-  const isAtLimit = taskListName.length >= TASKLIST_TEXT_LIMIT;
-  const isDisabled = trimmed.length === 0;
+  const isOver = trimmed.length > 15;
+  const isDisabled = trimmed.length === 0 || isOver;
 
   const handleTaskAdd = async () => {
     if (isDisabled || isCreateTaskListPending) return;
@@ -56,21 +55,13 @@ export function ModalTaskAdd({ onClose }: ModalTaskProps) {
       <Input
         placeholder="할 일 목록 명을 입력해주세요."
         disabled={isCreateTaskListPending}
-        maxLength={TASKLIST_TEXT_LIMIT}
         onChange={(e) => setTaskListName(e.target.value)}
       />
-      <div className="flex items-center justify-between mt-1">
-        {isAtLimit ? (
-          <p className="text-left text-sm font-medium text-status-danger">
-            {TASKLIST_TEXT_LIMIT}자 이내로 작성해주세요.
-          </p>
-        ) : (
-          <span />
-        )}
-        <p className="text-right text-sm text-text-default">
-          {taskListName.length}/{TASKLIST_TEXT_LIMIT}
+      {isOver && (
+        <p className="mt-2 text-sm font-medium text-status-danger">
+          15자 이내로 작성해주세요.
         </p>
-      </div>
+      )}
     </Modal>
   );
 }
@@ -89,9 +80,9 @@ export function ModalTaskEdit({
   const [taskListName, setTaskListName] = useState(initialTitle ?? '');
 
   const trimmed = taskListName.trim();
-  const isAtLimit = taskListName.length >= TASKLIST_TEXT_LIMIT;
+  const isOver = trimmed.length > 15;
   const isDisabled =
-    trimmed.length === 0 || trimmed === (initialTitle ?? '').trim();
+    trimmed.length === 0 || trimmed === (initialTitle ?? '').trim() || isOver;
 
   const handleTaskEdit = async () => {
     if (!taskListId || isDisabled || isUpdateTaskListPending) return;
@@ -124,21 +115,13 @@ export function ModalTaskEdit({
       <Input
         value={taskListName}
         disabled={isUpdateTaskListPending}
-        maxLength={TASKLIST_TEXT_LIMIT}
         onChange={(e) => setTaskListName(e.target.value)}
       />
-      <div className="flex items-center justify-between mt-1">
-        {isAtLimit ? (
-          <p className="text-left text-sm font-medium text-status-danger">
-            {TASKLIST_TEXT_LIMIT}자 이내로 작성해주세요.
-          </p>
-        ) : (
-          <span />
-        )}
-        <p className="text-right text-sm text-text-default">
-          {taskListName.length}/{TASKLIST_TEXT_LIMIT}
+      {isOver && (
+        <p className="mt-2 text-left text-sm font-medium text-status-danger">
+          15자 이내로 작성해주세요.
         </p>
-      </div>
+      )}
     </Modal>
   );
 }
