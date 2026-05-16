@@ -83,30 +83,23 @@ export default async function BoardDetailPage({
   }
 
   return (
-    <div className="w-full h-full min-h-dvh flex justify-center items-center px-4 py-8 md:px-6.5 md:py-18 lg:py-17">
-      <div className="max-w-225 w-full items-center bg-background-primary rounded-[20px]">
-        <div className="px-5.5 py-9.75 md:px-10 md:py-13.5 lg:px-15">
-          {isEditMode ? (
-            <BoardDetailEditForm
-              key={boardDetail.id}
-              boardDetail={boardDetail}
-            />
-          ) : (
-            <div>
-              <BoardDetailHeader
-                boardDetail={boardDetail}
-                userProfile={userProfile}
-              />
-              <BoardDetailContent boardDetail={boardDetail} />
+    <>
+      {isEditMode ? (
+        <BoardDetailEditForm key={boardDetail.id} boardDetail={boardDetail} />
+      ) : (
+        <div>
+          <BoardDetailHeader
+            boardDetail={boardDetail}
+            userProfile={userProfile}
+          />
+          <BoardDetailContent boardDetail={boardDetail} />
 
-              <BoardDetailComments
-                commentCount={boardDetail.commentCount}
-                userProfile={userProfile}
-              />
-            </div>
-          )}
+          <BoardDetailComments
+            commentCount={boardDetail.commentCount}
+            userProfile={userProfile}
+          />
         </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 }

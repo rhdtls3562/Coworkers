@@ -7,6 +7,10 @@ import {
   ImageUploadField,
   TitleInput,
 } from '@/components/common/form';
+import {
+  ARTICLE_CONTENT_TEXT_LIMIT,
+  ARTICLE_TITLE_TEXT_LIMIT,
+} from '@/constants/TEXT_LIMIT';
 import { cn } from '@/utils/cn';
 
 type BoardEditorFormProps = {
@@ -50,6 +54,10 @@ export default function BoardEditorForm({
   submitLabel,
   titleErrorMessage,
 }: BoardEditorFormProps) {
+  const isTitleAtLimit = formData.title.length >= ARTICLE_TITLE_TEXT_LIMIT;
+  const isContentAtLimit =
+    formData.content.length >= ARTICLE_CONTENT_TEXT_LIMIT;
+
   const main = (
     <>
       <h2 className="text-text-primary text-xl font-bold leading-6">
@@ -69,9 +77,23 @@ export default function BoardEditorForm({
             className="mt-2.25 md:mt-3"
             value={formData.title}
             errorMessage={titleErrorMessage}
-            onChange={onTitleChange}
             onBlur={onTitleBlur}
+            maxLength={ARTICLE_TITLE_TEXT_LIMIT}
+            onChange={onTitleChange}
           />
+
+          <div className="flex items-center justify-between mt-1">
+            {isTitleAtLimit ? (
+              <p className="text-left text-sm font-medium text-status-danger">
+                {ARTICLE_TITLE_TEXT_LIMIT}자 이내로 작성해주세요.
+              </p>
+            ) : (
+              <span />
+            )}
+            <p className="text-right text-sm text-text-default">
+              {formData.title.length}/{ARTICLE_TITLE_TEXT_LIMIT}
+            </p>
+          </div>
         </div>
         <div className="mt-6 md:mt-8">
           <div className={LABEL_ROW}>
@@ -88,7 +110,20 @@ export default function BoardEditorForm({
             errorMessage={contentErrorMessage}
             onChange={onContentChange}
             onBlur={onContentBlur}
+            maxLength={ARTICLE_CONTENT_TEXT_LIMIT}
           />
+          <div className="flex items-center justify-between mt-1">
+            {isContentAtLimit ? (
+              <p className="text-left text-sm font-medium text-status-danger">
+                {ARTICLE_CONTENT_TEXT_LIMIT}자 이내로 작성해주세요.
+              </p>
+            ) : (
+              <span />
+            )}
+            <p className="text-right text-sm text-text-default">
+              {formData.content.length}/{ARTICLE_CONTENT_TEXT_LIMIT}
+            </p>
+          </div>
         </div>
         <div className="mt-6 md:mt-8">
           <label htmlFor="image" className={FIELD_LABEL}>
