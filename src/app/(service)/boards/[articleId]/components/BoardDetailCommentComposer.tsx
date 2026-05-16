@@ -9,6 +9,7 @@ import { useBoardDetailCommentComposer } from '@/app/(service)/boards/[articleId
 import type { UserProfileResponse } from '@/app/(service)/boards/[articleId]/types';
 import { getBoardImageRemountKey } from '@/app/(service)/boards/utils/boardImageKeys';
 import { IcArrowUpCircle, IcArrowUpCircleActive } from '@/assets';
+import { COMMENT_TEXT_LIMIT } from '@/constants/TEXT_LIMIT';
 
 type BoardDetailCommentComposerProps = {
   articleId: number;
@@ -39,23 +40,26 @@ export default function BoardDetailCommentComposer({
     onRequireAuth,
   });
 
+  const isCommentAtLimit = draft.length >= COMMENT_TEXT_LIMIT;
   return (
-    <div className="flex items-center gap-3 mt-3 md:mt-4 md:gap-4">
-      <div className="overflow-hidden size-7 rounded-md bg-background-tertiary flex items-center justify-center md:size-8">
-        <BoardDetailCommentComposerProfileAvatar
-          key={getBoardImageRemountKey(userProfile?.image)}
-          image={userProfile?.image ?? null}
-          nickname={userProfile?.nickname ?? ''}
-          isGuest={!userProfile}
-        />
-      </div>
-      <div className="flex min-w-0 flex-1 items-center gap-2 border-y border-background-tertiary px-3 py-2 md:gap-3 md:py-3">
+    <>
+      <div className="flex flex-row items-center gap-3 border-y border-background-tertiary py-3">
+        <div className="overflow-hidden size-7 rounded-md bg-background-tertiary flex items-center justify-center md:size-8">
+          <BoardDetailCommentComposerProfileAvatar
+            key={getBoardImageRemountKey(userProfile?.image)}
+            image={userProfile?.image ?? null}
+            nickname={userProfile?.nickname ?? ''}
+            isGuest={!userProfile}
+          />
+        </div>
+
         <input
           type="text"
           readOnly={!isAuthenticated}
           value={isAuthenticated ? draft : ''}
           onChange={(event) => setDraft(event.target.value)}
           onKeyDown={isAuthenticated ? handleKeyDown : undefined}
+          maxLength={COMMENT_TEXT_LIMIT}
           placeholder={
             isAuthenticated
               ? '댓글을 달아주세요'
@@ -65,6 +69,7 @@ export default function BoardDetailCommentComposer({
           onClick={!isAuthenticated ? onRequireAuth : undefined}
           onFocus={!isAuthenticated ? onRequireAuth : undefined}
         />
+
         <button
           type="button"
           aria-label="댓글 등록"
@@ -89,6 +94,18 @@ export default function BoardDetailCommentComposer({
           )}
         </button>
       </div>
-    </div>
+      <div className="flex items-center justify-between mt-1">
+        {isCommentAtLimit ? (
+          <p className="text-left text-sm font-medium text-status-danger">
+            {COMMENT_TEXT_LIMIT}자 이내로 작성해주세요.
+          </p>
+        ) : (
+          <span />
+        )}
+        <p className="text-right text-sm text-text-default">
+          {draft.length}/{COMMENT_TEXT_LIMIT}
+        </p>
+      </div>
+    </>
   );
 }

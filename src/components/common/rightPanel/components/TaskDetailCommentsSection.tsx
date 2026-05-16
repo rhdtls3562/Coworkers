@@ -23,7 +23,7 @@ export default function TaskDetailCommentsSection({
         댓글 <span className="text-brand-primary">{commentCount}</span>
       </h3>
 
-      <div className="mt-4">
+      <div className="mt-4 flex flex-col gap-1">
         <TaskDetailCommentInput
           isSubmitting={isSubmittingNewComment}
           onSubmit={onCreateComment}
@@ -31,7 +31,7 @@ export default function TaskDetailCommentsSection({
         />
       </div>
 
-      <ul className="mt-5 divide-y divide-background-tertiary">
+      <ul className="mt-9 divide-y divide-background-tertiary">
         {comments.map((comment) => (
           <TaskDetailCommentItem
             key={comment.id}

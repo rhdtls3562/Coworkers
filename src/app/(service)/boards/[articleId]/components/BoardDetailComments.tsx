@@ -25,20 +25,19 @@ export default function BoardDetailComments({
     <div className="pb-9.75 md:pb-13.5">
       <div>
         <div className="flex items-center gap-1">
-          <p className="text-base font-bold text-text-primary md:text-lg">
-            댓글
-          </p>
-          <p className="text-base font-bold text-brand-primary md:text-lg">
-            {commentCount}
-          </p>
+          <h3 className="text-lg font-bold text-text-primary md:text-xl">
+            댓글 <span className="text-brand-primary">{commentCount}</span>
+          </h3>
         </div>
-        <BoardDetailCommentComposer
-          articleId={articleId}
-          isAuthenticated={isAuthenticated}
-          onCreateSuccess={handleCommentMutated}
-          onRequireAuth={handleRequireAuth}
-          userProfile={userProfile}
-        />
+        <div className="mt-4 flex flex-col gap-1">
+          <BoardDetailCommentComposer
+            articleId={articleId}
+            isAuthenticated={isAuthenticated}
+            onCreateSuccess={handleCommentMutated}
+            onRequireAuth={handleRequireAuth}
+            userProfile={userProfile}
+          />
+        </div>
       </div>
       <div>
         {hasVisibleComments ? (
