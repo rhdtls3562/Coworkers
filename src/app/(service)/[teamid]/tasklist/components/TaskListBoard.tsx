@@ -52,13 +52,14 @@ export default function TaskListBoard({
           <TaskListTaskDetailPanel
             key={`${task.id}-${mode}`}
             initialMode={mode}
+            onScheduleSaved={onSelectDate}
             task={task}
             teamId={teamId}
           />
         ),
       });
     },
-    [openRightPanel, teamId],
+    [onSelectDate, openRightPanel, teamId],
   );
   return (
     <section

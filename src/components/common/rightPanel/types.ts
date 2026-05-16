@@ -92,6 +92,7 @@ export type TaskDetailPanelContentProps = {
   description: string;
   frequency: string;
   initialMode?: 'view' | 'edit';
+  onScheduleSaved?: (date: Date) => void;
   onTaskCheckedChanged?: (checked: boolean) => void;
   onTaskDeleted?: () => void;
   onTaskUpdated?: (title: string, description: string) => void;
@@ -258,6 +259,7 @@ export type UseTaskDetailScheduleEditorParams = {
   currentTitle: string;
   initialFrequencyLabel: string;
   initialStartedAtLabel: string;
+  onScheduleSaved?: (date: Date) => void;
   scheduleEditConfig?: TaskDetailScheduleEditConfig;
   taskListId: string;
   teamId: string;

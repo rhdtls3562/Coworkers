@@ -4,7 +4,6 @@
 
 import type { RecurringBody } from '@/api/types';
 import type { TaskListCreateTaskRepeatValue } from '@/app/(service)/[teamid]/tasklist/types';
-import { toTaskListDateTimeString } from '@/app/(service)/[teamid]/tasklist/utils/taskListDate';
 
 const HOUR_MINUTE_LENGTH = 2;
 
@@ -38,21 +37,23 @@ function isValidTime(hours: number, minutes: number) {
   );
 }
 
+function formatDatePart(n: number) {
+  return String(n).padStart(HOUR_MINUTE_LENGTH, '0');
+}
+
 export function buildTaskListStartDate(date: Date, time: string) {
   const { hours, minutes } = parseTime(time);
-  const nextDate = new Date(date);
+
+  const year = date.getFullYear();
+  const month = formatDatePart(date.getMonth() + 1);
+  const day = formatDatePart(date.getDate());
 
   if (isValidTime(hours, minutes)) {
-    nextDate.setHours(hours, minutes, 0, 0);
-    return toTaskListDateTimeString(nextDate);
+    return `${year}-${month}-${day}T${time}:00+09:00`;
   }
 
-  const fallbackTime = `${String(nextDate.getHours()).padStart(
-    HOUR_MINUTE_LENGTH,
-    '0',
-  )}:${String(nextDate.getMinutes()).padStart(HOUR_MINUTE_LENGTH, '0')}`;
-
-  return buildTaskListStartDate(nextDate, fallbackTime);
+  const fallbackTime = `${formatDatePart(date.getHours())}:${formatDatePart(date.getMinutes())}`;
+  return `${year}-${month}-${day}T${fallbackTime}:00+09:00`;
 }
 
 type BuildTaskListRecurringBodyParams = {

@@ -8,30 +8,29 @@
 import { useState } from 'react';
 
 import { buildTaskListRecurringBody } from '@/app/(service)/[teamid]/tasklist/utils/taskListCreateTaskPayload';
+import usePendingScheduleEdit from '@/components/common/rightPanel/hooks/usePendingScheduleEdit';
 import {
   createNextTaskDetailScheduleEditConfig,
   getTaskDetailScheduleDisplayValues,
   hasTaskDetailScheduleEditCapability,
 } from '@/components/common/rightPanel/hooks/useTaskDetailScheduleEditor.utils';
-import useTaskDetailScheduleRecurringMutation from '@/components/common/rightPanel/hooks/useTaskDetailScheduleRecurringMutation';
 import type {
   TaskDetailScheduleEditConfig,
   TaskDetailScheduleFormValues,
   UseTaskDetailScheduleEditorParams,
   UseTaskDetailScheduleEditorReturn,
 } from '@/components/common/rightPanel/types';
-import { useToast } from '@/components/common/toast';
 
 export default function useTaskDetailScheduleEditor({
   currentDescription,
   currentTitle,
   initialFrequencyLabel,
   initialStartedAtLabel,
+  onScheduleSaved,
   scheduleEditConfig,
   taskListId,
   teamId,
 }: UseTaskDetailScheduleEditorParams): UseTaskDetailScheduleEditorReturn {
-  const { showToast } = useToast();
   const [isScheduleEditModalOpen, setIsScheduleEditModalOpen] = useState(false);
   const [currentScheduleEditConfig, setCurrentScheduleEditConfig] = useState<
     TaskDetailScheduleEditConfig | undefined
@@ -47,18 +46,22 @@ export default function useTaskDetailScheduleEditor({
       ? getTaskDetailScheduleDisplayValues(scheduleEditConfig).startTime
       : null,
   );
-  // 모달에서 확인했지만 아직 서버에 저장되지 않은 일정 폼 값
-  const [pendingFormValues, setPendingFormValues] =
-    useState<TaskDetailScheduleFormValues | null>(null);
 
-  const updateRecurringMutation = useTaskDetailScheduleRecurringMutation({
+  const {
+    commitScheduleEdit,
+    hasPendingScheduleChanges,
+    isScheduleSubmitting,
+    setPendingFormValues,
+  } = usePendingScheduleEdit({
+    currentScheduleEditConfig,
+    onScheduleSaved,
     taskListId,
     teamId,
   });
+
   const hasScheduleEditCapability = hasTaskDetailScheduleEditCapability(
     currentScheduleEditConfig,
   );
-  const hasPendingScheduleChanges = pendingFormValues !== null;
 
   const handleOpenScheduleEditModal = () => {
     if (!hasScheduleEditCapability) {
@@ -112,47 +115,6 @@ export default function useTaskDetailScheduleEditor({
     return true;
   };
 
-  /**
-   * 패널의 수정하기 클릭 시 호출됩니다.
-   * 보류 중인 일정 변경을 서버에 실제로 저장합니다.
-   */
-  const commitScheduleEdit = async (
-    titleToSave: string,
-    descriptionToSave: string,
-  ): Promise<boolean> => {
-    if (!pendingFormValues || !currentScheduleEditConfig?.recurringId) {
-      return true;
-    }
-
-    const recurringBody = buildTaskListRecurringBody({
-      description: descriptionToSave,
-      monthDay: pendingFormValues.monthDay,
-      repeat: pendingFormValues.repeat,
-      selectedDate: pendingFormValues.selectedDate,
-      startTime: pendingFormValues.startTime,
-      title: titleToSave,
-      weekDays: pendingFormValues.weekDays,
-    });
-
-    try {
-      await updateRecurringMutation.mutateAsync({
-        body: recurringBody,
-        recurringId: currentScheduleEditConfig.recurringId,
-        taskListId,
-        teamId,
-      });
-
-      setPendingFormValues(null);
-      return true;
-    } catch (error) {
-      showToast(
-        error instanceof Error ? error.message : '일정 수정에 실패했습니다.',
-        'error',
-      );
-      return false;
-    }
-  };
-
   return {
     commitScheduleEdit,
     displayFrequency,
@@ -164,7 +126,7 @@ export default function useTaskDetailScheduleEditor({
     hasPendingScheduleChanges,
     hasScheduleEditCapability,
     isScheduleEditModalOpen,
-    isScheduleSubmitting: updateRecurringMutation.isPending,
+    isScheduleSubmitting,
     scheduleEditConfig: currentScheduleEditConfig,
   };
 }

@@ -5,6 +5,21 @@
 import type { GroupDetail } from '@/types/group';
 import type { TaskListDetail } from '@/types/task';
 
+function getKoreanDateTimeString(date = new Date()) {
+  const koreanDate = new Intl.DateTimeFormat('sv-SE', {
+    timeZone: 'Asia/Seoul',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hourCycle: 'h23',
+  }).format(date);
+
+  return `${koreanDate.replace(' ', 'T')}+09:00`;
+}
+
 function applyDoneAt<T extends { doneAt: string | null; id: number }>(
   tasks: readonly T[],
   taskId: string,
@@ -14,7 +29,7 @@ function applyDoneAt<T extends { doneAt: string | null; id: number }>(
     String(task.id) === taskId
       ? {
           ...task,
-          doneAt: checked ? new Date().toISOString() : null,
+          doneAt: checked ? getKoreanDateTimeString() : null,
         }
       : task,
   );

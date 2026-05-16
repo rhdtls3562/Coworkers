@@ -8,6 +8,7 @@ const API_TEAM_ID = process.env.NEXT_PUBLIC_TEAM_ID ?? '';
 // TaskListTaskDetailPanel
 export default function TaskListTaskDetailPanel({
   initialMode,
+  onScheduleSaved,
   task,
   teamId,
 }: TaskListTaskDetailPanelProps) {
@@ -22,6 +23,7 @@ export default function TaskListTaskDetailPanel({
       description={task.description}
       frequency={task.repeatLabel}
       initialMode={initialMode}
+      onScheduleSaved={onScheduleSaved}
       scheduleEditConfig={{
         frequencyType: task.frequency,
         recurringId: task.recurringId,

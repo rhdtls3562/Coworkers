@@ -167,6 +167,7 @@ export type TaskListSidebarPlusIconProps = {
 
 export type TaskListTaskDetailPanelProps = {
   initialMode: TaskListTaskDetailOpenMode;
+  onScheduleSaved?: (date: Date) => void;
   task: TaskListBoardTask;
   teamId: string;
 };
