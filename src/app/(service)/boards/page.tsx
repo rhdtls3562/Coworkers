@@ -49,7 +49,7 @@ export default async function BoardsPage({
         <BoardCreateForm />
       ) : (
         <>
-          <div className="bg-white min-h-full w-full">
+          <div className="bg-background-primary min-h-full w-full">
             <BoardHeader listSort={listSort} />
 
             {!isSearchModeValue && <BoardBestList />}

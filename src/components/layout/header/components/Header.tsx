@@ -12,6 +12,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 import { IcGnbMenu, IcUserLarge, ImgLogoSymbolLarge } from '@/assets';
+import ThemeToggle from '@/components/common/ThemeToggle';
 import ProfileMenuDropdown from '@/components/layout/components/ProfileMenuDropdown';
 import MobileSidebarDrawer from '@/components/layout/header/components/MobileSidebarDrawer';
 import useMobileSidebar from '@/components/layout/header/hooks/useMobileSidebar';
@@ -81,9 +82,11 @@ function MobileHeaderBar({
         </Link>
       </div>
 
+      <ThemeToggle isExpanded={false} className="ml-auto size-7 min-h-0" />
+
       {canShowAuthUi ? (
         <ProfileMenuDropdown
-          className="ml-auto"
+          className="ml-2"
           trigger={
             <span
               aria-label="프로필 메뉴 열기"
@@ -111,7 +114,7 @@ function MobileHeaderBar({
       ) : pathname !== ROUTES.LOGIN ? (
         <Link
           href={ROUTES.LOGIN}
-          className="ml-auto text-sm font-medium text-text-primary"
+          className="ml-2 text-sm font-medium text-text-primary"
         >
           로그인
         </Link>

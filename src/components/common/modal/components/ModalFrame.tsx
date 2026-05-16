@@ -106,6 +106,7 @@ export default function ModalFrame({
         'fixed inset-0 z-999 bg-black/60 overflow-y-auto',
         overlayClassName,
       )}
+      data-allow-unsaved="true"
       onClick={onClose}
     >
       <div
@@ -116,7 +117,7 @@ export default function ModalFrame({
       >
         <div
           className={cn(
-            'relative w-full bg-white text-center',
+            'relative w-full bg-background-primary text-center',
             'rounded-tl-xl rounded-tr-xl py-10 px-5 pb-8 min-w-80 md:rounded-3xl md:p-6',
             'md:max-w-sm',
           )}
@@ -161,7 +162,7 @@ export default function ModalFrame({
             </p>
           )}
           {subDescription && (
-            <p className="text-sm text-gray-400">{subDescription}</p>
+            <p className="text-sm text-text-default">{subDescription}</p>
           )}
           {children && (
             <div className={cn('mt-4 w-full', bodyClassName)}>{children}</div>

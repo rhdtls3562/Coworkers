@@ -44,6 +44,7 @@ export default function TaskDetailPanelMeta({
             <dd className="min-w-0">
               <button
                 type="button"
+                data-allow-unsaved="true"
                 className="inline-flex min-w-0 max-w-full items-center border-b border-background-tertiary pb-1 text-left"
                 onClick={onEditSchedule}
               >
@@ -66,6 +67,7 @@ export default function TaskDetailPanelMeta({
             <dd className="min-w-0">
               <button
                 type="button"
+                data-allow-unsaved="true"
                 className="inline-flex min-w-0 max-w-full items-center border-b border-background-tertiary pb-1 text-left"
                 onClick={onEditSchedule}
               >
@@ -88,6 +90,7 @@ export default function TaskDetailPanelMeta({
             <dd className="min-w-0">
               <button
                 type="button"
+                data-allow-unsaved="true"
                 className="inline-flex min-w-0 max-w-full items-center border-b border-background-tertiary pb-1 text-left"
                 onClick={onEditSchedule}
               >

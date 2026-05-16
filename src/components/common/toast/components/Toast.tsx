@@ -37,7 +37,7 @@ export default function Toast({ toast, onRemove }: ToastProps) {
         <span className="hidden md:block">
           <IcAlertCircleWhiteLarge width={24} height={24} aria-hidden="true" />
         </span>
-        <p className="truncate text-sm font-medium text-text-inverse md:text-base">
+        <p className="truncate text-sm font-medium text-white md:text-base">
           {toast.message}
         </p>
       </div>
@@ -66,7 +66,7 @@ export default function Toast({ toast, onRemove }: ToastProps) {
             <IcCloseMedium
               width={20}
               height={20}
-              className="size-5 [&_path]:stroke-text-inverse"
+              className="size-5 [&_path]:stroke-white"
               aria-hidden="true"
             />
           </button>
