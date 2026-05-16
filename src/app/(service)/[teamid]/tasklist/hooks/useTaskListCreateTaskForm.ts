@@ -14,11 +14,26 @@ import {
 } from '@/app/(service)/[teamid]/tasklist/utils/taskListDate';
 import useClickOutside from '@/hooks/useClickOutside';
 
+/**
+ * 초기 날짜가 오늘 이전이면 오늘(한국 날짜 기준)로 대체합니다.
+ * 페이지를 자정 전에 열어둔 상태에서 자정이 지나도 selectedDate가 갱신되지 않아
+ * 할일 생성 시 전날 날짜가 들어가는 버그를 방지합니다.
+ */
+function clampToToday(date: Date): Date {
+  const today = getCurrentCalendarDate();
+  const normalizedDate = new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate(),
+  );
+  return normalizedDate >= today ? new Date(date) : today;
+}
+
 export function useTaskListCreateTaskForm(initialSelectedDate: Date) {
   const formId = useId();
   const [title, setTitle] = useState('');
-  const [startDate, setStartDate] = useState<Date | null>(
-    () => new Date(initialSelectedDate),
+  const [startDate, setStartDate] = useState<Date | null>(() =>
+    clampToToday(initialSelectedDate),
   );
   const [startTime, setStartTime] = useState(() => getCurrentTimeString());
   const [repeat, setRepeat] = useState<TaskListCreateTaskRepeatValue>('once');
@@ -26,7 +41,7 @@ export function useTaskListCreateTaskForm(initialSelectedDate: Date) {
     ...DEFAULT_TASK_LIST_WEEKLY_REPEAT_DAYS,
   ]);
   const [monthDayInput, setMonthDayInput] = useState(() =>
-    String(initialSelectedDate.getDate()),
+    String(clampToToday(initialSelectedDate).getDate()),
   );
   const [memo, setMemo] = useState('');
 

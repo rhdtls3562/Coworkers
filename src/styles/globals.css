@@ -163,3 +163,32 @@ a[x-apple-data-detectors] {
   text-decoration: none !important;
   pointer-events: none;
 }
+
+/* 다크 모드: html 요소에 .dark 클래스가 붙으면 색상 변수를 재정의한다. */
+.dark {
+  --color-brand-secondary: #1e3a6e;
+
+  --color-background-primary: #0f172a;
+  --color-background-secondary: #1e293b;
+  --color-background-tertiary: #334155;
+  --color-background-inverse: #1e293b;
+
+  --color-interaction-inactive: #64748b;
+  --color-interaction-hover: #74a1fb;
+
+  --color-border-primary: rgba(248, 250, 252, 0.08);
+  --color-border-secondary: #475569;
+
+  --color-text-primary: #f1f5f9;
+  --color-text-secondary: #cbd5e1;
+  --color-text-tertiary: #e2e8f0;
+  --color-text-default: #94a3b8;
+  --color-text-inverse: #0f172a;
+  --color-text-disabled: #475569;
+
+  --color-icon-primary: #94a3b8;
+  --color-icon-inverse: #1e293b;
+  --color-icon-brand: #74a1fb;
+
+  --shadow-floating: 0 5px 5px rgba(0, 0, 0, 0.5);
+}

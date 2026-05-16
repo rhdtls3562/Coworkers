@@ -2,6 +2,8 @@
 
 /**
  * 오른쪽 패널의 시작 날짜/반복 설정 수정 모달 상태와 mutation 흐름을 관리합니다.
+ * 모달의 수정하기는 로컬 draft 상태만 업데이트하며,
+ * 실제 API 호출은 commitScheduleEdit를 통해 패널 수정하기 시점에 이루어집니다.
  */
 import { useState } from 'react';
 
@@ -45,6 +47,10 @@ export default function useTaskDetailScheduleEditor({
       ? getTaskDetailScheduleDisplayValues(scheduleEditConfig).startTime
       : null,
   );
+  // 모달에서 확인했지만 아직 서버에 저장되지 않은 일정 폼 값
+  const [pendingFormValues, setPendingFormValues] =
+    useState<TaskDetailScheduleFormValues | null>(null);
+
   const updateRecurringMutation = useTaskDetailScheduleRecurringMutation({
     taskListId,
     teamId,
@@ -52,6 +58,7 @@ export default function useTaskDetailScheduleEditor({
   const hasScheduleEditCapability = hasTaskDetailScheduleEditCapability(
     currentScheduleEditConfig,
   );
+  const hasPendingScheduleChanges = pendingFormValues !== null;
 
   const handleOpenScheduleEditModal = () => {
     if (!hasScheduleEditCapability) {
@@ -65,9 +72,14 @@ export default function useTaskDetailScheduleEditor({
     setIsScheduleEditModalOpen(false);
   };
 
+  /**
+   * 모달의 수정하기 클릭 시 호출됩니다.
+   * API 호출 없이 로컬 표시 상태만 업데이트하고 폼 값을 보류 상태로 저장합니다.
+   * 실제 저장은 패널의 수정하기 버튼 클릭 시 commitScheduleEdit에서 처리합니다.
+   */
   const handleSubmitScheduleEdit = async (
     values: TaskDetailScheduleFormValues,
-  ) => {
+  ): Promise<boolean> => {
     if (!currentScheduleEditConfig?.recurringId) {
       return false;
     }
@@ -82,6 +94,46 @@ export default function useTaskDetailScheduleEditor({
       weekDays: values.weekDays,
     });
 
+    const nextScheduleEditConfig = createNextTaskDetailScheduleEditConfig(
+      currentScheduleEditConfig,
+      values,
+      recurringBody.startDate,
+    );
+    const nextDisplayValues = getTaskDetailScheduleDisplayValues(
+      nextScheduleEditConfig,
+    );
+
+    setCurrentScheduleEditConfig(nextScheduleEditConfig);
+    setDisplayStartedAt(nextDisplayValues.startedAt);
+    setDisplayFrequency(nextDisplayValues.frequency);
+    setDisplayStartTime(nextDisplayValues.startTime);
+    setPendingFormValues(values);
+    setIsScheduleEditModalOpen(false);
+    return true;
+  };
+
+  /**
+   * 패널의 수정하기 클릭 시 호출됩니다.
+   * 보류 중인 일정 변경을 서버에 실제로 저장합니다.
+   */
+  const commitScheduleEdit = async (
+    titleToSave: string,
+    descriptionToSave: string,
+  ): Promise<boolean> => {
+    if (!pendingFormValues || !currentScheduleEditConfig?.recurringId) {
+      return true;
+    }
+
+    const recurringBody = buildTaskListRecurringBody({
+      description: descriptionToSave,
+      monthDay: pendingFormValues.monthDay,
+      repeat: pendingFormValues.repeat,
+      selectedDate: pendingFormValues.selectedDate,
+      startTime: pendingFormValues.startTime,
+      title: titleToSave,
+      weekDays: pendingFormValues.weekDays,
+    });
+
     try {
       await updateRecurringMutation.mutateAsync({
         body: recurringBody,
@@ -90,25 +142,11 @@ export default function useTaskDetailScheduleEditor({
         teamId,
       });
 
-      const nextScheduleEditConfig = createNextTaskDetailScheduleEditConfig(
-        currentScheduleEditConfig,
-        values,
-        recurringBody.startDate,
-      );
-      const nextDisplayValues = getTaskDetailScheduleDisplayValues(
-        nextScheduleEditConfig,
-      );
-
-      setCurrentScheduleEditConfig(nextScheduleEditConfig);
-      setDisplayStartedAt(nextDisplayValues.startedAt);
-      setDisplayFrequency(nextDisplayValues.frequency);
-      setDisplayStartTime(nextDisplayValues.startTime);
-      setIsScheduleEditModalOpen(false);
-      showToast('할 일이 수정되었습니다.', 'success');
+      setPendingFormValues(null);
       return true;
     } catch (error) {
       showToast(
-        error instanceof Error ? error.message : '할 일 수정에 실패했습니다.',
+        error instanceof Error ? error.message : '일정 수정에 실패했습니다.',
         'error',
       );
       return false;
@@ -116,12 +154,14 @@ export default function useTaskDetailScheduleEditor({
   };
 
   return {
+    commitScheduleEdit,
     displayFrequency,
     displayStartedAt,
     displayStartTime,
     handleCloseScheduleEditModal,
     handleOpenScheduleEditModal,
     handleSubmitScheduleEdit,
+    hasPendingScheduleChanges,
     hasScheduleEditCapability,
     isScheduleEditModalOpen,
     isScheduleSubmitting: updateRecurringMutation.isPending,
