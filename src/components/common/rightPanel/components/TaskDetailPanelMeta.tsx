@@ -55,14 +55,25 @@ export default function TaskDetailPanelMeta({
           )}
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <dt className="flex flex-wrap items-center gap-2">
-            <IcClockSmall width={16} height={16} aria-hidden="true" />
-            {startedTimeAtLabelText}
-          </dt>
-          {startTime && (
-            <dd className="flex items-center gap-1.5 text-text-secondary">
-              {startTime}
+          <IcClockSmall
+            width={16}
+            height={16}
+            className="size-4 shrink-0"
+            aria-hidden="true"
+          />
+          <dt>{startedTimeAtLabelText}</dt>
+          {isEditing && isScheduleEditable ? (
+            <dd className="min-w-0">
+              <button
+                type="button"
+                className="inline-flex min-w-0 max-w-full items-center border-b border-background-tertiary pb-1 text-left"
+                onClick={onEditSchedule}
+              >
+                <span className={scheduleValueClassName}>{startTime}</span>
+              </button>
             </dd>
+          ) : (
+            startTime && <dd className={scheduleValueClassName}>{startTime}</dd>
           )}
         </div>
         <div className="flex flex-wrap items-center gap-2">

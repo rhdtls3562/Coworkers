@@ -5,11 +5,13 @@
 'use client';
 
 import { IcMoreVerticalSmall } from '@/assets';
+import CommentExpandableText from '@/components/common/CommentExpandableText';
 import { ListDropdown } from '@/components/common/dropdown';
 import RightPanelAvatar from '@/components/common/rightPanel/components/RightPanelAvatar';
 import TaskDetailCommentActions from '@/components/common/rightPanel/components/TaskDetailCommentActions';
 import type { TaskDetailCommentItemProps } from '@/components/common/rightPanel/types';
 import { formatCommentTime } from '@/components/common/rightPanel/utils/rightPanelCommentParsers';
+import { COMMENT_TEXT_LIMIT } from '@/constants/TEXT_LIMIT';
 
 export default function TaskDetailCommentItem({
   comment,
@@ -22,6 +24,8 @@ export default function TaskDetailCommentItem({
   onStartEdit,
   onSubmitEdit,
 }: TaskDetailCommentItemProps) {
+  const isCommentAtLimit = draftContent.length >= COMMENT_TEXT_LIMIT;
+
   if (isEditing) {
     return (
       <li className="bg-background-secondary py-4 first:pt-4 last:pb-4">
@@ -41,11 +45,24 @@ export default function TaskDetailCommentItem({
               <textarea
                 value={draftContent}
                 placeholder="내용을 입력하세요."
+                maxLength={COMMENT_TEXT_LIMIT}
                 className="min-h-18 w-full resize-none rounded-xl border border-background-tertiary bg-background-primary px-4 py-3 text-sm font-medium text-text-primary outline-none placeholder:text-text-default focus:border-brand-primary md:text-base"
                 onChange={(event) => {
                   onChangeDraftContent(event.target.value);
                 }}
               />
+              <div className="flex items-center justify-between">
+                {isCommentAtLimit ? (
+                  <p className="text-left text-sm font-medium text-status-danger">
+                    {COMMENT_TEXT_LIMIT}자 이내로 작성해주세요.
+                  </p>
+                ) : (
+                  <span />
+                )}
+                <p className="text-right text-sm text-text-default">
+                  {draftContent.length}/{COMMENT_TEXT_LIMIT}
+                </p>
+              </div>
 
               <TaskDetailCommentActions
                 isPrimaryDisabled={
@@ -77,9 +94,10 @@ export default function TaskDetailCommentItem({
               <p className="text-sm font-bold text-text-primary md:text-base">
                 {comment.author}
               </p>
-              <p className="mt-1 whitespace-pre-line text-sm font-medium leading-5 text-text-secondary md:text-base">
-                {comment.content}
-              </p>
+              <CommentExpandableText
+                content={comment.content}
+                textClassName="font-medium text-text-secondary md:text-base"
+              />
             </div>
 
             {comment.isMine && (

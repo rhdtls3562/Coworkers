@@ -1,10 +1,10 @@
 'use client';
 
-import CommentExpandableText from '@/app/(service)/boards/[articleId]/components/CommentExpandableText';
 import CommentWriterAvatar from '@/app/(service)/boards/[articleId]/components/CommentWriterAvatar';
 import type { Comment } from '@/app/(service)/boards/[articleId]/types';
 import { formatRelativeOrYmdHm } from '@/app/(service)/boards/utils/boardDisplayUtils';
 import { IcMoreVerticalLarge } from '@/assets';
+import CommentExpandableText from '@/components/common/CommentExpandableText';
 import ListDropdown from '@/components/common/dropdown/components/ListDropdown';
 
 type CommentMenuItem = {

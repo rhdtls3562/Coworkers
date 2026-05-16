@@ -1,5 +1,6 @@
 import CommentWriterAvatar from '@/app/(service)/boards/[articleId]/components/CommentWriterAvatar';
 import type { Comment } from '@/app/(service)/boards/[articleId]/types';
+import { COMMENT_TEXT_LIMIT } from '@/constants/TEXT_LIMIT';
 
 type CommentEditingContentProps = {
   comment: Comment;
@@ -16,6 +17,8 @@ export default function CommentEditingContent({
   onCancelEdit,
   onEdit,
 }: CommentEditingContentProps) {
+  const isCommentAtLimit = editedContent.length >= COMMENT_TEXT_LIMIT;
+
   return (
     <li className="flex w-full pb-3 md:pb-5">
       <div className="flex w-full gap-4 bg-background-secondary px-2.5 py-2.5 lg:px-3.75 lg:py-3.75">
@@ -31,8 +34,21 @@ export default function CommentEditingContent({
             className="mt-1 min-h-18 w-full resize-none overflow-hidden rounded-xl border border-background-tertiary bg-background-primary px-4 py-3 text-sm font-medium leading-5 text-text-secondary outline-none"
             placeholder="내용을 입력하세요."
             value={editedContent}
+            maxLength={COMMENT_TEXT_LIMIT}
             onChange={(event) => onChangeEditedContent(event.target.value)}
           />
+          <div className="flex items-center justify-between mt-1">
+            {isCommentAtLimit ? (
+              <p className="text-left text-sm font-medium text-status-danger">
+                {COMMENT_TEXT_LIMIT}자 이내로 작성해주세요.
+              </p>
+            ) : (
+              <span />
+            )}
+            <p className="text-right text-sm text-text-default">
+              {editedContent.length}/{COMMENT_TEXT_LIMIT}
+            </p>
+          </div>
           <div className="mt-3 flex shrink-0 items-center justify-end gap-3 text-sm font-medium text-text-default">
             <button
               data-allow-unsaved="true"
