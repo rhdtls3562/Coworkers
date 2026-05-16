@@ -2,7 +2,7 @@
  * 팀 페이지의 할 일 목록 카드와 관련 모달을 렌더링합니다.
  */
 
-import { useRef } from 'react';
+import { useCallback, useRef } from 'react';
 
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
@@ -39,24 +39,27 @@ export default function TaskItem({
 
   const completedCount = tasks.filter((task) => task.doneAt !== null).length;
 
-  const handleToggle = (taskId: number, currentDoneAt: string | null) => {
-    if (pendingTaskIdsRef.current.has(taskId)) return;
+  const handleToggle = useCallback(
+    (taskId: number, currentDoneAt: string | null) => {
+      if (pendingTaskIdsRef.current.has(taskId)) return;
 
-    pendingTaskIdsRef.current.add(taskId);
-    updateTask(
-      {
-        teamId,
-        taskListId,
-        taskId,
-        body: { done: currentDoneAt === null },
-      },
-      {
-        onSettled: () => {
-          pendingTaskIdsRef.current.delete(taskId);
+      pendingTaskIdsRef.current.add(taskId);
+      updateTask(
+        {
+          teamId,
+          taskListId,
+          taskId,
+          body: { done: currentDoneAt === null },
         },
-      },
-    );
-  };
+        {
+          onSettled: () => {
+            pendingTaskIdsRef.current.delete(taskId);
+          },
+        },
+      );
+    },
+    [teamId, taskListId, updateTask],
+  );
 
   const handleDelete = () => {
     deleteTaskList({ groupId: teamId, taskListId, teamId });
