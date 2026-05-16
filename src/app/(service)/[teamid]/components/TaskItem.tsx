@@ -2,6 +2,8 @@
  * 팀 페이지의 할 일 목록 카드와 관련 모달을 렌더링합니다.
  */
 
+import { useRef } from 'react';
+
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 
@@ -31,15 +33,29 @@ export default function TaskItem({
   const { mutate: updateTask } = useUpdateTaskMutation();
   const { mutate: deleteTaskList } = useDeleteTaskListMutation();
 
+  // 진행 중인 토글 taskId를 추적해 중복 요청을 방지한다.
+  // useState 대신 useRef를 써서 Set 변경이 불필요한 리렌더를 유발하지 않도록 한다.
+  const pendingTaskIdsRef = useRef<Set<number>>(new Set());
+
   const completedCount = tasks.filter((task) => task.doneAt !== null).length;
 
   const handleToggle = (taskId: number, currentDoneAt: string | null) => {
-    updateTask({
-      teamId,
-      taskListId,
-      taskId,
-      body: { done: currentDoneAt === null },
-    });
+    if (pendingTaskIdsRef.current.has(taskId)) return;
+
+    pendingTaskIdsRef.current.add(taskId);
+    updateTask(
+      {
+        teamId,
+        taskListId,
+        taskId,
+        body: { done: currentDoneAt === null },
+      },
+      {
+        onSettled: () => {
+          pendingTaskIdsRef.current.delete(taskId);
+        },
+      },
+    );
   };
 
   const handleDelete = () => {

@@ -2,7 +2,7 @@
  * 리스트 페이지 보드의 조회·체크 토글·삭제 처리 훅입니다.
  */
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { useQuery } from '@tanstack/react-query';
 
@@ -93,9 +93,15 @@ export function useTaskListBoardQuery({
 
   const isTaskListEmpty = sortedTasks.length === 0;
 
+  // 진행 중인 토글 taskId를 추적해 동일 항목의 중복 요청을 방지한다.
+  const pendingToggleIdsRef = useRef<Set<string>>(new Set());
+
   const handleToggleChecked = useCallback(
     async (id: string, checked: boolean) => {
       if (!groupId) return;
+      if (pendingToggleIdsRef.current.has(id)) return;
+
+      pendingToggleIdsRef.current.add(id);
       try {
         await updateTaskMutation.mutateAsync({
           body: { done: checked },
@@ -105,6 +111,8 @@ export function useTaskListBoardQuery({
         });
       } catch {
         // TODO: 에러 처리
+      } finally {
+        pendingToggleIdsRef.current.delete(id);
       }
     },
     [groupId, taskListId, updateTaskMutation],
