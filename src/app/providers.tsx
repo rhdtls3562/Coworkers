@@ -71,7 +71,7 @@ function MidnightSignOut() {
 
 export default function Providers({ children }: { children: ReactNode }) {
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+    <ThemeProvider attribute="class" defaultTheme="light">
       <QueryClientProvider client={queryClient}>
         <ToastProvider>
           <MidnightSignOut />
