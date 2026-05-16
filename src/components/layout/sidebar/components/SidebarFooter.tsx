@@ -11,7 +11,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 import { IcUserLarge } from '@/assets';
-import ThemeToggle from '@/components/common/ThemeToggle';
 import ProfileMenuDropdown from '@/components/layout/components/ProfileMenuDropdown';
 import useLayoutAuthState from '@/components/layout/hooks/useLayoutAuthState';
 import useSidebar from '@/components/layout/sidebar/hooks/useSidebar';
@@ -58,7 +57,6 @@ export default function SidebarFooter({ isExpanded }: SidebarFooterProps) {
         isExpanded ? 'mx-4' : 'mx-3',
       )}
     >
-      <ThemeToggle isExpanded={isExpanded} />
       {canShowAuthUi ? (
         <ProfileMenuDropdown
           className="w-full"

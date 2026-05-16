@@ -27,12 +27,15 @@ export default function CommentReadonlyContent({
         image={comment.writer.image}
         nickname={comment.writer.nickname}
       />
-      <div className="flex w-full justify-between gap-2">
+      <div className="flex min-w-0 w-full justify-between gap-2">
         <div className="flex min-w-0 flex-col gap-1">
           <p className="text-sm font-bold text-text-primary">
             {comment.writer.nickname}
           </p>
-          <CommentExpandableText content={comment.content} />
+          <CommentExpandableText
+            content={comment.content}
+            textClassName="min-w-0 wrap-anywhere font-normal text-text-primary"
+          />
           <p
             className="text-sm font-medium text-interaction-inactive"
             suppressHydrationWarning

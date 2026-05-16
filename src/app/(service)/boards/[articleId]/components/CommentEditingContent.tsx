@@ -20,18 +20,18 @@ export default function CommentEditingContent({
   const isCommentAtLimit = editedContent.length >= COMMENT_TEXT_LIMIT;
 
   return (
-    <li className="flex w-full pb-3 md:pb-5">
-      <div className="flex w-full gap-4 bg-background-secondary px-2.5 py-2.5 lg:px-3.75 lg:py-3.75">
+    <li className="flex min-w-0 w-full pb-3 md:pb-5">
+      <div className="flex min-w-0 w-full gap-4 bg-background-secondary px-2.5 py-2.5 lg:px-3.75 lg:py-3.75">
         <CommentWriterAvatar
           image={comment.writer.image}
           nickname={comment.writer.nickname}
         />
-        <div className="w-full">
+        <div className="min-w-0 w-full">
           <p className="text-sm font-bold text-text-primary">
             {comment.writer.nickname}
           </p>
           <textarea
-            className="mt-1 min-h-18 w-full resize-none overflow-hidden rounded-xl border border-background-tertiary bg-background-primary px-4 py-3 text-sm font-medium leading-5 text-text-secondary outline-none"
+            className="mt-1 min-h-18 min-w-0 w-full resize-none overflow-hidden wrap-anywhere rounded-xl border border-background-tertiary bg-background-primary px-4 py-3 text-sm font-medium leading-5 text-text-secondary outline-none"
             placeholder="내용을 입력하세요."
             value={editedContent}
             maxLength={COMMENT_TEXT_LIMIT}

@@ -264,7 +264,6 @@ export type UseTaskDetailScheduleEditorParams = {
 };
 
 export type UseTaskDetailScheduleEditorReturn = {
-  commitScheduleEdit: (title: string, description: string) => Promise<boolean>;
   displayFrequency: string;
   displayStartedAt: string;
   displayStartTime: string | null;
@@ -273,7 +272,6 @@ export type UseTaskDetailScheduleEditorReturn = {
   handleSubmitScheduleEdit: (
     values: TaskDetailScheduleFormValues,
   ) => Promise<boolean>;
-  hasPendingScheduleChanges: boolean;
   hasScheduleEditCapability: boolean;
   isScheduleEditModalOpen: boolean;
   isScheduleSubmitting: boolean;

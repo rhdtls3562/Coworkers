@@ -3,8 +3,8 @@ import BoardPostImageWithFallback from '@/app/(service)/boards/components/BoardP
 
 export default function BoardDetailContent({ boardDetail }: BoardDetailProps) {
   return (
-    <div className="min-h-50 py-4 md:py-7 lg:pb-10">
-      <p className="text-sm font-regular leading-5.5 text-text-primary md:text-base md:leading-6">
+    <div className="min-h-50 min-w-0 py-4 md:py-7 lg:pb-10">
+      <p className="min-w-0 wrap-anywhere whitespace-pre-wrap text-sm font-regular leading-5.5 text-text-primary md:text-base md:leading-6">
         {boardDetail.content}
       </p>
       {boardDetail.image && (

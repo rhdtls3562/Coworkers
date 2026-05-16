@@ -86,14 +86,12 @@ export default function TaskDetailPanelContent({
     taskListId,
   });
   const {
-    commitScheduleEdit,
     displayFrequency,
     displayStartedAt,
     displayStartTime,
     handleCloseScheduleEditModal,
     handleOpenScheduleEditModal,
     handleSubmitScheduleEdit,
-    hasPendingScheduleChanges,
     hasScheduleEditCapability,
     isScheduleEditModalOpen,
     isScheduleSubmitting,
@@ -116,36 +114,6 @@ export default function TaskDetailPanelContent({
   useLayoutEffect(() => {
     scrollContainerRef.current?.scrollTo({ top: 0 });
   }, [initialMode, isTaskEditing, taskId, taskListId]);
-
-  // 제목/설명 변경 또는 일정 변경 중 하나라도 있으면 수정하기 버튼을 활성화한다.
-  const combinedHasTaskChanges = hasTaskChanges || hasPendingScheduleChanges;
-  // 두 mutation 중 하나라도 진행 중이면 버튼을 비활성화한다.
-  const combinedIsSubmitting = isTaskActionSubmitting || isScheduleSubmitting;
-
-  /**
-   * 패널의 수정하기 버튼 클릭 시 제목/설명 저장과 일정 저장을 순서대로 실행합니다.
-   * 제목/설명 저장이 실패하면 일정 저장은 실행하지 않습니다.
-   */
-  const handleSubmitAll = async (): Promise<boolean> => {
-    // draft 값을 미리 캡처한다. handleSubmitTaskEdit 이후 상태가 초기화될 수 있다.
-    const titleToSave = draftTitle;
-    const descriptionToSave = draftDescription;
-
-    // 1. 일정이 변경되었다면 서버에 일정 수정을 먼저 요청합니다.
-    if (hasPendingScheduleChanges) {
-      const ok = await commitScheduleEdit(titleToSave, descriptionToSave);
-      if (!ok) return false;
-    }
-
-    // 2. 제목/설명이 변경되었거나, '일정만 변경된 경우'에도
-    // 패널의 수정 모드를 정상 종료(뷰 전환)하고 동기화하기 위해 handleSubmitTaskEdit를 실행합니다.
-    if (hasTaskChanges || hasPendingScheduleChanges) {
-      const ok = await handleSubmitTaskEdit();
-      if (!ok) return false;
-    }
-
-    return true;
-  };
 
   const handleCloseDeleteModal = () => {
     setIsDeleteModalOpen(false);
@@ -181,10 +149,10 @@ export default function TaskDetailPanelContent({
         draftTitle={draftTitle}
         editingCommentId={editingCommentId}
         hasScheduleEditCapability={hasScheduleEditCapability}
-        hasTaskChanges={combinedHasTaskChanges}
+        hasTaskChanges={hasTaskChanges}
         isCommentSubmitting={isCommentSubmitting}
         isSubmittingNewComment={isSubmittingNewComment}
-        isSubmittingTaskAction={combinedIsSubmitting}
+        isSubmittingTaskAction={isTaskActionSubmitting}
         isTaskEditing={isTaskEditing}
         onCancelCommentEdit={handleCancelCommentEdit}
         onChangeDraftCommentContent={setDraftCommentContent}
@@ -197,7 +165,7 @@ export default function TaskDetailPanelContent({
         onStartCommentEdit={handleStartCommentEdit}
         onStartEdit={handleStartTaskEdit}
         onSubmitCommentEdit={handleSubmitCommentEdit}
-        onSubmitEdit={handleSubmitAll}
+        onSubmitEdit={handleSubmitTaskEdit}
         onToggleCompletion={handleToggleCompletion}
         scrollContainerRef={scrollContainerRef}
         startedAt={displayStartedAt}

@@ -54,6 +54,7 @@ export default function BoardDetailHeader({
         ) : null}
         {isDeleteModalOpen && (
           <Modal
+            hasIcon={true}
             onClose={handleCloseDeleteModal}
             title="게시글을 삭제하시겠습니까?"
             description="게시글 정보가 삭제됩니다."

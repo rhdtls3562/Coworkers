@@ -42,17 +42,16 @@ export default function BoardDetailCommentComposer({
 
   const isCommentAtLimit = draft.length >= COMMENT_TEXT_LIMIT;
   return (
-    <>
-      <div className="flex flex-row items-center gap-3 border-y border-background-tertiary py-3">
-        <div className="overflow-hidden size-7 rounded-md bg-background-tertiary flex items-center justify-center md:size-8">
-          <BoardDetailCommentComposerProfileAvatar
-            key={getBoardImageRemountKey(userProfile?.image)}
-            image={userProfile?.image ?? null}
-            nickname={userProfile?.nickname ?? ''}
-            isGuest={!userProfile}
-          />
-        </div>
-
+    <div className="flex min-w-0 items-center gap-3 mt-3 md:mt-4 md:gap-4">
+      <div className="overflow-hidden size-7 rounded-md bg-background-tertiary flex items-center justify-center md:size-8">
+        <BoardDetailCommentComposerProfileAvatar
+          key={getBoardImageRemountKey(userProfile?.image)}
+          image={userProfile?.image ?? null}
+          nickname={userProfile?.nickname ?? ''}
+          isGuest={!userProfile}
+        />
+      </div>
+      <div className="flex min-w-0 flex-1 items-center gap-2 border-y border-background-tertiary px-3 py-2 md:gap-3 md:py-3">
         <input
           type="text"
           readOnly={!isAuthenticated}
@@ -65,7 +64,7 @@ export default function BoardDetailCommentComposer({
               ? '댓글을 달아주세요'
               : '댓글을 남기려면 로그인해주세요'
           }
-          className="min-w-0 flex-1 border-0 bg-transparent text-sm font-normal text-text-primary outline-none placeholder:text-text-default placeholder:text-sm"
+          className="min-w-0 max-w-full flex-1 border-0 bg-transparent text-sm font-normal text-text-primary outline-none placeholder:text-text-default placeholder:text-sm"
           onClick={!isAuthenticated ? onRequireAuth : undefined}
           onFocus={!isAuthenticated ? onRequireAuth : undefined}
         />
@@ -106,6 +105,6 @@ export default function BoardDetailCommentComposer({
           {draft.length}/{COMMENT_TEXT_LIMIT}
         </p>
       </div>
-    </>
+    </div>
   );
 }
