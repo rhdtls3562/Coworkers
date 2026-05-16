@@ -15,14 +15,14 @@ export default function BoardListCard({ post }: { post: Post }) {
   return (
     <Link
       href={ROUTES.BOARD_DETAIL(post.id.toString())}
-      className="rounded-[20px] border border-background-tertiary px-4 py-4 h-35 md:h-39 md:px-6 md:py-5 block"
+      className="block min-w-0 rounded-[20px] border border-background-tertiary px-4 py-4 h-35 md:h-39 md:px-6 md:py-5"
     >
-      <div className="h-20 flex items-start justify-between gap-4 md:h-22">
-        <div className="flex-1 min-w-0 md:w-90">
-          <p className="text-text-primary text-base font-bold line-clamp-1 leading-4.75 md:text-lg md:leading-5.25">
+      <div className="flex h-20 min-w-0 items-start justify-between gap-4 md:h-22">
+        <div className="min-w-0 flex-1 overflow-hidden md:w-90">
+          <p className="line-clamp-1 min-w-0 wrap-anywhere text-base font-bold leading-4.75 text-text-primary md:text-lg md:leading-5.25">
             {post.title}
           </p>
-          <p className="text-text-default text-sm font-normal leading-4.25 mt-2 line-clamp-2 md:leading-5">
+          <p className="mt-2 line-clamp-2 min-w-0 wrap-anywhere text-sm font-normal leading-4.25 text-text-default md:leading-5">
             {post.content}
           </p>
         </div>

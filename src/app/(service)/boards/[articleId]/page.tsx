@@ -83,13 +83,16 @@ export default async function BoardDetailPage({
   }
 
   return (
-    <>
-      {isEditMode ? (
-        <BoardDetailEditForm key={boardDetail.id} boardDetail={boardDetail} />
-      ) : (
-        <div className="w-full h-full min-h-dvh flex justify-center items-center px-4 py-8 md:px-6.5 md:py-31.75 lg:py-25">
-          <div className="max-w-225 items-center bg-background-primary rounded-[20px] w-full">
-            <div className="px-5.5 py-11.25 md:px-10 md:py-18 lg:px-17.5">
+    <div className="w-full h-full min-h-dvh flex justify-center items-center px-4 py-8 md:px-6.5 md:py-18 lg:py-17">
+      <div className="max-w-225 min-w-0 w-full items-center bg-background-primary rounded-[20px]">
+        <div className="min-w-0 px-5.5 py-9.75 md:px-10 md:py-13.5 lg:px-15">
+          {isEditMode ? (
+            <BoardDetailEditForm
+              key={boardDetail.id}
+              boardDetail={boardDetail}
+            />
+          ) : (
+            <div className="min-w-0">
               <BoardDetailHeader
                 boardDetail={boardDetail}
                 userProfile={userProfile}
@@ -101,9 +104,9 @@ export default async function BoardDetailPage({
                 userProfile={userProfile}
               />
             </div>
-          </div>
+          )}
         </div>
-      )}
-    </>
+      </div>
+    </div>
   );
 }

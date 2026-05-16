@@ -15,7 +15,7 @@ export default function BoardBestCard({ post }: { post: Post }) {
   return (
     <Link
       href={ROUTES.BOARD_DETAIL(post.id.toString())}
-      className="p-5 bg-background-primary rounded-[20px] block border border-border-primary"
+      className="block min-w-0 rounded-[20px] border border-border-primary bg-background-primary p-5"
     >
       <div className="inline-flex shrink-0 items-center gap-1 bg-background-secondary rounded-full px-3 py-1.5 h-7.5 whitespace-nowrap">
         <IcBoardBest
@@ -29,13 +29,13 @@ export default function BoardBestCard({ post }: { post: Post }) {
           인기
         </p>
       </div>
-      <div className="min-h-12 flex flex-row items-start justify-between gap-3 mt-3 md:min-h-14.75 lg:mt-4 lg:min-h-17.25">
+      <div className="mt-3 flex min-h-12 min-w-0 flex-row items-start justify-between gap-3 md:min-h-14.75 lg:mt-4 lg:min-h-17.25">
         <div className="min-h-0 min-w-0 flex-1 overflow-hidden">
-          <p className="text-text-primary text-base font-bold line-clamp-1 leading-4.75 lg:text-lg lg:leading-5.25">
+          <p className="line-clamp-1 min-w-0 wrap-anywhere text-base font-bold leading-4.75 text-text-primary lg:text-lg lg:leading-5.25">
             {post.title}
           </p>
           <div className="mt-1.5 min-h-10.5 overflow-hidden lg:mt-2">
-            <p className="text-text-default text-sm font-normal leading-4.25 line-clamp-2 lg:text-base lg:leading-5">
+            <p className="line-clamp-2 min-w-0 wrap-anywhere text-sm font-normal leading-4.25 text-text-default lg:text-base lg:leading-5">
               {post.content}
             </p>
           </div>
