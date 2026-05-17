@@ -1,3 +1,5 @@
+/** 회원가입 페이지에서 사용하는 상수 정의 파일입니다. */
+
 export const SIGNUP_TEXT = {
   title: '회원가입',
   nicknameLabel: '닉네임',

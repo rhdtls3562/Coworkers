@@ -1,3 +1,5 @@
+/** 스토리지에서 읽은 값을 AuthSession 타입으로 파싱하는 유틸 파일입니다. */
+
 import { isRecord } from '@/utils/authSession/browser';
 import type {
   AuthSession,

@@ -1,3 +1,5 @@
+/** 게시글 상세 페이지 오류/접근 불가 시 표시하는 폴백 컴포넌트입니다. */
+
 type BoardDetailPageFallbackProps = {
   message: string;
 };

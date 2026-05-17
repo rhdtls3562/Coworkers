@@ -1,3 +1,5 @@
+/** 팀 페이지 할 일·태스크 관련 유틸 함수 파일입니다. */
+
 import { STATUS } from '@/app/(service)/[teamid]/constants';
 import {
   TaskItemDetailProps,

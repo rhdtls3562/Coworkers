@@ -1,3 +1,5 @@
+/** 모달 컴포넌트를 조합해 export하는 파일입니다. */
+
 import ModalFrame from '@/components/common/modal/components/ModalFrame';
 import ModalPortal from '@/components/common/modal/components/ModalPortal';
 

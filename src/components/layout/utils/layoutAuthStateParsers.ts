@@ -1,3 +1,5 @@
+/** 레이아웃 인증 API 응답을 내부 상태 타입으로 파싱하는 유틸 파일입니다. */
+
 import type { SidebarTeam } from '@/components/layout/sidebar/types';
 import type {
   LayoutMembership,

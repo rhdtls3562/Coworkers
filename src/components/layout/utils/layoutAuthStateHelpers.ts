@@ -1,3 +1,5 @@
+/** 레이아웃 인증 상태를 가공하는 헬퍼 유틸 함수 파일입니다. */
+
 import {
   DEFAULT_LAYOUT_CURRENT_USER,
   type LayoutCurrentUser,

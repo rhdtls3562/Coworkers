@@ -1,3 +1,5 @@
+/** 할 일 상세 패널 본문 영역 컴포넌트입니다. */
+
 import { ContentTextarea } from '@/components/common/form';
 import TaskDetailCommentsSection from '@/components/common/rightPanel/components/TaskDetailCommentsSection';
 import type { TaskDetailPanelBodyProps } from '@/components/common/rightPanel/types';

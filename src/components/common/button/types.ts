@@ -1,3 +1,5 @@
+/** 버튼 컴포넌트 TypeScript 타입 정의 파일입니다. */
+
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
 
 export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {

@@ -102,7 +102,7 @@ export default function DraggableFloatingContainer({
       >
         {showTooltip && (isTouchDevice ? true : !isDragging) && (
           <div className="absolute -top-9 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-lg bg-gray-800 px-3 py-1.5 text-xs font-medium text-white shadow-md">
-            저를 움직여 보세요!
+            움직여 보세요!
             <div className="absolute left-1/2 top-full -translate-x-1/2 border-4 border-transparent border-t-gray-800" />
           </div>
         )}

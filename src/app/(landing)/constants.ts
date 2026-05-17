@@ -1,3 +1,5 @@
+/** 랜딩 페이지에서 사용하는 상수 정의 파일입니다. */
+
 import type {
   LandingRevealDelay,
   LandingRevealDirection,

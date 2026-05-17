@@ -1,3 +1,5 @@
+/** 마이페이지 계정 정보 수정 폼의 Zod 유효성 검사 스키마입니다. */
+
 import { z } from 'zod';
 
 export const accountSchema = z.object({

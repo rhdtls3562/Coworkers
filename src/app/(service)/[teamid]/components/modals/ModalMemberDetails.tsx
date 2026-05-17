@@ -1,3 +1,5 @@
+/** 멤버 상세 정보를 표시하는 모달 컴포넌트입니다. */
+
 import UserAvatar from '@/app/(service)/[teamid]/components/UserImage';
 import { ModalMemberProps } from '@/app/(service)/[teamid]/types';
 import Modal from '@/components/common/modal';

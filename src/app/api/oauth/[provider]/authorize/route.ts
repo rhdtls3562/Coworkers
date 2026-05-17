@@ -1,3 +1,5 @@
+/** OAuth 인증 콜백을 처리하는 API Route 핸들러입니다. */
+
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 

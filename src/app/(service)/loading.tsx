@@ -1,3 +1,5 @@
+/** 서비스 영역 전체 로딩 UI 컴포넌트입니다. */
+
 export default function Loading() {
   return (
     <div id="page-loader">

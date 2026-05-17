@@ -1,3 +1,5 @@
+/** 팀 오늘 할 일·완료 수치를 표시하는 진행 상태 컴포넌트입니다. */
+
 import { TeamProgressStatsProps } from '@/app/(service)/[teamid]/types';
 
 export function TeamProgressStats({ today, done }: TeamProgressStatsProps) {

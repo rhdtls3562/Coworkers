@@ -1,3 +1,5 @@
+/** DatePicker range 값을 정규화하는 유틸 함수 파일입니다. */
+
 import type { DatePickerRangeValue } from '@/components/common/form/types';
 
 export function normalizeDatePickerRangeValue(

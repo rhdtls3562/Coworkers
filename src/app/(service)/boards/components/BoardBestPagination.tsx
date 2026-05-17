@@ -1,3 +1,5 @@
+/** 베스트 게시글 페이지네이션 컴포넌트입니다. */
+
 import type { BestPagination } from '@/app/(service)/boards/types';
 import { IcChevronLeftSmall, IcChevronRightSmall } from '@/assets';
 import { cn } from '@/utils/cn';

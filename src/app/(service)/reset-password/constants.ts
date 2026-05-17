@@ -1,3 +1,5 @@
+/** 비밀번호 재설정 페이지에서 사용하는 상수 정의 파일입니다. */
+
 export const RESET_PASSWORD_TEXT = {
   title: '비밀번호 재설정',
   passwordLabel: '새 비밀번호',

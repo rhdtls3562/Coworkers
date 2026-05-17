@@ -1,3 +1,5 @@
+/** 게시판 페이지에서 사용하는 상수 정의 파일입니다. */
+
 import type { ArticleListQueryParams } from '@/api/queryKeys';
 
 export const TEAM_ID = process.env.NEXT_PUBLIC_TEAM_ID ?? '';

@@ -1,3 +1,7 @@
+/** 게시판 목록 페이지 헤더(검색·정렬) 컴포넌트입니다. */
+
+import { Suspense } from 'react';
+
 import BoardSearch from '@/app/(service)/boards/components/BoardSearch';
 import type { BoardListSortValue } from '@/app/(service)/boards/types';
 
@@ -12,7 +16,15 @@ export default function BoardHeader({ listSort }: BoardHeaderProps) {
         <h2 className="shrink-0 text-text-primary text-xl font-bold leading-6 md:text-2xl md:leading-7">
           채용 / 홍보
         </h2>
-        <BoardSearch listSort={listSort} />
+        <Suspense
+          fallback={
+            <div className="relative w-full md:max-w-105">
+              <div className="w-full h-12 rounded-full border-2 border-brand-primary md:h-14" />
+            </div>
+          }
+        >
+          <BoardSearch listSort={listSort} />
+        </Suspense>
       </div>
     </section>
   );

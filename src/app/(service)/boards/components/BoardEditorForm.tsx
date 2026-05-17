@@ -1,16 +1,10 @@
 'use client';
 
+import BoardContentEditor from '@/app/(service)/boards/components/BoardContentEditor';
 import { IcStarRed } from '@/assets';
 import Button from '@/components/common/button/components/Button';
-import {
-  ContentTextarea,
-  ImageUploadField,
-  TitleInput,
-} from '@/components/common/form';
-import {
-  ARTICLE_CONTENT_TEXT_LIMIT,
-  ARTICLE_TITLE_TEXT_LIMIT,
-} from '@/constants/TEXT_LIMIT';
+import { ImageUploadField, TitleInput } from '@/components/common/form';
+import { ARTICLE_TITLE_TEXT_LIMIT } from '@/constants/TEXT_LIMIT';
 import { cn } from '@/utils/cn';
 
 type BoardEditorFormProps = {
@@ -55,8 +49,6 @@ export default function BoardEditorForm({
   titleErrorMessage,
 }: BoardEditorFormProps) {
   const isTitleAtLimit = formData.title.length >= ARTICLE_TITLE_TEXT_LIMIT;
-  const isContentAtLimit =
-    formData.content.length >= ARTICLE_CONTENT_TEXT_LIMIT;
 
   const main = (
     <>
@@ -102,27 +94,14 @@ export default function BoardEditorForm({
             </label>
             <IcStarRed width={8} height={8} role="img" aria-label="필수 입력" />
           </div>
-          <ContentTextarea
-            id="content"
-            placeholder="내용을 입력하세요"
-            className="mt-2 h-50 md:mt-3 md:h-60"
-            value={formData.content}
-            errorMessage={contentErrorMessage}
-            onChange={onContentChange}
-            onBlur={onContentBlur}
-            maxLength={ARTICLE_CONTENT_TEXT_LIMIT}
-          />
-          <div className="flex items-center justify-between mt-1">
-            {isContentAtLimit ? (
-              <p className="text-left text-sm font-medium text-status-danger">
-                {ARTICLE_CONTENT_TEXT_LIMIT}자 이내로 작성해주세요.
-              </p>
-            ) : (
-              <span />
-            )}
-            <p className="text-right text-sm text-text-default">
-              {formData.content.length}/{ARTICLE_CONTENT_TEXT_LIMIT}
-            </p>
+          <div className="mt-2 md:mt-3">
+            <BoardContentEditor
+              id="content"
+              value={formData.content}
+              errorMessage={contentErrorMessage}
+              onChange={onContentChange}
+              onBlur={onContentBlur}
+            />
           </div>
         </div>
         <div className="mt-6 md:mt-8">

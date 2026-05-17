@@ -1,3 +1,5 @@
+/** 팀 멤버 카드 컴포넌트입니다. */
+
 import UserAvatar from '@/app/(service)/[teamid]/components/UserImage';
 import { MemberCardProps } from '@/app/(service)/[teamid]/types';
 import { IcMoreVerticalLarge } from '@/assets/index';

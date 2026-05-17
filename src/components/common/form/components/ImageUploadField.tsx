@@ -1,6 +1,11 @@
+/**
+ * 이미지 업로드 필드 컴포넌트입니다.
+ * variant에 따라 프로필(원형 버튼) 또는 게시물(썸네일) 형태로 렌더링됩니다.
+ * cropShape 설정 시 파일 선택 후 크롭 모달을 먼저 보여줍니다.
+ */
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import Image from 'next/image';
 
@@ -11,6 +16,9 @@ import {
   IcUserLarge,
 } from '@/assets';
 import type { ImageUploadFieldProps } from '@/components/common/form/types';
+import ImageCropModal from '@/components/common/imageCrop/ImageCropModal';
+import { IMAGE_UPLOAD_MAX_SIZE } from '@/components/common/imageCrop/utils/imageCropUtils';
+import { useToast } from '@/components/common/toast';
 
 function revokeObjectUrl(src: string | null) {
   if (!src?.startsWith('blob:')) {
@@ -22,6 +30,7 @@ function revokeObjectUrl(src: string | null) {
 
 export default function ImageUploadField({
   buttonAriaLabel,
+  cropShape,
   disabled = false,
   id,
   onChangeFile,
@@ -29,8 +38,11 @@ export default function ImageUploadField({
   src,
   variant,
 }: ImageUploadFieldProps) {
+  const { showToast } = useToast();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [localPreviewSrc, setLocalPreviewSrc] = useState<string | null>(null);
+  const [cropSrc, setCropSrc] = useState<string | null>(null);
+  const [cropFileName, setCropFileName] = useState('');
   const previewSrc = localPreviewSrc ?? src ?? null;
   const hasPreview = Boolean(previewSrc);
 
@@ -40,22 +52,60 @@ export default function ImageUploadField({
     };
   }, [localPreviewSrc]);
 
-  const handleSelectFile = (file: File | null) => {
-    revokeObjectUrl(localPreviewSrc);
+  useEffect(() => {
+    return () => {
+      revokeObjectUrl(cropSrc);
+    };
+  }, [cropSrc]);
 
-    if (!file) {
-      setLocalPreviewSrc(null);
-      onChangeFile?.(null);
+  const handleSelectFile = useCallback(
+    (file: File | null) => {
+      revokeObjectUrl(localPreviewSrc);
+
+      if (!file) {
+        setLocalPreviewSrc(null);
+        onChangeFile?.(null);
+        return;
+      }
+
+      const nextPreviewSrc = URL.createObjectURL(file);
+      setLocalPreviewSrc(nextPreviewSrc);
+      onChangeFile?.(file);
+    },
+    [localPreviewSrc, onChangeFile],
+  );
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] ?? null;
+
+    if (!file) return;
+
+    if (file.size > IMAGE_UPLOAD_MAX_SIZE) {
+      showToast('이미지 용량은 5MB 이하만 가능합니다.', 'error');
+      if (fileInputRef.current) fileInputRef.current.value = '';
       return;
     }
 
-    const nextPreviewSrc = URL.createObjectURL(file);
-    setLocalPreviewSrc(nextPreviewSrc);
-    onChangeFile?.(file);
+    if (cropShape) {
+      revokeObjectUrl(cropSrc);
+      setCropSrc(URL.createObjectURL(file));
+      setCropFileName(file.name);
+      return;
+    }
+
+    handleSelectFile(file);
   };
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    handleSelectFile(event.target.files?.[0] ?? null);
+  const handleCropComplete = (croppedFile: File) => {
+    revokeObjectUrl(cropSrc);
+    setCropSrc(null);
+    handleSelectFile(croppedFile);
+  };
+
+  const handleCropClose = () => {
+    revokeObjectUrl(cropSrc);
+    setCropSrc(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   const handleOpenFileDialog = () => {
@@ -118,6 +168,16 @@ export default function ImageUploadField({
             aria-hidden="true"
           />
         </button>
+
+        {cropShape && cropSrc && (
+          <ImageCropModal
+            imageSrc={cropSrc}
+            cropShape={cropShape}
+            fileName={cropFileName}
+            onComplete={handleCropComplete}
+            onClose={handleCropClose}
+          />
+        )}
       </div>
     );
   }
@@ -175,6 +235,16 @@ export default function ImageUploadField({
             aria-hidden="true"
           />
         </button>
+      )}
+
+      {cropShape && cropSrc && (
+        <ImageCropModal
+          imageSrc={cropSrc}
+          cropShape={cropShape}
+          fileName={cropFileName}
+          onComplete={handleCropComplete}
+          onClose={handleCropClose}
+        />
       )}
     </div>
   );

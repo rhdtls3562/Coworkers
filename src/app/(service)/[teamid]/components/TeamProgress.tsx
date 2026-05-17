@@ -2,6 +2,7 @@
  * 팀 페이지 상단 진행 상황 카드와 관련 모달을 렌더링합니다.
  */
 
+import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
 
 import MemberChip from '@/app/(service)/[teamid]/components/MemberChip';
@@ -41,9 +42,22 @@ export default function TeamProgress({ role, teamData }: TeamProgressProps) {
     <section className="w-full bg-background-inverse p-6 shadow-[0_4px_10px_rgba(49,84,153,0.06)] md:rounded-[20px] xl:shadow-[0_8px_20px_rgba(49,84,153,0.12)]">
       <div className="flex gap-3 items-center mb-8">
         {teamData ? (
-          <h2 className="text-text-primary font-bold text-xl md:text-2xl">
-            {teamData.name}
-          </h2>
+          <>
+            {teamData.image && (
+              <div className="size-9 shrink-0 overflow-hidden rounded-lg md:size-11">
+                <Image
+                  src={teamData.image}
+                  alt={`${teamData.name} 팀 이미지`}
+                  width={44}
+                  height={44}
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            )}
+            <h2 className="text-text-primary font-bold text-xl md:text-2xl">
+              {teamData.name}
+            </h2>
+          </>
         ) : null}
         <div className="flex justify-between flex-1 items-center xl:hidden">
           <button onClick={() => open('memberList')}>

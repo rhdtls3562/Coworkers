@@ -1,3 +1,5 @@
+/** 게시판 목록의 개별 게시글 카드 컴포넌트입니다. */
+
 import Link from 'next/link';
 
 import BoardPostImageWithFallback from '@/app/(service)/boards/components/BoardPostImageWithFallback';

@@ -1,3 +1,5 @@
+/** 게시판 페이지 TypeScript 타입 정의 파일입니다. */
+
 import {
   BOARD_DEVICE_TYPE,
   BOARD_SORT_VALUE,

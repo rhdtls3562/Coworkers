@@ -1,3 +1,5 @@
+/** 게시글 상세 페이지에서 사용하는 상수 정의 파일입니다. */
+
 export const BOARD_DETAIL_MENU = {
   EDIT: '수정하기',
   DELETE: '삭제하기',

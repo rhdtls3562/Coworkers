@@ -1,3 +1,5 @@
+/** 레이아웃 컴포넌트 TypeScript 타입 정의 파일입니다. */
+
 import type { RefObject } from 'react';
 
 import type { RightPanelContent } from '@/components/common/rightPanel';

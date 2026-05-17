@@ -46,6 +46,7 @@ export default function AccountForm({
       >
         <AddUserImg
           key={imageResetKey}
+          cropShape="rect"
           src={userInfo.image ?? undefined}
           onChangeFile={handleImageChange}
         />

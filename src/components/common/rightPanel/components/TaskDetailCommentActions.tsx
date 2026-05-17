@@ -1,3 +1,5 @@
+/** 할 일 상세 패널의 댓글 액션(수정·삭제) 버튼 컴포넌트입니다. */
+
 import type { TaskDetailCommentActionsProps } from '@/components/common/rightPanel/types';
 
 export default function TaskDetailCommentActions({

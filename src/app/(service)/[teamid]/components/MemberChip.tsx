@@ -1,3 +1,5 @@
+/** 멤버 칩(아바타 + 이름) 컴포넌트입니다. */
+
 import UserAvatar from '@/app/(service)/[teamid]/components/UserImage';
 import { MemberChipsProps } from '@/app/(service)/[teamid]/types';
 

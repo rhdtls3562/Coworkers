@@ -1,3 +1,5 @@
+/** 팀 초대 링크를 공유하는 모달 컴포넌트입니다. */
+
 import { useParams } from 'next/navigation';
 
 import { buildJoinTeamLink } from '@/app/(service)/jointeam/utils/buildJoinTeamLink';

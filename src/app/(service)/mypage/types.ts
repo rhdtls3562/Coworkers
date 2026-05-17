@@ -1,3 +1,5 @@
+/** 마이페이지 TypeScript 타입 정의 파일입니다. */
+
 import { z } from 'zod';
 
 import { accountSchema } from '@/app/(service)/mypage/schemas/accountSchema';

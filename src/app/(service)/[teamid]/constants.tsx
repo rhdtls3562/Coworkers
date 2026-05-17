@@ -1,3 +1,5 @@
+/** 팀 페이지에서 공통으로 사용하는 상수 정의 파일입니다. */
+
 import type {
   MemberChipsProps,
   OpenModal,

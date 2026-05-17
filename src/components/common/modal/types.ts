@@ -1,3 +1,5 @@
+/** 모달 컴포넌트 TypeScript 타입 정의 파일입니다. */
+
 import type { ReactNode } from 'react';
 
 export type ModalFrameProps = {

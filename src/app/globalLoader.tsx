@@ -1,3 +1,5 @@
+/** 페이지 전환 시 표시하는 전역 로더 컴포넌트입니다. */
+
 // app/globalLoader.tsx
 'use client';
 

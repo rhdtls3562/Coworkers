@@ -1,3 +1,5 @@
+/** TanStack Query 전역 QueryClient 인스턴스를 생성하고 export 합니다. */
+
 import { QueryClient } from '@tanstack/react-query';
 
 export const queryClient = new QueryClient({

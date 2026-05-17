@@ -1,3 +1,5 @@
+/** 게시글 상세 페이지의 개별 댓글 아이템 컴포넌트입니다. */
+
 import CommentEditingContent from '@/app/(service)/boards/[articleId]/components/CommentEditingContent';
 import CommentReadonlyContent from '@/app/(service)/boards/[articleId]/components/CommentReadonlyContent';
 import { useBoardDetailCommentItem } from '@/app/(service)/boards/[articleId]/hooks/useBoardDetailCommentItem';

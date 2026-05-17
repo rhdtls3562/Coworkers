@@ -1,3 +1,5 @@
+/** 비밀번호 재설정 페이지 콘텐츠 컴포넌트입니다. */
+
 import ResetPasswordForm from '@/app/(service)/reset-password/components/ResetPasswordForm';
 
 type ResetPasswordPageContentProps = {

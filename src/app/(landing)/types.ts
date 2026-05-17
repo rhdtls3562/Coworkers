@@ -1,3 +1,5 @@
+/** 랜딩 페이지에서 사용하는 TypeScript 타입 정의 파일입니다. */
+
 import type { ComponentType, ReactNode, SVGProps } from 'react';
 
 import type { StaticImageData } from 'next/image';

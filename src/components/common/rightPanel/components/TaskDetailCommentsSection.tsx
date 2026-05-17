@@ -1,3 +1,5 @@
+/** 할 일 상세 패널의 댓글 목록 섹션 컴포넌트입니다. */
+
 import TaskDetailCommentInput from '@/components/common/rightPanel/components/TaskDetailCommentInput';
 import TaskDetailCommentItem from '@/components/common/rightPanel/components/TaskDetailCommentItem';
 import type { TaskDetailCommentsSectionProps } from '@/components/common/rightPanel/types';

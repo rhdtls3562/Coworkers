@@ -6,10 +6,15 @@
 import { ImgAddButtonProps } from '@/components/common/adduserimg/types';
 import ImageUploadField from '@/components/common/form/components/ImageUploadField';
 
-export default function AddUserImg({ src, onChangeFile }: ImgAddButtonProps) {
+export default function AddUserImg({
+  cropShape,
+  src,
+  onChangeFile,
+}: ImgAddButtonProps) {
   return (
     <ImageUploadField
       variant="profile"
+      cropShape={cropShape}
       src={src}
       previewAlt="유저 프로필 이미지"
       buttonAriaLabel="프로필 이미지 업로드"

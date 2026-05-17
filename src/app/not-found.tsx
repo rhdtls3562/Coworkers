@@ -1,3 +1,5 @@
+/** 404 Not Found 페이지 컴포넌트입니다. */
+
 // app/not-found.tsx
 import Image from 'next/image';
 import Link from 'next/link';

@@ -1,3 +1,5 @@
+/** JWT 액세스 토큰을 디코딩하는 유틸 함수 파일입니다. */
+
 import { isBrowser } from '@/utils/authSession/browser';
 
 function decodeJwtPayload(accessToken: string) {

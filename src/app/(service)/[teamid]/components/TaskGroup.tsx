@@ -1,3 +1,5 @@
+/** 태스크 목록을 상태별로 그룹핑해 표시하는 컴포넌트입니다. */
+
 import { ModalTaskAdd } from '@/app/(service)/[teamid]/components/modals/ModalTaskAddEdit';
 import TaskItem from '@/app/(service)/[teamid]/components/TaskItem';
 import { EMPTY_MESSAGE } from '@/app/(service)/[teamid]/constants';

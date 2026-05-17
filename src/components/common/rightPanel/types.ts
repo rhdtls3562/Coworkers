@@ -1,3 +1,5 @@
+/** 오른쪽 패널 컴포넌트 TypeScript 타입 정의 파일입니다. */
+
 import type { ReactNode, RefObject } from 'react';
 
 export type TaskDetailScheduleRepeatValue =

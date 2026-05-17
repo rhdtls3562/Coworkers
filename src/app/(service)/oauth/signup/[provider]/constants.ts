@@ -1,3 +1,5 @@
+/** OAuth 소셜 회원가입 페이지에서 사용하는 상수 정의 파일입니다. */
+
 export const OAUTH_SIGNUP_TEXT = {
   errorTitle: '카카오 로그인 오류',
   loadingDescription: '카카오 로그인 정보를 확인하고 있습니다.',

@@ -1,3 +1,5 @@
+/** DatePicker 캘린더 상단 연·월 네비게이션 헤더 컴포넌트입니다. */
+
 import { IcChevronLeftSmall, IcChevronRightSmall } from '@/assets';
 
 import type { ReactDatePickerCustomHeaderProps } from 'react-datepicker';

@@ -1,3 +1,5 @@
+/** 게시글 상세 페이지 TypeScript 타입 정의 파일입니다. */
+
 import type { Post } from '@/app/(service)/boards/types';
 import { RoleProps } from '@/app/types';
 

@@ -1,3 +1,5 @@
+/** 레이아웃 인증 상태 관련 TypeScript 타입 정의 파일입니다. */
+
 import type { LayoutCurrentUser } from '@/components/layout/constants';
 import type { SidebarTeam } from '@/components/layout/sidebar/types';
 

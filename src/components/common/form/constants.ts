@@ -1,3 +1,5 @@
+/** 폼 컴포넌트에서 사용하는 상수 정의 파일입니다. */
+
 export const WEEK_DAY_LABELS = [
   '일',
   '월',

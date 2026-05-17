@@ -1,3 +1,5 @@
+/** 마이페이지 비밀번호 변경 폼의 Zod 유효성 검사 스키마입니다. */
+
 import { z } from 'zod';
 
 export const passwordSchema = z

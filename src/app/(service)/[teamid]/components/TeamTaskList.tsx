@@ -1,3 +1,5 @@
+/** 팀 상세 페이지의 할 일 목록을 렌더링하는 컴포넌트입니다. */
+
 import TaskGroup from '@/app/(service)/[teamid]/components/TaskGroup';
 import { STATUS } from '@/app/(service)/[teamid]/constants';
 import { TeamDetailData } from '@/app/(service)/[teamid]/types';

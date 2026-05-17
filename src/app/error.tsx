@@ -1,3 +1,5 @@
+/** 앱 전역 에러 바운더리 컴포넌트입니다. */
+
 // app/error.tsx
 'use client';
 

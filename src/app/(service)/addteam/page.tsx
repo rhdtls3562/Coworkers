@@ -30,7 +30,7 @@ export default function CreateTeamPage() {
         <h2 className="sr-only">팀 정보 입력</h2>
         <form onSubmit={handleSubmit} className="flex flex-col">
           <div className="mb-3">
-            <AddUserImg onChangeFile={handleChangeFile} />
+            <AddUserImg cropShape="rect" onChangeFile={handleChangeFile} />
           </div>
 
           <div className="mb-10 flex flex-col gap-3">

@@ -1,3 +1,5 @@
+/** 앱 전역에서 사용하는 공통 TypeScript 타입 정의 파일입니다. */
+
 import { ROLE } from '@/app/(service)/[teamid]/constants';
 
 export type ErrorProps = {

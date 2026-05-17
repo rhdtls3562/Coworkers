@@ -1,3 +1,5 @@
+/** 팀 탈퇴·삭제 등 팀 진행 관련 이벤트 핸들러를 제공하는 훅입니다. */
+
 import { useParams, useRouter } from 'next/navigation';
 
 import { resolveTeamExitRoute } from '@/app/(service)/[teamid]/utils/teamRouteAccess';

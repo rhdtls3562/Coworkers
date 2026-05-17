@@ -1,3 +1,5 @@
+/** 팀 전체 멤버 목록을 표시하는 모달 컴포넌트입니다. */
+
 import { TeamMemberListContent } from '@/app/(service)/[teamid]/components/TeamMemberList';
 import { ModalMembersProps } from '@/app/(service)/[teamid]/types';
 import Modal from '@/components/common/modal';

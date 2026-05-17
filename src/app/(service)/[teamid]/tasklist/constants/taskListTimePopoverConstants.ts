@@ -8,6 +8,6 @@ export const TASK_LIST_TIME_PICKER_HOURS = Array.from(
 );
 
 export const TASK_LIST_TIME_PICKER_MINUTES = Array.from(
-  { length: 11 },
-  (_, index) => String((index + 1) * 5).padStart(2, '0'),
+  { length: 12 },
+  (_, index) => String(index * 5).padStart(2, '0'),
 );

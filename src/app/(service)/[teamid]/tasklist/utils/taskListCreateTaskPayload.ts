@@ -71,7 +71,7 @@ function getMonthDate(year: number, monthIndex: number, day: number) {
   return new Date(year, monthIndex, Math.min(day, daysInMonth));
 }
 
-function getNextWeeklyDate(selectedDate: Date, weekDays: number[]) {
+export function getNextWeeklyDate(selectedDate: Date, weekDays: number[]) {
   if (weekDays.length === 0) {
     return new Date(selectedDate);
   }

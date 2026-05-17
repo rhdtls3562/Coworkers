@@ -1,3 +1,5 @@
+/** 폼 관련 공통 컴포넌트 배럴 export 파일입니다. */
+
 export { default as Input } from '@/components/common/form/components/Input';
 export { default as AuthInput } from '@/components/common/form/components/AuthInput';
 export { default as AuthSocialButton } from '@/components/common/form/components/AuthSocialButton';

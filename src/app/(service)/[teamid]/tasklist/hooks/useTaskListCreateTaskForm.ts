@@ -8,10 +8,12 @@ import {
   clampTaskListMonthDay,
   DEFAULT_TASK_LIST_WEEKLY_REPEAT_DAYS,
 } from '@/app/(service)/[teamid]/tasklist/utils/taskListCreateTaskFormUtils';
+import { getNextWeeklyDate } from '@/app/(service)/[teamid]/tasklist/utils/taskListCreateTaskPayload';
 import {
   getCurrentCalendarDate,
   getDefaultStartTimeString,
 } from '@/app/(service)/[teamid]/tasklist/utils/taskListDate';
+import { useToast } from '@/components/common/toast';
 import useClickOutside from '@/hooks/useClickOutside';
 
 /**
@@ -31,6 +33,7 @@ function clampToToday(date: Date): Date {
 
 export function useTaskListCreateTaskForm(initialSelectedDate: Date) {
   const formId = useId();
+  const { showToast } = useToast();
   const [title, setTitle] = useState('');
   const [startDate, setStartDate] = useState<Date | null>(() =>
     clampToToday(initialSelectedDate),
@@ -75,13 +78,30 @@ export function useTaskListCreateTaskForm(initialSelectedDate: Date) {
     [closeCalendar],
   );
 
-  const toggleWeekDay = useCallback((dayIndex: number) => {
-    setWeekDays((prev) =>
-      prev.includes(dayIndex)
-        ? prev.filter((d) => d !== dayIndex)
-        : [...prev, dayIndex].sort((a, b) => a - b),
-    );
-  }, []);
+  const toggleWeekDay = useCallback(
+    (dayIndex: number) => {
+      const newWeekDays = weekDays.includes(dayIndex)
+        ? weekDays.filter((d) => d !== dayIndex)
+        : [...weekDays, dayIndex].sort((a, b) => a - b);
+
+      setWeekDays(newWeekDays);
+
+      if (repeat !== 'weekly' || newWeekDays.length === 0) return;
+
+      const currentDate = startDate ?? getCurrentCalendarDate();
+      const nearestDate = getNextWeeklyDate(currentDate, newWeekDays);
+      const isSameDay =
+        nearestDate.getFullYear() === currentDate.getFullYear() &&
+        nearestDate.getMonth() === currentDate.getMonth() &&
+        nearestDate.getDate() === currentDate.getDate();
+
+      if (!isSameDay) {
+        setStartDate(nearestDate);
+        showToast('해당 요일에 가까운 날짜로 변경되었습니다.', 'success');
+      }
+    },
+    [repeat, startDate, weekDays, showToast],
+  );
 
   const handleMonthDayChange = useCallback((value: string) => {
     if (!/^\d{0,2}$/.test(value)) {

@@ -1,3 +1,5 @@
+/** 브라우저 쿠키에서 인증 토큰을 읽고 쓰는 유틸 함수 파일입니다. */
+
 import { isBrowser } from '@/utils/authSession/browser';
 import { ACCESS_TOKEN_COOKIE_KEY } from '@/utils/authSession/constants';
 

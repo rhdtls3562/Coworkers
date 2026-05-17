@@ -1,3 +1,5 @@
+/** 소속 팀이 없을 때 표시하는 빈 상태 컴포넌트입니다. */
+
 import Image from 'next/image';
 import Link from 'next/link';
 

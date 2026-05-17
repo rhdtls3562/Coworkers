@@ -1,3 +1,5 @@
+/** 팀 페이지 모달 열림/닫힘 상태를 관리하는 훅입니다. */
+
 import { useState } from 'react';
 
 import { MemberChipsProps, ModalKey } from '@/app/(service)/[teamid]/types';

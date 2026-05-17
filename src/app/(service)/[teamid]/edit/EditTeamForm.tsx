@@ -86,7 +86,11 @@ export default function EditTeamForm({ teamData, teamid }: EditTeamFormProps) {
 
         <form onSubmit={handleSubmit} className="flex flex-col">
           <div className="mb-3">
-            <AddUserImg src={teamData.image} onChangeFile={setImageFile} />
+            <AddUserImg
+              cropShape="rect"
+              src={teamData.image}
+              onChangeFile={setImageFile}
+            />
           </div>
 
           <div className="mb-10 flex flex-col gap-3">

@@ -1,3 +1,5 @@
+/** 댓글 수정 입력 영역 컴포넌트입니다. */
+
 import CommentWriterAvatar from '@/app/(service)/boards/[articleId]/components/CommentWriterAvatar';
 import type { Comment } from '@/app/(service)/boards/[articleId]/types';
 import { COMMENT_TEXT_LIMIT } from '@/constants/TEXT_LIMIT';
