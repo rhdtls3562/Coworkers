@@ -66,9 +66,7 @@ export default function BoardContentEditor({
               {value}
             </ReactMarkdown>
           ) : (
-            <p className="text-text-disabled" style={{ margin: 0 }}>
-              미리볼 내용이 없습니다.
-            </p>
+            <p className="m-0 text-text-disabled">미리볼 내용이 없습니다.</p>
           )}
         </div>
       ) : (
