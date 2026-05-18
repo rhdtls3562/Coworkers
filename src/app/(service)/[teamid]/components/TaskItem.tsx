@@ -106,16 +106,14 @@ export default function TaskItem({
         {status !== '완료' && (
           <div className="flex flex-col gap-3 pr-2 w-full">
             {tasks.length > 0 ? (
-              tasks
-                .slice(0, 3)
-                .map((task) => (
-                  <TodoCheckUncheck
-                    key={task.id}
-                    label={task.name}
-                    checked={task.doneAt !== null}
-                    onChange={() => handleToggle(task.id, task.doneAt)}
-                  />
-                ))
+              tasks.map((task) => (
+                <TodoCheckUncheck
+                  key={task.id}
+                  label={task.name}
+                  checked={task.doneAt !== null}
+                  onChange={() => handleToggle(task.id, task.doneAt)}
+                />
+              ))
             ) : (
               <p className="text-sm font-normal text-text-default">
                 아직 체크리스트가 없어요.
