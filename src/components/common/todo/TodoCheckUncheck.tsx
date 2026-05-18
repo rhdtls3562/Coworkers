@@ -70,6 +70,7 @@ export default function TodoCheckUncheck({
     >
       <input
         type="checkbox"
+        name="done"
         checked={checked}
         onChange={onChange ? (e) => onChange(e.target.checked) : undefined}
         readOnly={!onChange}

@@ -72,6 +72,7 @@ export default function BoardContentEditor({
       ) : (
         <ContentTextarea
           id={id}
+          name="content"
           placeholder="내용을 입력하세요"
           className="h-50 md:h-60"
           value={value}

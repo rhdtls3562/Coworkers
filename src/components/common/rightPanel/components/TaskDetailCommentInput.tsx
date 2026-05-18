@@ -87,6 +87,7 @@ export default function TaskDetailCommentInput({
       <div className="flex flex-row items-center gap-3 border-y border-background-tertiary py-3">
         <RightPanelAvatar alt="" image={userImage} />
         <textarea
+          name="comment"
           ref={textareaRef}
           value={value}
           disabled={isSubmitting}

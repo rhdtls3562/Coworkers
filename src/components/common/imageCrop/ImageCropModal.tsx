@@ -94,6 +94,7 @@ export default function ImageCropModal({
             </span>
             <input
               type="range"
+              name="zoom"
               min={1}
               max={3}
               step={0.01}

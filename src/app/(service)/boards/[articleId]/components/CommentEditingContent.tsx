@@ -33,6 +33,7 @@ export default function CommentEditingContent({
             {comment.writer.nickname}
           </p>
           <textarea
+            name="comment"
             className="mt-1 min-h-18 min-w-0 w-full resize-none overflow-hidden wrap-anywhere rounded-xl border border-background-tertiary bg-background-primary px-4 py-3 text-sm font-medium leading-5 text-text-secondary outline-none"
             placeholder="내용을 입력하세요."
             value={editedContent}

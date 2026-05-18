@@ -75,6 +75,7 @@ export default function TaskListCreateTaskModalTextFields({
             <div className={CREATE_TASK_MEMO_INNER_WRAPPER_CLASS}>
               <textarea
                 id={`${formId}-memo`}
+                name="memo"
                 value={memo}
                 onChange={(event) => onMemoChange(event.target.value)}
                 placeholder="메모를 입력해주세요."

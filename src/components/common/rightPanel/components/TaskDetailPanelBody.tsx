@@ -29,6 +29,7 @@ export default function TaskDetailPanelBody({
       {isTaskEditing ? (
         <>
           <ContentTextarea
+            name="description"
             value={draftDescription}
             placeholder="내용을 입력하세요."
             className="min-h-24 md:min-h-28"

@@ -72,7 +72,7 @@ export default function AccountForm({
         <div className="flex flex-col gap-2">
           <label htmlFor="userEmail">이메일</label>
 
-          <Input id="userEmail" value={email} disabled />
+          <Input id="userEmail" name="email" value={email} disabled />
         </div>
 
         {!isSocialUser && (

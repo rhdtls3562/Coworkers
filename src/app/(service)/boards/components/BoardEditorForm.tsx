@@ -65,6 +65,7 @@ export default function BoardEditorForm({
           </div>
           <TitleInput
             id="title"
+            name="title"
             placeholder="제목을 입력해주세요."
             className="mt-2.25 md:mt-3"
             value={formData.title}

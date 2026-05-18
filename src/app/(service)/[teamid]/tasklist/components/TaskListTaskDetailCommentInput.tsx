@@ -73,6 +73,7 @@ export default function TaskListTaskDetailCommentInput({
       )}
 
       <textarea
+        name="comment"
         ref={textareaRef}
         value={value}
         onChange={handleChange}

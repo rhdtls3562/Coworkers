@@ -48,6 +48,7 @@ export default function TaskListCreateColumnModal({
       <div className="w-full text-left">
         <TitleInput
           id="tasklist-column-name"
+          name="columnName"
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="목록 명을 입력해주세요."

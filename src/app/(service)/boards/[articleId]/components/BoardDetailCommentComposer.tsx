@@ -54,6 +54,7 @@ export default function BoardDetailCommentComposer({
       <div className="flex min-w-0 flex-1 items-center gap-2 border-y border-background-tertiary px-3 py-2 md:gap-3 md:py-3">
         <input
           type="text"
+          name="comment"
           readOnly={!isAuthenticated}
           value={isAuthenticated ? draft : ''}
           onChange={(event) => setDraft(event.target.value)}

@@ -71,6 +71,7 @@ export default function TaskListTaskDetailCommentItem({
             <div className={cn('mt-3', COMMENT_BODY_ACTIONS_ROW_CLASS_NAME)}>
               <div className={COMMENT_BODY_LEFT_SLOT_CLASS_NAME}>
                 <textarea
+                  name="comment"
                   value={draftContent}
                   placeholder="내용을 입력하세요."
                   className={cn(

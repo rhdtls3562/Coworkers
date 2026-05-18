@@ -19,6 +19,7 @@ export default function TaskDetailPanelHeader({
     return (
       <>
         <TitleInput
+          name="title"
           value={draftTitle}
           placeholder="제목을 입력해주세요."
           maxLength={TITLE_TEXT_LIMIT}

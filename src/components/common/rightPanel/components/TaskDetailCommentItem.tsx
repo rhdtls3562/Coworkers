@@ -43,6 +43,7 @@ export default function TaskDetailCommentItem({
 
             <div className="mt-3 flex flex-col gap-3">
               <textarea
+                name="comment"
                 value={draftContent}
                 placeholder="내용을 입력하세요."
                 maxLength={COMMENT_TEXT_LIMIT}

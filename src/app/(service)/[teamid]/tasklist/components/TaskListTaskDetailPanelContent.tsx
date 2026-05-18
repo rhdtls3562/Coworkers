@@ -37,6 +37,7 @@ export default function TaskListTaskDetailPanelContent({
     <div className="min-h-0 flex-1 overflow-y-auto px-6 pb-36 pt-8 md:px-8 md:pb-40 md:pt-10">
       {isTaskEditing ? (
         <TitleInput
+          name="title"
           value={draftTitle}
           placeholder="제목을 입력해주세요."
           onChange={(event) => {
@@ -93,6 +94,7 @@ export default function TaskListTaskDetailPanelContent({
       <div className="mt-6 border-t border-background-tertiary pt-6 md:mt-7 md:pt-7">
         {isTaskEditing ? (
           <ContentTextarea
+            name="description"
             value={draftDescription}
             placeholder="내용을 입력하세요."
             className="min-h-24 md:min-h-28"

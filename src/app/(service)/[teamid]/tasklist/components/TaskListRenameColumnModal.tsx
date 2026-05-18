@@ -49,6 +49,7 @@ export default function TaskListRenameColumnModal({
       <div className="w-full text-left">
         <TitleInput
           id="tasklist-column-rename"
+          name="columnName"
           value={name}
           onChange={(event) => setName(event.target.value)}
           placeholder="목록 명을 입력해주세요."

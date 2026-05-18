@@ -24,6 +24,7 @@ export default function BoardSearch({ listSort }: BoardSearchProps) {
       </div>
       <input
         type="text"
+        name="keyword"
         value={keyword}
         onChange={handleChange}
         placeholder="검색어를 입력해주세요"
