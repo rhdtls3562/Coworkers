@@ -8,9 +8,9 @@ import type { TaskListSummary } from '@/types/task';
 export function getFirstTaskListByDisplayIndex(
   taskLists: readonly TaskListSummary[],
 ) {
-  return getSafeTaskListArray(taskLists)
-    .slice()
-    .sort((firstTaskList, secondTaskList) => {
+  return getSafeTaskListArray(taskLists).sort(
+    (firstTaskList, secondTaskList) => {
       return firstTaskList.displayIndex - secondTaskList.displayIndex;
-    })[0];
+    },
+  )[0];
 }
