@@ -13,10 +13,7 @@ import {
   MODAL_HEADING_TYPO,
 } from '@/app/(service)/[teamid]/tasklist/constants/createTaskModalConstants';
 import type { TaskListCreateTaskModalDateTimeSectionProps } from '@/app/(service)/[teamid]/tasklist/types';
-import {
-  formatFullKoreanDate,
-  formatKoreanMeridiemTime,
-} from '@/app/(service)/[teamid]/tasklist/utils/boardDate';
+import { formatFullKoreanDate } from '@/app/(service)/[teamid]/tasklist/utils/boardDate';
 import { cn } from '@/utils/cn';
 
 export default function TaskListCreateTaskModalDateTimeSection({
@@ -81,7 +78,7 @@ export default function TaskListCreateTaskModalDateTimeSection({
                 )}
                 onClick={onOpenTime}
               >
-                {formatKoreanMeridiemTime(startTime)}
+                {startTime}
               </button>
             </div>
           </div>

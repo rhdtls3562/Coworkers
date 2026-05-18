@@ -58,17 +58,6 @@ export function formatFullKoreanDate(date: Date): string {
   return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
 }
 
-/** 24h "HH:mm" → 오전/오후 h:mm */
-export function formatKoreanMeridiemTime(time24: string): string {
-  const [hStr, mStr] = time24.split(':');
-  const h = Number(hStr);
-  const m = Number(mStr);
-  if (Number.isNaN(h) || Number.isNaN(m)) return time24;
-  const isPm = h >= 12;
-  const h12 = h % 12 === 0 ? 12 : h % 12;
-  return `${isPm ? '오후' : '오전'} ${h12}:${String(m).padStart(2, '0')}`;
-}
-
 /** 월요일 시작 주의 월요일 00:00 */
 export function startOfWeekMonday(date: Date): Date {
   const d = new Date(date);

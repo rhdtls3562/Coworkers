@@ -97,7 +97,7 @@ export function useTaskListCreateTaskForm(initialSelectedDate: Date) {
 
       if (!isSameDay) {
         setStartDate(nearestDate);
-        showToast('해당 요일에 가까운 날짜로 변경되었습니다.', 'success');
+        showToast('반복 요일에 가까운 시작일로 변경되었습니다.', 'success');
       }
     },
     [repeat, startDate, weekDays, showToast],
