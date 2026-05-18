@@ -17,6 +17,7 @@ import {
   toTaskListDateString,
 } from '@/app/(service)/[teamid]/tasklist/utils/taskListDate';
 import { formatTaskListRepeatLabel } from '@/app/(service)/[teamid]/tasklist/utils/taskListRepeatLabel';
+import { getSafeTaskArray } from '@/app/(service)/[teamid]/tasklist/utils/taskListRuntimeGuards';
 import { useToast } from '@/components/common/toast';
 import { useDeleteTaskMutation, useUpdateTaskMutation } from '@/hooks/useTask';
 
@@ -44,8 +45,9 @@ export function useTaskListBoardQuery({
   });
 
   const tasks: TaskListBoardTask[] = useMemo(() => {
-    if (!taskListDetail?.tasks) return [];
-    return taskListDetail.tasks.map((task) => {
+    const safeTasks = getSafeTaskArray(taskListDetail?.tasks);
+
+    return safeTasks.map((task) => {
       const resolvedWeekDays =
         task.weekDays && task.weekDays.length > 0
           ? task.weekDays
@@ -56,7 +58,7 @@ export function useTaskListBoardQuery({
           : null;
 
       return {
-        assigneeImage: task.writer.image,
+        assigneeImage: task.writer?.image ?? null,
         id: String(task.id),
         title: task.name,
         checked: task.doneAt !== null,
@@ -69,7 +71,7 @@ export function useTaskListBoardQuery({
           resolvedWeekDays,
         ),
         sortOrder: task.displayIndex,
-        assigneeName: task.writer.nickname,
+        assigneeName: task.writer?.nickname ?? '',
         description: task.description ?? '',
         startDate: task.startDate,
         startedAtRaw: task.date,

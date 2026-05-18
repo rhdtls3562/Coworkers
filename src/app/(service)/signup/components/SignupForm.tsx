@@ -38,6 +38,7 @@ export default function SignupForm({ redirectTo }: SignupFormProps) {
       <form onSubmit={handleSubmit} className="flex flex-col gap-5 md:px-6">
         <AuthInput
           label={SIGNUP_TEXT.nicknameLabel}
+          autoComplete="name"
           placeholder={SIGNUP_TEXT.nicknamePlaceholder}
           errorMessage={nicknameError}
           {...nicknameField}
@@ -46,6 +47,7 @@ export default function SignupForm({ redirectTo }: SignupFormProps) {
         <AuthInput
           label={SIGNUP_TEXT.emailLabel}
           type="email"
+          autoComplete="email"
           placeholder={SIGNUP_TEXT.emailPlaceholder}
           errorMessage={emailError}
           {...emailField}
@@ -54,6 +56,7 @@ export default function SignupForm({ redirectTo }: SignupFormProps) {
         <AuthInput
           label={SIGNUP_TEXT.passwordLabel}
           type="password"
+          autoComplete="new-password"
           placeholder={SIGNUP_TEXT.passwordPlaceholder}
           errorMessage={passwordError}
           {...passwordField}
@@ -62,6 +65,7 @@ export default function SignupForm({ redirectTo }: SignupFormProps) {
         <AuthInput
           label={SIGNUP_TEXT.passwordConfirmationLabel}
           type="password"
+          autoComplete="new-password"
           placeholder={SIGNUP_TEXT.passwordConfirmationPlaceholder}
           errorMessage={passwordConfirmationError}
           {...passwordConfirmationField}

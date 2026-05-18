@@ -24,13 +24,13 @@ export default function CommentReadonlyContent({
   return (
     <li className="flex gap-4 border-t border-background-tertiary py-3 md:py-5">
       <CommentWriterAvatar
-        image={comment.writer.image}
-        nickname={comment.writer.nickname}
+        image={comment.writer?.image ?? null}
+        nickname={comment.writer?.nickname ?? ''}
       />
       <div className="flex min-w-0 w-full justify-between gap-2">
         <div className="flex min-w-0 flex-col gap-1">
           <p className="text-sm font-bold text-text-primary">
-            {comment.writer.nickname}
+            {comment.writer?.nickname ?? ''}
           </p>
           <CommentExpandableText
             content={comment.content}

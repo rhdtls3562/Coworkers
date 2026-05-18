@@ -54,7 +54,7 @@ export type Comment = {
   content: string;
   createdAt: string;
   updatedAt: string;
-  writer: CommentWriter;
+  writer: CommentWriter | null;
 };
 
 export type BoardDetailCommentsProps = {

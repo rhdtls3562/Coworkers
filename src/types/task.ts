@@ -19,8 +19,8 @@ export type Task = {
   recurringId: number;
   frequency: 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'ONCE';
   weekDays?: number[];
-  writer: UserSummary;
-  doneBy: { user: UserSummary } | null;
+  writer: UserSummary | null;
+  doneBy: { user: UserSummary | null } | null;
 };
 
 /** 할 일 목록 요약 — 그룹 상세 응답 내 */

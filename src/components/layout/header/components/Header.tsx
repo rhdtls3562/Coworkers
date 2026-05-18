@@ -98,6 +98,7 @@ function MobileHeaderBar({
                   alt=""
                   width={28}
                   height={28}
+                  loading="eager"
                   className="size-7 object-cover"
                 />
               ) : (

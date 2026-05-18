@@ -32,6 +32,7 @@ export default function ForgotPasswordModal({
         <AuthInput
           label="이메일"
           type="email"
+          autoComplete="email"
           errorMessage={emailError}
           placeholder="이메일을 입력해주세요"
           {...emailField}

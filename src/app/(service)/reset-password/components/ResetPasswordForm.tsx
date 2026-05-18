@@ -45,6 +45,7 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
         <AuthInput
           label={RESET_PASSWORD_TEXT.passwordLabel}
           type="password"
+          autoComplete="new-password"
           placeholder={RESET_PASSWORD_TEXT.passwordPlaceholder}
           errorMessage={passwordError}
           {...passwordField}
@@ -53,6 +54,7 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
         <AuthInput
           label={RESET_PASSWORD_TEXT.passwordConfirmationLabel}
           type="password"
+          autoComplete="new-password"
           placeholder={RESET_PASSWORD_TEXT.passwordConfirmationPlaceholder}
           errorMessage={passwordConfirmationError}
           {...passwordConfirmationField}

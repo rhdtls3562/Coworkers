@@ -25,7 +25,7 @@ export const useBoardDetailCommentItem = ({
   currentUserId,
   onDeleteSuccess,
 }: UseBoardDetailCommentItemParams) => {
-  const isOwnComment = comment.writer.id === currentUserId;
+  const isOwnComment = comment.writer?.id === currentUserId;
 
   const edit = useBoardDetailCommentItemEdit({
     articleId,

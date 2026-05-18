@@ -80,6 +80,7 @@ export default function SidebarFooter({ isExpanded }: SidebarFooterProps) {
                     alt=""
                     width={40}
                     height={40}
+                    loading="eager"
                     className="size-10 object-cover"
                   />
                 ) : (

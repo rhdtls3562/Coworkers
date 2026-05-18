@@ -130,6 +130,7 @@ export default function ImageUploadField({
         <div className="mx-auto w-fit">
           <input
             id={id}
+            name={id ?? 'image'}
             ref={fileInputRef}
             type="file"
             accept="image/*"
@@ -174,6 +175,7 @@ export default function ImageUploadField({
         <div className="flex gap-3">
           <input
             id={id}
+            name={id ?? 'image'}
             ref={fileInputRef}
             type="file"
             accept="image/*"

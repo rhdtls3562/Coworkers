@@ -25,12 +25,12 @@ export default function CommentEditingContent({
     <li className="flex min-w-0 w-full pb-3 md:pb-5">
       <div className="flex min-w-0 w-full gap-4 bg-background-secondary px-2.5 py-2.5 lg:px-3.75 lg:py-3.75">
         <CommentWriterAvatar
-          image={comment.writer.image}
-          nickname={comment.writer.nickname}
+          image={comment.writer?.image ?? null}
+          nickname={comment.writer?.nickname ?? ''}
         />
         <div className="min-w-0 w-full">
           <p className="text-sm font-bold text-text-primary">
-            {comment.writer.nickname}
+            {comment.writer?.nickname ?? ''}
           </p>
           <textarea
             name="comment"

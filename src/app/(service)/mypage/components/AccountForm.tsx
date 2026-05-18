@@ -54,7 +54,12 @@ export default function AccountForm({
         <div className="flex flex-col gap-3">
           <label htmlFor="userName">이름</label>
 
-          <Input id="userName" {...nameRegister} onChange={handleNameChange} />
+          <Input
+            id="userName"
+            autoComplete="name"
+            {...nameRegister}
+            onChange={handleNameChange}
+          />
 
           {errors.nickname?.message && (
             <p className="text-sm font-medium text-status-danger">
@@ -72,7 +77,13 @@ export default function AccountForm({
         <div className="flex flex-col gap-2">
           <label htmlFor="userEmail">이메일</label>
 
-          <Input id="userEmail" name="email" value={email} disabled />
+          <Input
+            id="userEmail"
+            name="email"
+            autoComplete="email"
+            value={email}
+            disabled
+          />
         </div>
 
         {!isSocialUser && (

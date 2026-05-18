@@ -11,7 +11,36 @@ import type {
   TeamScopedDateQueryParams,
 } from '@/api/queryKeys';
 import type { RecurringBody, TaskUpdateBody } from '@/api/types';
-import type { TaskListCreateResponse, TaskListDetail } from '@/types/task';
+import type {
+  Task,
+  TaskListCreateResponse,
+  TaskListDetail,
+} from '@/types/task';
+
+function isObjectEntry<T extends object>(
+  value: T | null | undefined,
+): value is T {
+  return typeof value === 'object' && value !== null;
+}
+
+function sanitizeTaskListTasks(tasks: Task[] | null | undefined) {
+  return (tasks ?? []).reduce<Task[]>((safeTasks, task) => {
+    if (isObjectEntry(task)) {
+      safeTasks.push(task);
+    }
+
+    return safeTasks;
+  }, []);
+}
+
+function sanitizeTaskListDetail(
+  taskListDetail: TaskListDetail,
+): TaskListDetail {
+  return {
+    ...taskListDetail,
+    tasks: sanitizeTaskListTasks(taskListDetail.tasks),
+  };
+}
 
 function createGroupTaskListsPath(groupId: QueryKeyId) {
   return `${API_PATH_SEGMENTS.GROUPS}/${groupId}${API_PATH_SEGMENTS.TASK_LISTS}`;
@@ -59,7 +88,9 @@ export async function getTaskListDetail(
     createTaskListPath(groupId, taskListId),
   )}${buildQueryString(params)}`;
 
-  return apiClient<TaskListDetail>(endpoint);
+  const taskListDetail = await apiClient<TaskListDetail>(endpoint);
+
+  return sanitizeTaskListDetail(taskListDetail);
 }
 
 export async function getTasks(groupId: QueryKeyId, params: TaskQueryParams) {

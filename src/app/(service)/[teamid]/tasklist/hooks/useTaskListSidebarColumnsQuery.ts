@@ -14,6 +14,10 @@ import type {
 } from '@/app/(service)/[teamid]/tasklist/types';
 import { toTaskListDateString } from '@/app/(service)/[teamid]/tasklist/utils/taskListDate';
 import {
+  getSafeTaskArray,
+  getSafeTaskListArray,
+} from '@/app/(service)/[teamid]/tasklist/utils/taskListRuntimeGuards';
+import {
   createEmptyTaskListDetail,
   isTaskListNotFoundError,
 } from '@/app/(service)/[teamid]/tasklist/utils/taskListSidebarColumns';
@@ -24,12 +28,16 @@ export default function useTaskListSidebarColumnsQuery({
   teamId,
 }: UseTaskListSidebarColumnsQueryParams) {
   const dateString = toTaskListDateString(selectedDate);
+  const safeTaskLists = useMemo(
+    () => getSafeTaskListArray(taskLists),
+    [taskLists],
+  );
   const sortedTaskLists = useMemo(
     () =>
-      taskLists.slice().sort((firstTaskList, secondTaskList) => {
+      safeTaskLists.slice().sort((firstTaskList, secondTaskList) => {
         return firstTaskList.displayIndex - secondTaskList.displayIndex;
       }),
-    [taskLists],
+    [safeTaskLists],
   );
   const taskListDetailQueries = useQueries({
     queries: sortedTaskLists.map((taskList) => {
@@ -63,7 +71,9 @@ export default function useTaskListSidebarColumnsQuery({
   return useMemo<TaskListColumnItem[]>(
     () =>
       sortedTaskLists.map((taskList, index) => {
-        const tasks = taskListDetailQueries[index]?.data?.tasks ?? [];
+        const tasks = getSafeTaskArray(
+          taskListDetailQueries[index]?.data?.tasks,
+        );
 
         return {
           completed: tasks.filter((task) => task.doneAt !== null).length,

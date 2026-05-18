@@ -25,6 +25,7 @@ export default function BoardSearch({ listSort }: BoardSearchProps) {
       <input
         type="text"
         name="keyword"
+        autoComplete="off"
         value={keyword}
         onChange={handleChange}
         placeholder="검색어를 입력해주세요"

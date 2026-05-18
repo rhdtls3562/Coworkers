@@ -65,6 +65,7 @@ export default function PasswordModal({ onClose }: Props) {
             {...register('newPassword')}
             id="newPassword"
             type="password"
+            autoComplete="new-password"
             label="새 비밀번호"
             placeholder="새 비밀번호를 입력해주세요."
           />
@@ -79,6 +80,7 @@ export default function PasswordModal({ onClose }: Props) {
             {...register('confirmPassword')}
             id="confirmPassword"
             type="password"
+            autoComplete="new-password"
             label="새 비밀번호 확인"
             placeholder="새 비밀번호를 다시 한번 입력해주세요."
           />

@@ -20,7 +20,7 @@ export type TaskItemDetailProps = {
   recurringId: number;
   deletedAt: string | null;
   displayIndex: number;
-  writer: Writer;
+  writer: Writer | null;
   doneBy: { user: Writer | null };
   commentCount: number;
   frequency: Frequency;

@@ -73,7 +73,7 @@ export default async function BoardDetailPage({
       );
     }
 
-    if (userProfile.id !== boardDetail.writer.id) {
+    if (userProfile.id !== boardDetail.writer?.id) {
       return (
         <BoardDetailPageFallback
           message={BOARD_DETAIL_FALLBACK_EDIT_NOT_OWNER}

@@ -82,6 +82,7 @@ export default function TaskListCreateTaskModalRepeatSection({
               type="text"
               inputMode="numeric"
               pattern="[0-9]*"
+              autoComplete="off"
               maxLength={2}
               value={monthDay}
               onChange={(e) => onMonthDayChange(e.target.value)}

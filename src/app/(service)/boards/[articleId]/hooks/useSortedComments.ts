@@ -25,8 +25,8 @@ export const useSortedComments = ({
   return useMemo(
     () =>
       [...comments].sort((a, b) => {
-        const isAOwnComment = a.writer.id === userId;
-        const isBOwnComment = b.writer.id === userId;
+        const isAOwnComment = a.writer?.id === userId;
+        const isBOwnComment = b.writer?.id === userId;
 
         if (isAOwnComment !== isBOwnComment) {
           return isAOwnComment ? MOVE_TO_FRONT : MOVE_TO_BACK;

@@ -43,7 +43,7 @@ export default function BoardListCard({ post }: { post: Post }) {
       <div className="flex items-center justify-between gap-2 mt-3 min-w-0">
         <div className="flex min-w-0 flex-1 items-center">
           <span className="text-text-primary text-sm font-medium leading-4 min-w-0 truncate md:text-base">
-            {post.writer.nickname}
+            {post.writer?.nickname ?? ''}
           </span>
           <span className="text-text-primary text-sm font-medium leading-4 shrink-0 px-2 md:text-base">
             |

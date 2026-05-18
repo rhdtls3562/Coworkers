@@ -13,12 +13,67 @@ import type {
   CreateGroupResponse,
   UpdateGroupBody,
 } from '@/api/types';
-import type { GroupDetail } from '@/types/group';
+import type { GroupDetail, GroupMember } from '@/types/group';
+import type { Task, TaskListSummary } from '@/types/task';
+
+function isObjectEntry<T extends object>(
+  value: T | null | undefined,
+): value is T {
+  return typeof value === 'object' && value !== null;
+}
+
+function sanitizeTasks(tasks: Task[] | null | undefined) {
+  return (tasks ?? []).reduce<Task[]>((safeTasks, task) => {
+    if (isObjectEntry(task)) {
+      safeTasks.push(task);
+    }
+
+    return safeTasks;
+  }, []);
+}
+
+function sanitizeTaskLists(taskLists: TaskListSummary[] | null | undefined) {
+  return (taskLists ?? []).reduce<TaskListSummary[]>(
+    (safeTaskLists, taskList) => {
+      if (!isObjectEntry(taskList)) {
+        return safeTaskLists;
+      }
+
+      safeTaskLists.push({
+        ...taskList,
+        tasks: sanitizeTasks(taskList.tasks),
+      });
+
+      return safeTaskLists;
+    },
+    [],
+  );
+}
+
+function sanitizeMembers(members: GroupMember[] | null | undefined) {
+  return (members ?? []).reduce<GroupMember[]>((safeMembers, member) => {
+    if (isObjectEntry(member)) {
+      safeMembers.push(member);
+    }
+
+    return safeMembers;
+  }, []);
+}
+
+function sanitizeGroupDetail(groupDetail: GroupDetail): GroupDetail {
+  return {
+    ...groupDetail,
+    members: sanitizeMembers(groupDetail.members),
+    taskLists: sanitizeTaskLists(groupDetail.taskLists),
+  };
+}
 
 export async function getTeamDetail(teamId: QueryKeyId) {
-  return apiClient<GroupDetail>(
+  const groupDetail = await apiClient<GroupDetail>(
     teamEndpoint(`${API_PATH_SEGMENTS.GROUPS}/${teamId}`),
   );
+
+  return sanitizeGroupDetail(groupDetail);
 }
 
 export async function getTeamTasksByDate(

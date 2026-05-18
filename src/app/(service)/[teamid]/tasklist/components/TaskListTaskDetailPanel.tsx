@@ -2,10 +2,10 @@
 
 import type { TaskListTaskDetailPanelProps } from '@/app/(service)/[teamid]/tasklist/types';
 import TaskDetailPanelContent from '@/components/common/rightPanel/components/TaskDetailPanelContent';
+import { useMeQuery } from '@/hooks/useUser';
 
 const API_TEAM_ID = process.env.NEXT_PUBLIC_TEAM_ID ?? '';
 
-// TaskListTaskDetailPanel
 export default function TaskListTaskDetailPanel({
   initialMode,
   onScheduleSaved,
@@ -13,13 +13,32 @@ export default function TaskListTaskDetailPanel({
   teamId,
 }: TaskListTaskDetailPanelProps) {
   const isDone = task.checked;
+  const { data: meData } = useMeQuery();
+
+  // task.writer가 null인 경우 현재 로그인 유저 정보로 대체한다 (히스토리 패널과 동일한 방식)
+  const assigneeName =
+    task.assigneeName ||
+    (typeof meData === 'object' &&
+    meData !== null &&
+    'nickname' in meData &&
+    typeof meData.nickname === 'string'
+      ? meData.nickname
+      : '');
+  const assigneeImage =
+    task.assigneeImage ??
+    (typeof meData === 'object' &&
+    meData !== null &&
+    'image' in meData &&
+    typeof meData.image === 'string'
+      ? meData.image
+      : null);
 
   return (
     <TaskDetailPanelContent
       key={`${task.id}-${initialMode}`}
       apiTeamId={API_TEAM_ID}
-      assigneeImage={task.assigneeImage}
-      assigneeName={task.assigneeName}
+      assigneeImage={assigneeImage}
+      assigneeName={assigneeName}
       description={task.description}
       frequency={task.repeatLabel}
       initialMode={initialMode}

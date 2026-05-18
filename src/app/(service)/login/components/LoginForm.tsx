@@ -83,6 +83,7 @@ export default function LoginForm({
         <AuthInput
           label={LOGIN_TEXT.emailLabel}
           type="text"
+          autoComplete="email"
           errorMessage={emailError}
           placeholder={LOGIN_TEXT.emailPlaceholder}
           {...emailField}
@@ -91,6 +92,7 @@ export default function LoginForm({
         <AuthInput
           label={LOGIN_TEXT.passwordLabel}
           type="password"
+          autoComplete="current-password"
           errorMessage={passwordError}
           placeholder={LOGIN_TEXT.passwordPlaceholder}
           {...passwordField}

@@ -18,7 +18,7 @@ export type Post = {
   title: string;
   content: string;
   image: string | null;
-  writer: Writer;
+  writer: Writer | null;
   likeCount: number;
   isLiked?: boolean;
   commentCount: number;

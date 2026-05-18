@@ -10,6 +10,7 @@ import { useQueries } from '@tanstack/react-query';
 
 import { taskQueryOptions } from '@/api/queryOptions';
 import { getCurrentDateString } from '@/app/(service)/[teamid]/tasklist/utils/taskListDate';
+import { getSafeTaskListArray } from '@/app/(service)/[teamid]/tasklist/utils/taskListRuntimeGuards';
 import type { TeamDetailData } from '@/app/(service)/[teamid]/types';
 import { toTodayTeamTaskLists } from '@/app/(service)/[teamid]/utils/todayTeamTaskLists';
 
@@ -23,8 +24,12 @@ export default function useTodayTeamTaskLists({
   teamId,
 }: UseTodayTeamTaskListsParams) {
   const todayDateString = useMemo(() => getCurrentDateString(), []);
+  const safeTaskLists = useMemo(
+    () => getSafeTaskListArray(teamData?.taskLists),
+    [teamData?.taskLists],
+  );
   const taskListDetailQueries = useQueries({
-    queries: (teamData?.taskLists ?? []).map((taskList) =>
+    queries: safeTaskLists.map((taskList) =>
       taskQueryOptions.taskListDetail(
         teamId,
         String(taskList.id),
@@ -41,10 +46,10 @@ export default function useTodayTeamTaskLists({
   const todayTaskLists = useMemo(
     () =>
       toTodayTeamTaskLists(
-        teamData?.taskLists ?? [],
+        safeTaskLists,
         taskListDetailQueries.map((query) => query.data),
       ),
-    [taskListDetailQueries, teamData?.taskLists],
+    [safeTaskLists, taskListDetailQueries],
   );
 
   return {

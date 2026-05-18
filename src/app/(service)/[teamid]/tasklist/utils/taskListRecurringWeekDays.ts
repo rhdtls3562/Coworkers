@@ -4,6 +4,7 @@
 
 import { addDays } from '@/app/(service)/[teamid]/tasklist/utils/boardDate';
 import { toTaskListDateString } from '@/app/(service)/[teamid]/tasklist/utils/taskListDate';
+import { getSafeTaskArray } from '@/app/(service)/[teamid]/tasklist/utils/taskListRuntimeGuards';
 import type { TaskListDetail } from '@/types/task';
 
 const WEEKLY_RECURRING_PROBE_DAYS = 7;
@@ -17,7 +18,7 @@ export function getTaskListRecurringProbeDates(selectedDate: Date) {
 export function getTaskListWeeklyRecurringIds(taskListDetail?: TaskListDetail) {
   return Array.from(
     new Set(
-      (taskListDetail?.tasks ?? [])
+      getSafeTaskArray(taskListDetail?.tasks)
         .filter(
           (task) =>
             task.frequency === 'WEEKLY' &&
@@ -48,7 +49,7 @@ export function inferTaskListRecurringWeekDays({
       return;
     }
 
-    taskListDetail?.tasks.forEach((task) => {
+    getSafeTaskArray(taskListDetail?.tasks).forEach((task) => {
       const recurringId = String(task.recurringId);
 
       if (task.frequency !== 'WEEKLY' || !recurringIdSet.has(recurringId)) {

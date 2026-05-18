@@ -59,7 +59,7 @@ export default function BoardBestCard({ post }: { post: Post }) {
       <div className="flex items-center justify-between gap-2 mt-3 lg:mt-4.25 min-w-0">
         <div className="flex min-w-0 flex-1 items-center">
           <span className="text-text-primary text-sm font-medium leading-4 min-w-0 truncate lg:leading-4.25">
-            {post.writer.nickname}
+            {post.writer?.nickname ?? ''}
           </span>
           <span className="text-text-primary text-sm font-medium leading-4 shrink-0 px-2 lg:leading-4.25">
             |

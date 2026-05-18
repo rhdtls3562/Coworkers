@@ -22,8 +22,8 @@ export default function BoardDetailHeader({
   boardDetail: BoardDetailProps['boardDetail'];
   userProfile: UserProfileResponse | null;
 }) {
-  const isOwner = boardDetail.writer.id === userProfile?.id;
-  const writerProfileImage = boardDetail.writer.image?.trim() || null;
+  const isOwner = boardDetail.writer?.id === userProfile?.id;
+  const writerProfileImage = boardDetail.writer?.image?.trim() || null;
   const {
     menuItems,
     isDeleteModalOpen,
@@ -69,7 +69,7 @@ export default function BoardDetailHeader({
         <div className="flex min-w-0 flex-1 items-center">
           <CommentWriterAvatar
             image={writerProfileImage}
-            nickname={boardDetail.writer.nickname}
+            nickname={boardDetail.writer?.nickname ?? ''}
             width={24}
             height={24}
             containerClassName="mr-2 size-6 rounded-md items-center justify-center md:size-6"
@@ -77,7 +77,7 @@ export default function BoardDetailHeader({
             iconClassName="size-6 md:size-6"
           />
           <span className="text-text-primary text-sm font-medium leading-4 min-w-0 truncate md:text-base">
-            {boardDetail.writer.nickname}
+            {boardDetail.writer?.nickname ?? ''}
           </span>
           <span className="text-text-secondary text-sm font-medium leading-4 shrink-0 px-2 md:text-base">
             |
